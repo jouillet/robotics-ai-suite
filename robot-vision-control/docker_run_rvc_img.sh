@@ -40,6 +40,7 @@ if [ "$(docker ps -aq -f name=^${CONTAINER_NAME}$)" ]; then
     docker exec -it "${CONTAINER_NAME}" /bin/bash
 else
     echo "Creating and running new container '${CONTAINER_NAME}'..."
+
     docker run -it \
         --name "${CONTAINER_NAME}" \
         --volume=/dev:/dev \
@@ -47,10 +48,14 @@ else
         --ipc=host \
         --network=host \
         --privileged \
+        --device /dev/dri \
+        --device /dev/accel \
+        --group-add=$(stat -c "%g" /dev/dri/render* | head -n 1) -u $(id -u):$(id -g) \
         --env="DISPLAY" \
         --env="WAYLAND_DISPLAY" \
         --env="XDG_RUNTIME_DIR" \
         --env="PULSE_SERVER" \
+        --device-cgroup-rule='c 189:* rmw' \
         "${IMAGE_NAME}" \
         /bin/bash
 
