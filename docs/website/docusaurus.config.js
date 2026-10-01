@@ -69,6 +69,9 @@ const config = {
         // /development-stack/); no Docusaurus-rendered docs remain.
         docs: false,
         blog: false,
+        sitemap: {
+          ignorePatterns: ["**/models/:slug/"],
+        },
         theme: {
           customCss: "./src/css/custom.css",
         },

@@ -3,6 +3,7 @@
 // route serves every model. ModelDetail reads its slug from the URL and fetches
 // content at runtime.
 
+const fs = require('fs');
 const path = require('path');
 const { normalizeUrl } = require('@docusaurus/utils');
 
@@ -28,6 +29,10 @@ module.exports = function modelRoutesPlugin(context) {
         component,
         exact: true,
       });
+    },
+
+    postBuild({ outDir }) {
+      fs.rmSync(path.join(outDir, 'models', ':slug'), { recursive: true, force: true });
     },
   };
 };
