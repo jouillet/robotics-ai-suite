@@ -27,6 +27,18 @@ const config = {
   baseUrl: process.env.BASE_URL || "/",
   trailingSlash: true,
 
+  headTags: [
+    {
+      tagName: "script",
+      attributes: {},
+      innerHTML: `if (location.pathname.endsWith("/index.html")) {
+  const canonicalUrl = new URL(location.href);
+  canonicalUrl.pathname = canonicalUrl.pathname.slice(0, -"index.html".length);
+  history.replaceState(history.state, "", canonicalUrl);
+}`,
+    },
+  ],
+
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "throw",
 
