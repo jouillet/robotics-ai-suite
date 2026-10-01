@@ -1,0 +1,54 @@
+.container {
+  padding: calc(var(--size-70) / 2) 0;
+}
+
+.grid {
+  gap: var(--size-24);
+  display: grid;
+  margin-top: var(--size-24);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  & > div {
+    padding: var(--size-48);
+  }
+}
+
+.primaryPanel {
+  gap: var(--size-64);
+  display: flex;
+  position: relative;
+  align-items: center;
+  grid-column: 1 / -1;
+  border-radius: var(--size-7);
+  background: url("../../../static/img/ai-toolkit/main-column.png");
+  background-size: cover;
+}
+
+.flowLabel {
+  top: 0;
+  right: 0;
+  position: absolute;
+}
+
+.secondaryPanel {
+  min-width: 0;
+  border-radius: var(--size-7);
+}
+
+.column1 {
+  background: url("../../../static/img/ai-toolkit/column-1.png");
+}
+
+.column2 {
+  background: url("../../../static/img/ai-toolkit/column-2.png");
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .primaryPanel {
+    grid-column: auto;
+  }
+}

@@ -114,7 +114,18 @@ Below is a table showing the default rotation per port location.
 
 Here is an image overlaid with the correct rotation values, MIPI port, and I2C bus for reference:
 
+::::{tab-set}
+:::{tab-item} **Rev B**
+
 ![CEXD external ports](../images/gmsl_label_CEXD.png)
+
+:::
+:::{tab-item} **Rev C**
+
+![CEXD external ports Rev C](../images/gmsl_label_CEXD_rev_C.png)
+
+:::
+::::
 
 ## Next steps
 

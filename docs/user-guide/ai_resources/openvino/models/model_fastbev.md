@@ -48,8 +48,8 @@ Fast-BEV, as an representative of BEV algorithms,
 
 ## Model Conversion
 
-The FastBEV model is trained using PyTorch but can achieve optimized inference performance on Intel devices using OpenVINO.
-To enable this, the PyTorch model must first be converted to the OpenVINO IR format.
+The FastBEV model is trained using PyTorch but can achieve optimized inference performance on Intel devices using OpenVINO™.
+To enable this, the PyTorch model must first be converted to the OpenVINO™ IR format.
 
 All models (model.zip) can be downloaded from [Google Drive](https://drive.google.com/file/d/1wwwckM0vux5ub3U4R_zS9pm01QFmMPru/view). The zip file contains the following:
 
@@ -79,17 +79,17 @@ After unzipping `model.zip`, the following directory structure will be created:
     └── fastbev_pre_trt.onnx
 ```
 
-### Convert ONNX to OpenVINO IR Using `ovc`
+### Convert ONNX to OpenVINO™ IR Using `ovc`
 
-#### Ensure OpenVINO is Installed
+#### Ensure OpenVINO™ is Installed
 
 > [!NOTE]
-> Make sure OpenVINO is installed by following the guide:
-> [Install OpenVINO via pip](../../developer_tools/openvino.md)
+> Make sure OpenVINO™ is installed by following the guide:
+> [Install OpenVINO™ via pip](../../developer_tools/openvino.md)
 
-Once the model is in ONNX format, it can be converted to OpenVINO's Intermediate Representation (IR) format using OpenVINO's command-line model conversion tool, `ovc`.
+Once the model is in ONNX format, it can be converted to OpenVINO™'s Intermediate Representation (IR) format using OpenVINO™'s command-line model conversion tool, `ovc`.
 
-The `ovc` tool simplifies the process of converting an ONNX model to OpenVINO IR format.
+The `ovc` tool simplifies the process of converting an ONNX model to OpenVINO™ IR format.
 
 #### Steps to Convert ONNX Models
 
@@ -139,6 +139,6 @@ fastbev_pre_trt.xml
 fastbev_pre_trt.bin
 ```
 
-You can now use these `.xml` and `.bin` files with OpenVINO for optimized inference on Intel hardware.
+You can now use these `.xml` and `.bin` files with OpenVINO™ for optimized inference on Intel hardware.
 
 [cuda-fastbev github repository]: https://github.com/Mandylove1993/CUDA-FastBEV?tab=readme-ov-file

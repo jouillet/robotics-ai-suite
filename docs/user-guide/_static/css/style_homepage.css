@@ -1,0 +1,3 @@
+/* toc column on the right */
+.bd-toc {display: none !important;}
+.bd-content {justify-content: center !important;}

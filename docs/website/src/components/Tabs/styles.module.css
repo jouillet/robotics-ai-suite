@@ -1,0 +1,15 @@
+.tabsItem {
+  color: var(--geti-color-white);
+  font-size: var(--size-16);
+  font-weight: 500;
+  line-height: var(--size-18);
+  letter-spacing: 0;
+}
+
+.tabsContent {
+  margin-top: var(--size-24);
+}
+
+.activeItem {
+  border-bottom-color: #03c7fd;
+}

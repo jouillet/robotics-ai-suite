@@ -3,7 +3,7 @@
 
 ## Product Link
 
-**Product link**: [AAEON UP Nexus WCL Edge](https://www.aaeon.com/en/product/detail/up-systems-up-nexus-wcl-edge)
+**Product link**: [AAEON UP Nexus WCL Edge](https://builders.intel.com/ecosystem-engagement/solution-hub/edge-ai-catalog/partner-spotlight/asus-nuc-16-338)
 
 ## Overview
 
@@ -11,7 +11,7 @@ This guide describes how to set up the AAEON UP Nexus WCL Edge (UPN-WCL01-SYS) d
 kit hardware and confirm that it powers on and boots correctly.
 
 The kit is powered by an **Intel® Core™ 7 processor 360** or **Intel® Core™ 5 processor
-320** (Wildcat Lake). It ships as a single, fanless, wall-mountable unit with onboard
+320**. It ships as a single, fanless, wall-mountable unit with onboard
 LPDDR5 memory and UFS storage, dual 2.5GbE networking, and a 134 × 105 × 53 mm footprint.
 
 > [!NOTE]

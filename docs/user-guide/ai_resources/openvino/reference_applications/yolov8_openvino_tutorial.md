@@ -46,7 +46,7 @@ sudo apt install ros-humble-openvino-yolov8 ros-humble-openvino-yolov8-msgs
 
 ## Run Demo with RealSense Camera Topic Input
 
-1. Download and convert a YOLOv8 model into OpenVINO format:
+1. Download and convert a YOLOv8 model into OpenVINO™ format:
 
    ```bash
    python3 -c 'from ultralytics import YOLO; model = YOLO("yolov8n.pt"); model.export(format="openvino")'

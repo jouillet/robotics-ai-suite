@@ -1,0 +1,38 @@
+.imageFrame {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.spinnerWrap {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(
+    135deg,
+    rgba(4, 18, 51, 0.12),
+    rgba(4, 18, 51, 0.04)
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.spinner {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  border: 2px solid rgba(3, 18, 51, 0.2);
+  border-top-color: rgba(3, 18, 51, 0.85);
+  animation: spin 0.9s linear infinite;
+}
+
+.imageHidden {
+  opacity: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

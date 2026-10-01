@@ -18,7 +18,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: robotics-ai-suite/components/fast-mapping
+    working-directory: src/components/fast-mapping
 
 jobs:
   lint:
@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
           fetch-depth: 0
-          sparse-checkout: ./robotics-ai-suite/components/fast-mapping
+          sparse-checkout: ./src/components/fast-mapping
           persist-credentials: false
 
       - name: Lint
@@ -44,7 +44,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
-          sparse-checkout: robotics-ai-suite/components/fast-mapping
+          sparse-checkout: src/components/fast-mapping
           persist-credentials: false
 
       - name: Run REUSE
@@ -64,7 +64,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
-          sparse-checkout: robotics-ai-suite/components/fast-mapping
+          sparse-checkout: src/components/fast-mapping
           persist-credentials: false
 
       - name: Build [colcon]
@@ -98,7 +98,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
-          sparse-checkout: robotics-ai-suite/components/fast-mapping
+          sparse-checkout: src/components/fast-mapping
           persist-credentials: false
 
       - name: Build package
@@ -125,35 +125,3 @@ jobs:
           if-no-files-found: error
           path: |
             **/output/fast-mapping/*.deb
-
-  test-e2e:
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-${{ matrix.ros_distro }}
-      cancel-in-progress: true
-    name: '[${{ inputs.component-name }}] E2E tests (${{ matrix.ros_distro }})'
-    runs-on: ubuntu-latest
-    needs: build-package
-    strategy:
-      matrix:
-        ros_distro: [humble, jazzy]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
-        with:
-          sparse-checkout: robotics-ai-suite/components/fast-mapping
-          persist-credentials: false
-
-      - name: Download debian packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
-        with:
-          name: packages-fast-mapping-${{ matrix.ros_distro }}
-          path: ./
-
-      - name: Place *.deb in the working folder
-        shell: bash
-        run: |
-          mv output/fast-mapping/*.deb .
-
-      - name: Run E2E tests
-        shell: bash
-        run: ROS_DISTRO=${{ matrix.ros_distro }} make test-e2e

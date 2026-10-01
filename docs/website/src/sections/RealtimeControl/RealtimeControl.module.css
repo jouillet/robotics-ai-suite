@@ -1,0 +1,37 @@
+.container {
+  padding: calc(var(--size-70) / 2) 0;
+}
+
+.cards {
+  gap: var(--size-24);
+  display: flex;
+  margin-top: var(--size-30);
+
+  & > div {
+    flex: 1;
+    display: flex;
+    padding: var(--size-48);
+    border-radius: var(--size-7);
+    flex-direction: column;
+    background-size: 100% 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column;
+    gap: var(--size-16);
+
+    & > div {
+      padding: var(--size-24) var(--size-20);
+    }
+  }
+}
+
+.cardOne {
+  background: url("../../../static/img/realtime-control/gradient-bk-one.png");
+}
+
+.cardTwo {
+  background: url("../../../static/img/realtime-control/gradient-bk-two.png");
+}

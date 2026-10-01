@@ -7,7 +7,7 @@ The Stationary Robotics Toolkit Simulation Reference Demo provides a safe, virtu
 The simulation environment uses **Gazebo** to model physical contacts, kinematics, and sensor dynamics in an industrial workstation cell:
 
 * **Manipulator and Gripper**: Universal Robots UR5e arm with a Robotiq 2F-85 adaptive gripper simulated with joint controllers.
-* **Camera Sensor**: Simulated RGB-D camera sensor plugin publishing synthetic color images and point clouds matching the Intel RealSense D415 optical frame.
+* **Camera Sensor**: Simulated RGB-D camera sensor plugin publishing synthetic color images and point clouds matching the RealSense D415 optical frame.
 * **Workstation Environment**: Worktable surface, collision boundary volumes, and target pickable objects.
 
 ```{mermaid}

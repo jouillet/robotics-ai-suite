@@ -1,0 +1,57 @@
+.description {
+  font-size: var(--size-14);
+  max-width: var(--size-390);
+  margin-top: var(--size-24);
+  line-height: var(--size-20);
+  margin-left: auto;
+  letter-spacing: var(--size-0_25);
+  text-align: end;
+}
+
+.textEnd {
+  text-align: end;
+}
+
+.mapContent {
+  display: flex;
+  margin-top: var(--size-24);
+  align-items: start;
+}
+
+.cards {
+  gap: var(--size-24);
+  display: flex;
+  flex-direction: column;
+}
+
+.roboticsAiSuite {
+  transform: translateY(var(--size-50));
+}
+
+@media (max-width: 640px) {
+  .description {
+    max-width: 100%;
+    text-align: start;
+    margin-left: 0;
+  }
+
+  .textEnd {
+    text-align: start;
+  }
+
+  .mapContent {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--size-32);
+  }
+
+  .roboticsAiSuite {
+    transform: none;
+    max-width: 220px;
+    margin: 0 auto;
+  }
+
+  .cards {
+    width: 100%;
+  }
+}

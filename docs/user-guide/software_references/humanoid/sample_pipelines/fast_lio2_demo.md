@@ -125,7 +125,7 @@ For `ulhk_4`, the documented baseline is **2.57 m** RMSE (FAST-LIO2 paper,
 arXiv 2107.06829, Table IV — constant across all four non-feature map sizes
 tested there; Point-LIO's own paper reports 2.17 m on this same sequence,
 printed alongside for context only). Intel's own `reproduce_all.sh` run on
-the PTL board (see "Reference: running on Intel PTL" below) measured
+the Intel® Core™ Ultra Series 3 board (see "Reference: running on Intel® Core™ Ultra Series 3" below) measured
 **1.327 m**, comfortably inside the tolerance band. The check is one-sided:
 it passes as long as the freshly measured RMSE does not exceed that
 baseline by more than `RMSE_TOLERANCE_PCT` (20% by default) — a measured
@@ -144,17 +144,17 @@ USE_RVIZ=true ./run_ulhk.sh   # or: USE_RVIZ=true ./reproduce_all.sh
 ```
 
 Run this directly on the target machine's own logged-in Ubuntu desktop
-session (e.g. on the PTL board's display, not over plain SSH) — rviz2's
+session (e.g. on the Intel® Core™ Ultra Series 3 board's display, not over plain SSH) — rviz2's
 point-cloud rendering needs a real GPU display, so X11-forwarding it over
 SSH is impractical.
 
-### Reference: running on Intel PTL
+### Reference: running on Intel® Core™ Ultra Series 3
 
 `run_ulhk.sh` ships a reference core-pinning + frequency-locking setup for
-Intel PTL (validated on Core Ultra X7 358H: 4 P-cores `cpu0-3` up to 4700
+Intel® Core™ Ultra Series 3 (validated on Core™ Ultra X7 358H: 4 P-cores `cpu0-3` up to 4700
 MHz, 8 E-cores `cpu4-11` up to 3500 MHz, 4 LP-E-cores `cpu12-15` up to 3300
 MHz). Core numbering is specific to this SKU — re-check `lscpu -e` before
-reusing these defaults on a different PTL SKU or platform.
+reusing these defaults on a different Intel® Core™ Ultra Series 3 SKU or platform.
 
 | Task | Pinned to | Why |
 | ---- | --------- | --- |
@@ -204,7 +204,7 @@ also in `env.sh`.
 plain CycloneDDS with no iceoryx zero-copy shared-memory transport for
 same-host pub/sub. [scripts/setup_dds_shm.sh](https://github.com/open-edge-platform/edge-ai-suites/blob/main/robotics-ai-suite/pipelines/fast-lio2-demo/scripts/setup_dds_shm.sh) adds
 that missing piece — the same DDS transport Bing's own benchmark harness for
-this project (`run_live_benchmark.sh`) uses on PTL/Orin, for two reasons: (1)
+this project (`run_live_benchmark.sh`) uses on Intel® Core™ Ultra Series 3/Orin, for two reasons: (1)
 `rmw_fastrtps_cpp`/plain-CycloneDDS + SHM has hit CDR deserialize failures on
 large `PointCloud2` bag replay — silently corrupting or dropping frames — and
 (2) a dedicated DDS domain plus this transport keeps traffic isolated and
@@ -264,7 +264,7 @@ cmake --build /tmp/livox-sdk2/build -j"$(nproc)"
 sudo cmake --install /tmp/livox-sdk2/build
 ```
 
-### 2. Apply the Intel patches
+### 2. Apply the Intel® patches
 
 ```bash
 cd FAST_LIO
@@ -298,16 +298,16 @@ cd -
 ### 4. Fetch the UrbanLoco dataset (`ulhk_4`, session `HK-Data20190117`) — manual download
 
 UrbanLoco has no scriptable download. Download the `HK-Data20190117` entry
-from section "2. Hong Kong Dataset" of the
-[UrbanLoco GitHub README](https://github.com/weisongwen/UrbanLoco) via
-either mirror it lists (Google Drive is frequently unreachable from
-corporate networks even with an account, so these are the reliable ones):
+from section "2. Hong Kong Dataset" in the
+[UrbanLoco GitHub README](https://github.com/weisongwen/UrbanLoco). Use one of
+the mirrors it lists (Google Drive is often unreachable from corporate
+networks, even with an account, so these are the reliable options):
 
 - Dropbox: <https://www.dropbox.com/scl/fo/zrsmoddbq96t4go1wbxwp/AJw_DGVXng06DmLx9j9iQMs?rlkey=rk11n8tt62ejbg8mbixrm6quz&e=1&st=j7sy3izj&dl=0>
 - Baidu Netdisk (百度网盘): <https://pan.baidu.com/s/1-5d8xM1tzfsSSueTiU6-MQ?pwd=sufc>
 
-(same shared folder for every Hong Kong sequence — open the
-`HK-Data20190117` entry inside it). Place the downloaded ROS1 bag at:
+This shared folder contains every Hong Kong sequence; open the
+`HK-Data20190117` entry inside it. Place the downloaded ROS1 bag at:
 
 ```bash
 mkdir -p datasets/ulhk_4
@@ -368,9 +368,9 @@ rarely matters. Once it exits, wait a couple of seconds for the last
 odometry messages to land, then stop the recorder (`kill %1` in Terminal B)
 and `fastlio_mapping` (`Ctrl-C` in Terminal A — a clean SIGTERM, not
 `kill -9`, so its destructor flushes any open CSV writer). The
-core-pinning/SCHED_FIFO wrapping `run_ulhk.sh` applies on PTL (taskset/chrt)
+core-pinning/SCHED_FIFO wrapping `run_ulhk.sh` applies on Intel® Core™ Ultra Series 3 (taskset/chrt)
 is an optional performance extra, not required for a correctness repro —
-see "Reference: running on Intel PTL" above if you want that too.
+see "Reference: running on Intel® Core™ Ultra Series 3" above if you want that too.
 
 **Optional — the CycloneDDS+iceoryx shared-memory transport, by hand**
 (equivalent to `scripts/setup_dds_shm.sh start` — run that script instead if

@@ -1,6 +1,6 @@
 # ADBSCAN Follow-me
 
-ADBSCAN (Adaptive DBSCAN) is an Intel® algorithm for adaptive object detection
+ADBSCAN (Adaptive DBSCAN) is an Intel algorithm for adaptive object detection
 and localization from 2D LiDAR, 3D LiDAR, and RealSense depth-camera
 point clouds. It automatically determines clustering parameters from sensor
 range and point density, reducing manual tuning for perception workloads.
@@ -15,7 +15,7 @@ with one Gazebo simulation and one Clearpath Jackal deployment scenario.
 
 ## Intel-Optimized ADBSCAN
 
-In this version of ADBSCAN, the algorithm has been optimized for Intel® SOC by
+In this version of ADBSCAN, the algorithm has been optimized for Intel by
 replacing linear neighbor point search with an optimized oneAPI PCL library
 (offloaded to GPU), as well as refactoring the clustering algorithm. This
 tutorial describes how to run this Intel-optimized ADBSCAN algorithm and compare
@@ -92,7 +92,7 @@ include `/scan` (point cloud from 2D LIDAR) and `/camera/depth/color/points`
 
 ### Install and run optimized Deb package
 
-Install `ros-jazzy-adbscan-oneapi` Deb package from Intel® Autonomous Mobile
+Install `ros-jazzy-adbscan-oneapi` Deb package from Intel Autonomous Mobile
 Robot APT repository:
 
 ::::{tab-set}
@@ -149,7 +149,7 @@ which PCL library is being used.
 
 ### Install and run standard (unoptimized) Deb package
 
-Install `ros-jazzy-adbscan-ros2` Deb package from Intel® Autonomous Mobile
+Install `ros-jazzy-adbscan-ros2` Deb package from Intel Autonomous Mobile
 Robot APT repository
 
 ::::{tab-set}
@@ -294,7 +294,7 @@ A complete list of the reconfigurable parameters is given below:
   `oneapi_kdtree` and `oneapi_octree` allow the algorithm to use optimized
   oneAPI™ KdTree or octree library and offload the neighbor point search method
   to GPU. `pcl_kdtree` option uses the standard PCL KdTree library,
-  not optimized for Intel® SOC.
+  not optimized for Intel.
 
 - `benchmark_number_of_frames`
 
@@ -381,7 +381,7 @@ before continuing.
 
 #### Install the Simulation Deb Package
 
-Install `ros-jazzy-followme-turtlebot3-gazebo` Deb package from Intel®
+Install `ros-jazzy-followme-turtlebot3-gazebo` Deb package from Intel
 Autonomous Mobile Robot APT repository. This is the wrapper package which will
 launch all of the dependencies in the backend.
 
@@ -470,7 +470,7 @@ sudo chmod +x /opt/ros/humble/share/followme_turtlebot3_gazebo/scripts/demo_lida
 :::
 ::::
 
-You will see two panels side-by-side: `Gazebo` GUI on the left and ROS 2 rviz
+You will see two panels side-by-side: `Gazebo` GUI on the left and ROS 2 RViz
 display on the right.
 
 ![screenshot_followme_w_gesture_demo](images/follow_me_demo_gazebo_rviz.png)

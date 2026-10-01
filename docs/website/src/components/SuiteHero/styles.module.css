@@ -1,0 +1,10 @@
+.suiteHero {
+  min-height: var(--size-330);
+  position: relative;
+  overflow: hidden;
+  background:
+    url("../../../static/img/header-bk.png") top center no-repeat,
+    url("../../../static/img/header-bk-robot.jpg") top center no-repeat,
+    #031233;
+  background-size: cover;
+}

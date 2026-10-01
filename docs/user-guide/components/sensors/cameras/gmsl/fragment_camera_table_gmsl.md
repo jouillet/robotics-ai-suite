@@ -1,10 +1,5 @@
-<!--hide_directive
-```{eval-rst}
-:orphan:
-```
-hide_directive-->
 
-| Camera | Supported Development Kit | Interface | Type | Sensor | Vendor |
-| --- | --- | --- | --- | --- | --- |
-| RealSense D457 | AAEON CEXD-INTRBL | GMSL | Depth · Color | OV9782 + D450 Depth | [RealSense](https://realsenseai.com/products/d457-gmsl-fakra/) |
-| D3 Embedded D3CMCXXX-115-084 | AAEON CEXD-INTRBL | GMSL | Color | ISX031 | [D3 Embedded](https://www.d3embedded.com/product/isx031-smart-camera-medium-fov-gmsl2-sealed/) |
+| Image | Camera | Supported Development Kit | Interface | Type | Sensor | Vendor |
+| --- | --- | --- | --- | --- | --- | --- |
+| ![RealSense D457](/components/images/realsense-d457-camera.png){w=80px} | RealSense D457 | AAEON CEXD-INTRBL | GMSL | Depth · Color | OV9782 + D450 Depth | [RealSense](https://realsenseai.com/products/d457-gmsl-fakra/) |
+| ![D3 Embedded D3CMCXXX-115-084](/components/images/d3-isx031-camera.png){w=80px} | D3 Embedded D3CMCXXX-115-084 | AAEON CEXD-INTRBL | GMSL | Color | ISX031 | [D3 Embedded](https://www.d3embedded.com/product/isx031-smart-camera-medium-fov-gmsl2-sealed/) |

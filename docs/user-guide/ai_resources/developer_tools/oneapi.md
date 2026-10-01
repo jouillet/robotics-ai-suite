@@ -6,9 +6,9 @@
 
 Robotics software developers can use the Intel® oneAPI Toolkit and oneAPI-powered applications to enhance AI deep learning and heterogeneous computing capabilities, thereby leveraging the full value of all hardware.
 
-## Intel® oneAPI™ Base Toolkit
+## Intel® oneAPI Toolkit
 
-The Intel® oneAPI™ Base Toolkit (Base Kit) is a core set of tools and libraries for developing high-performance, data-centric applications across diverse architectures. It features an industry-leading C++ compiler that implements SYCL*, an evolution of C++ for heterogeneous computing.
+The Intel® oneAPI Toolkit is a core set of tools and libraries for developing high-performance, data-centric applications across diverse architectures. It features an industry-leading C++ compiler that implements SYCL*, an evolution of C++ for heterogeneous computing.
 
 It includes:
 
@@ -27,11 +27,11 @@ It includes:
 | Intel® oneAPI Data Analytics Library | Boost machine learning and data analytics performance. |
 | Intel® oneAPI Deep Neural Network Library | Develop fast neural networks on Intel CPUs and GPUs with performance-optimized building blocks. |
 | Intel® oneAPI Collective Communications Library | Implement optimized communication patterns to distribute deep learning model training across multiple nodes. |
-| FPGA Support Package for the Intel® oneAPI DCP++/C++ Compiler (separate download required) | Accelerate your register transfer level (RTL) development with SYCL high-level synthesis (HLS), or program FPGA accelerators to speed up specialized, data-centric workloads. Requires installation of the Base Kit. |
+| FPGA Support Package for the Intel® oneAPI DCP++/C++ Compiler (separate download required) | Accelerate your register transfer level (RTL) development with SYCL high-level synthesis (HLS), or program FPGA accelerators to speed up specialized, data-centric workloads. Requires installation of the Intel® oneAPI Toolkit. |
 
-[Intel® oneAPI Base Toolkit Overview](https://www.intel.com/content/www/us/en/develop/tools/oneapi/base-toolkit.html) page for more information.
+[Intel® oneAPI Toolkit Overview](https://www.intel.com/content/www/us/en/develop/tools/oneapi/base-toolkit.html) page for more information.
 
-Install Intel® oneAPI™ Base Toolkit **2024.2.1**:
+Install Intel® oneAPI Toolkit **2024.2.1**:
 
 1. From the [oneAPI website](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html?packages=oneapi-toolkit&oneapi-toolkit-os=linux&oneapi-lin=offline), locate the downloaded install file.
 
@@ -70,6 +70,6 @@ It includes:
 | Intel® oneAPI Data Analytics Library (oneDAL) | Boost machine learning and data analytics performance. |
 | Intel® oneAPI Deep Neural Network Library (oneDNN) | Develop fast neural networks on Intel CPUs and GPUs with performance-optimized building blocks. |
 | Intel® oneAPI Collective Communications Library (oneCCL) | Implement optimized communication patterns to distribute deep learning model training across multiple nodes. |
-| FPGA Support Package for the Intel® oneAPI DCP++/C++ Compiler (separate download required) | Accelerate your register transfer level (RTL) development with SYCL high-level synthesis (HLS), or program FPGA accelerators to speed up specialized, data-centric workloads. Requires installation of the Base Kit. |
+| FPGA Support Package for the Intel® oneAPI DCP++/C++ Compiler (separate download required) | Accelerate your register transfer level (RTL) development with SYCL high-level synthesis (HLS), or program FPGA accelerators to speed up specialized, data-centric workloads. Requires installation of the Intel® oneAPI Toolkit. |
 
 [Intel® oneAPI HPC Toolkit Overview](https://www.intel.com/content/www/us/en/develop/tools/oneapi/hpc-toolkit.html) page for more information.

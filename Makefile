@@ -13,7 +13,7 @@ SHELL	    := bash -eu -o pipefail
 ### configuration variables ###
 # project configuration
 PROJECT_NAME  := robotics-ai-suite-docs
-VERSION       := $(shell cat VERSION) # read from VERSION file
+VERSION       := $(shell cat docs/VERSION) # read from VERSION file
 
 # Path variables
 OUT_DIR       := out
@@ -34,7 +34,8 @@ $(VENV_DIR): docs/user-guide/requirements.txt
   python -m pip install --upgrade pip ;\
   python -m pip install -r docs/user-guide/requirements.txt
 
-check: | $(VENV_DIR) ## Check for and/or install prerequisite tools
+check: ## Check for and/or install documentation prerequisites
+	$(MAKE) -C docs check
 
 index: ## rename index.rst
 	mv docs/user-guide/index.rst_ docs/user-guide/index.rst || :
@@ -85,16 +86,21 @@ sphinx-spelling: $(VENV_DIR)
 	set +u; . ./$</bin/activate; set -u ;\
     sphinx-build -b spelling "$(SOURCEDIR)" "$(OUT_DIR)/spelling"
 
-build: index sphinx-html ## Build all documentation
+build: ## Build the documentation website
+	npm ci --prefix docs/website
+	npm run build --prefix docs/website
 
-serve: index sphinx-serve ## Serve documentation locally
+serve: ## Serve the built documentation website locally
+	npm run serve --prefix docs/website
 
 ### cleanup targets ###
-clean: ## delete all build artifacts
-	rm -rf $(OUT_DIR)
+clean: ## delete website build artifacts
+	$(MAKE) -C docs clean
+	rm -rf docs/website/build docs/website/.docusaurus docs/website/.sphinx-static
 
 clean-all: clean ## delete all built artifacts and downloaded tools
-	rm -rf $(VENV_DIR)
+	$(MAKE) -C docs clean-all
+	rm -rf docs/website/node_modules
 
 ### documentation generation targets ###
 generate: docs/shared/shared_iam_groups.rst  ## generate role documentation from config

@@ -1,79 +1,79 @@
 [submodule "components/collaborative-slam/3rd/g2o"]
-	path = components/collaborative-slam/3rd/g2o
+	path = src/components/collaborative-slam/3rd/g2o
 	url = https://github.com/ros2-gbp/libg2o-release.git
 	shallow = true
 [submodule "components/collaborative-slam/3rd/DBoW2"]
-	path = components/collaborative-slam/3rd/DBoW2
+	path = src/components/collaborative-slam/3rd/DBoW2
 	url = https://github.com/shinsumicco/DBoW2.git
 	shallow = true
 [submodule "components/collaborative-slam/3rd/spdlog"]
-	path = components/collaborative-slam/3rd/spdlog
+	path = src/components/collaborative-slam/3rd/spdlog
 	url = https://github.com/gabime/spdlog.git
 	shallow = true
 [submodule "components/collaborative-slam/3rd/json"]
-	path = components/collaborative-slam/3rd/json
+	path = src/components/collaborative-slam/3rd/json
 	url = https://github.com/nlohmann/json.git
 	shallow = true
 [submodule "components/its-planner/3rd_party/navigation2"]
-	path = components/its-planner/3rd_party/navigation2
+	path = src/components/its-planner/3rd_party/navigation2
 	url = https://github.com/ros-navigation/navigation2
 	shallow = true
 [submodule "pipelines/act-sample/act"]
-	path = pipelines/act-sample/act
+	path = src/pipelines/act-sample/act
 	url = https://github.com/tonyzhaozh/act
 	shallow = true
 [submodule "pipelines/orb-slam3-sample/ORB_SLAM3"]
-	path = pipelines/orb-slam3-sample/ORB_SLAM3
+	path = src/pipelines/orb-slam3-sample/ORB_SLAM3
 	url = https://github.com/UZ-SLAMLab/ORB_SLAM3.git
 	shallow = true
 [submodule "pipelines/mpc-demo/ocs2_robotic_assets/ocs2_robotic_assets"]
-	path = pipelines/mpc-demo/ocs2_robotic_assets/ocs2_robotic_assets
+	path = src/pipelines/mpc-demo/ocs2_robotic_assets/ocs2_robotic_assets
 	url = https://github.com/leggedrobotics/ocs2_robotic_assets.git
 [submodule "pipelines/mpc-demo/mujoco_ros_utils/MujocoRosUtils"]
-	path = pipelines/mpc-demo/mujoco_ros_utils/MujocoRosUtils
+	path = src/pipelines/mpc-demo/mujoco_ros_utils/MujocoRosUtils
 	url = https://github.com/isri-aist/MujocoRosUtils.git
 [submodule "pipelines/mpc-demo/ocs2/ocs2"]
-	path = pipelines/mpc-demo/ocs2/ocs2
+	path = src/pipelines/mpc-demo/ocs2/ocs2
 	url = https://github.com/leggedrobotics/ocs2.git
 [submodule "pipelines/pi05-rtc-ov/lerobot"]
-	path = pipelines/pi05-rtc-ov/lerobot
+	path = src/pipelines/pi05-rtc-ov/lerobot
 	url = https://github.com/huggingface/lerobot.git
 	shallow = true
 [submodule "pipelines/openclaw-agenticros-demo/agenticros"]
-	path = pipelines/openclaw-agenticros-demo/agenticros
+	path = src/pipelines/openclaw-agenticros-demo/agenticros
 	url = https://github.com/agenticros/agenticros.git
 	shallow = true
 [submodule "pipelines/openclaw-agenticros-demo/openclaw"]
-	path = pipelines/openclaw-agenticros-demo/openclaw
+	path = src/pipelines/openclaw-agenticros-demo/openclaw
 	url = https://github.com/openclaw/openclaw.git
 	shallow = true
 [submodule "pipelines/openclaw-agenticros-demo/JAKA_KARGO"]
-	path = pipelines/openclaw-agenticros-demo/JAKA_KARGO
+	path = src/pipelines/openclaw-agenticros-demo/JAKA_KARGO
 	url = https://github.com/JAKARobotics/JAKA_KARGO.git
 	shallow = true
 [submodule "pipelines/openclaw-agenticros-demo/aws-robomaker-small-warehouse-world"]
-	path = pipelines/openclaw-agenticros-demo/aws-robomaker-small-warehouse-world
+	path = src/pipelines/openclaw-agenticros-demo/aws-robomaker-small-warehouse-world
 	url = https://github.com/aws-robotics/aws-robomaker-small-warehouse-world.git
 	shallow = true
 [submodule "pipelines/gr00t-n1d7-ov/isaac-gr00t"]
-	path = pipelines/gr00t-n1d7-ov/isaac-gr00t
+	path = src/pipelines/gr00t-n1d7-ov/isaac-gr00t
 	url = https://github.com/NVIDIA/Isaac-GR00T.git
 	shallow = true
 [submodule "pipelines/gr00t-wbc/GR00T-WholeBodyControl"]
-	path = pipelines/gr00t-wbc/GR00T-WholeBodyControl
+	path = src/pipelines/gr00t-wbc/GR00T-WholeBodyControl
 	url = https://github.com/NVlabs/GR00T-WholeBodyControl.git
 	shallow = true
 [submodule "pipelines/point-lio-demo/Point-LIO"]
-	path = pipelines/point-lio-demo/Point-LIO
+	path = src/pipelines/point-lio-demo/Point-LIO
 	url = https://github.com/hku-mars/Point-LIO.git
 	branch = point-lio-with-grid-map
 	shallow = true
 [submodule "pipelines/fast-livo2-demo/FAST-LIVO2"]
-	path = pipelines/fast-livo2-demo/FAST-LIVO2
+	path = src/pipelines/fast-livo2-demo/FAST-LIVO2
 	url = https://github.com/hku-mars/FAST-LIVO2.git
 	shallow = true
 [submodule "pipelines/fast-lio2-demo/FAST_LIO"]
-	path = pipelines/fast-lio2-demo/FAST_LIO
+	path = src/pipelines/fast-lio2-demo/FAST_LIO
 	url = https://github.com/hku-mars/FAST_LIO.git
 	branch = ROS2
 	shallow = true

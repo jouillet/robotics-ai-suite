@@ -36,9 +36,9 @@ Each of these workloads represents a unique challenge and requires specialized a
 
 ## Heterogeneous Computing for the Humanoid Toolkit
 
-The Intel Core Ultra 7 255H processor, part of Intel's Core Ultra processor series 2, is engineered to deliver high performance and efficiency for mobile computing platforms. Building upon previous information, here's a more detailed exploration of its features and capabilities:
+The Intel® Core™ Ultra 7 255H processor, part of Intel's Core™ Ultra processor series 2, is engineered to deliver high performance and efficiency for mobile computing platforms. Building upon previous information, here's a more detailed exploration of its features and capabilities:
 
-- Advanced Hybrid **CPU** Architecture: the Core Ultra 7 255H utilizes a sophisticated hybrid architecture, combining different core types to optimize performance across various workloads.
+- Advanced Hybrid **CPU** Architecture: the Core™ Ultra 7 255H utilizes a sophisticated hybrid architecture, combining different core types to optimize performance across various workloads.
 
   > [!NOTE]
   > **CPU Architecture**
@@ -49,21 +49,21 @@ The Intel Core Ultra 7 255H processor, part of Intel's Core Ultra processor seri
   >
   > **Low Power Efficient Cores (LP E-cores):** 2 additional Skymont cores, operating up to 2.5 GHz, dedicated to handling low-power background tasks.
 
-  With this advanced hybrid CPU architecture, 255H achieved significant performance improvement on single-threaded computing and multi-threaded computing over its predecessor, the Core Ultra 7 155H, with PassMark test.
+  With this advanced hybrid CPU architecture, 255H achieved significant performance improvement on single-threaded computing and multi-threaded computing over its predecessor, the Core™ Ultra 7 155H, with PassMark test.
 
-- **Integrated GPU (iGPU)**
+- **Integrated GPU (Intel® Arc™ graphics)**
 
-  The Intel Arc 140T iGPU in the Core Ultra 7 255H is designed to deliver high computational throughput with a combination of Xe-cores and XMX (Xe Matrix Extensions) arrays for AI workloads. This ensures high parallel processing performance for graphics rendering, AI inferencing, and general-purpose GPU acceleration. The XMX arrays within the iGPU provide dedicated AI acceleration, reaching up to 72 TOPS in INT8 operations. New Xe-LPG+ Architecture of Arrow Lake H iGPU is an evolution of Intel's Xe-LPG graphics, bringing power-efficient performance with improved shading and AI capabilities, Optimized for power efficient on AI and Graphics Tasks.
+  The Intel® Arc™ 140T GPU in the Intel® Core™ Ultra 7 255H is designed to deliver high computational throughput with a combination of Xe-cores and XMX (Xe Matrix Extensions) arrays for AI workloads. This ensures high parallel processing performance for graphics rendering, AI inferencing, and general-purpose GPU acceleration. The XMX arrays within the Intel® Arc™ GPU provide dedicated AI acceleration, reaching up to 72 TOPS in INT8 operations. New Xe-LPG+ Architecture of Arrow Lake H Intel® Arc™ graphics is an evolution of Intel's Xe-LPG graphics, bringing power-efficient performance with improved shading and AI capabilities, Optimized for power efficient on AI and Graphics Tasks.
 
-- **NPU**
+- **Intel NPU (Intel® AI Boost)**
 
-  The Intel Core Ultra 7 255H processor incorporates a dedicated Neural Processing Unit (NPU), branded as Intel® AI Boost, designed to efficiently handle complex AI workloads with enhanced performance and energy efficiency. This NPU delivers up to 11 TOPS (Tera Operations Per Second) for INT8 operations, enabling rapid processing of AI tasks such as image recognition and natural language processing. Operating at approximately 2 watts, the NPU offers a significant improvement in AI performance per watt compared to traditional CPU processing, making it ideal for sustained AI workloads. The NPU is also optimized for deployment via Intel's OpenVINO™ toolkit, facilitating seamless integration and acceleration of AI applications across various Intel hardware components.
+  The Intel® Core™ Ultra 7 255H processor incorporates a dedicated Neural Processing Unit (NPU), branded as Intel® AI Boost, designed to efficiently handle complex AI workloads with enhanced performance and energy efficiency. This NPU delivers up to 11 TOPS (Tera Operations Per Second) for INT8 operations, enabling rapid processing of AI tasks such as image recognition and natural language processing. Operating at approximately 2 watts, the NPU offers a significant improvement in AI performance per watt compared to traditional CPU processing, making it ideal for sustained AI workloads. The NPU is also optimized for deployment via Intel's OpenVINO™ toolkit, facilitating seamless integration and acceleration of AI applications across various Intel hardware components.
 
-- **Intel Arc B580 discrete GPU**
+- **Intel® Arc™ B580 discrete GPU**
 
-  Intel Arc B580 (code name Battlemage) represents Intel's strategic push into AI-accelerated computing, combining gaming prowess with AI-specific hardware. Its Xe2 architecture, XMX units, and high bandwidth graphics memory make it a compelling choice for gamers, creators, and developers seeking affordable yet powerful AI capabilities. Intel's XeSS technology uses AI to upscale lower-resolution images to higher resolutions while maintaining visual fidelity. The GPU's 12GB VRAM and high memory bandwidth (418 GB/s) enable efficient handling of large AI models and datasets, making it viable for machine learning tasks such as model training and inference in local environments. Support for OpenVINO and other AI frameworks ensures compatibility with popular developer tools, facilitating seamless integration into various Humanoid Toolkit pipelines.
+  Intel® Arc™ B580 (code name Battlemage) represents Intel's strategic push into AI-accelerated computing, combining gaming prowess with AI-specific hardware. Its Xe2 architecture, XMX units, and high bandwidth graphics memory make it a compelling choice for gamers, creators, and developers seeking affordable yet powerful AI capabilities. Intel's XeSS technology uses AI to upscale lower-resolution images to higher resolutions while maintaining visual fidelity. The GPU's 12GB VRAM and high memory bandwidth (418 GB/s) enable efficient handling of large AI models and datasets, making it viable for machine learning tasks such as model training and inference in local environments. Support for OpenVINO™ and other AI frameworks ensures compatibility with popular developer tools, facilitating seamless integration into various Humanoid Toolkit pipelines.
 
-In summary, the Humanoid Toolkit offers a versatile and powerful solution for heterogeneous computing, combining advanced core architecture, robust integrated graphics, neural processing unit, and discrete GPU to provide enhanced AI capabilities and efficient power management for humanoid use cases.
+In summary, the Humanoid Toolkit offers a versatile and powerful solution for heterogeneous computing, combining advanced core architecture, robust Intel® Arc™ graphics, Intel NPU (Intel® AI Boost), and discrete Intel® Arc™ GPUs to provide enhanced AI capabilities and efficient power management for humanoid use cases.
 
 ## Allocate Humanoid Toolkit Workloads to Compute Devices
 

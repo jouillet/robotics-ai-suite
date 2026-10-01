@@ -40,7 +40,7 @@ It achieves \<0.3° and sub-millimeter precision in real-world experiments (mean
 
 ## Model Conversion
 
-CNS model can get an optimized inference performance on either Intel CPU or iGPU using OpenVINO toolkit. It is CPU-friendly and you can follow the [official installation tutorial](https://github.com/hhcaz/CNS). It should be noted that `PyTorch` (>1.12) and `PyTorch Geometric` need to be installed compatibly, and `pybullet-object-models` is required when running demo_sim_Erender.py.
+The CNS model can achieve optimized inference performance on either an Intel CPU or iGPU with the OpenVINO™ toolkit. It is CPU-friendly, and you can follow the [official installation tutorial](https://github.com/hhcaz/CNS). Make sure `PyTorch` (>1.12) and `PyTorch Geometric` are installed in compatible versions, and install `pybullet-object-models` before running `demo_sim_Erender.py`.
 
 Installation guide of dependencies is as follows:
 

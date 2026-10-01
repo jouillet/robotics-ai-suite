@@ -1,0 +1,58 @@
+/* toc column on the right */
+.bd-toc {display: none !important;}
+.bd-content {justify-content: center !important;}
+
+
+/* Top Link buttons */
+.link-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2.25rem;
+}
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--pst-color-border);
+  background: var(--spark-color-highlight-background);
+  color: var(--pst-color-text-base-color);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  box-shadow: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.link-btn:hover,
+.link-btn:focus-visible {
+  border-color: var(--spark-color-primary);
+  color: var(--spark-color-primary);
+  background: var(--spark-color-highlight-background);
+  transform: translateY(-1px);
+}
+
+.link-btn.primary {
+  border-color: var(--spark-color-primary);
+  background: var(--spark-color-highlight-background);
+  color: var(--spark-color-primary);
+}
+
+.link-btn.primary:hover,
+.link-btn.primary:focus-visible {
+  background: var(--spark-color-highlight-background);
+  color: var(--spark-color-primary);
+}
+
+.link-btn svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}

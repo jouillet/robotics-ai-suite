@@ -19,7 +19,7 @@ Improved 3D Diffusion Policy (iDP3) builds upon the original Diffusion Policy fr
 
 ### iDP3 Model Key Conversion Steps
 
-This guide outlines the steps to convert the **iDP3** improved 3D Point Cloud Diffusion Policy model—including the observation encoder and diffusion model—into OpenVINO Intermediate Representation (IR) format.
+This guide outlines the steps to convert the **iDP3** improved 3D Point Cloud Diffusion Policy model—including the observation encoder and diffusion model—into OpenVINO™ Intermediate Representation (IR) format.
 
 ### 1. Load the Trained Checkpoint
 
@@ -129,15 +129,15 @@ convert_model = ConvertModel(policy)
 convert_model.export_onnx(output_dir, ckpt_name)
 ```
 
-### 5. Install OpenVINO
+### 5. Install OpenVINO™
 
 > [!NOTE]
-> Ensure that OpenVINO is installed. Follow the official installation guide:
-> [Install OpenVINO 2026.0.0 via pip](https://docs.openvino.ai/2026/get-started/install-openvino.html?PACKAGE=OPENVINO_BASE&VERSION=v_2026_0_0&OP_SYSTEM=LINUX&DISTRIBUTION=PIP)
+> Ensure that OpenVINO™ is installed. Follow the official installation guide:
+> [Install OpenVINO™ 2026.0.0 via pip](https://docs.openvino.ai/canonical/get-started/install-openvino.html?PACKAGE=OPENVINO_BASE&VERSION=v_2026_0_0&OP_SYSTEM=LINUX&DISTRIBUTION=PIP)
 
-### 6. Convert ONNX to OpenVINO IR
+### 6. Convert ONNX to OpenVINO™ IR
 
-Use OpenVINO’s Model Optimizer (`ovc`) to convert the exported ONNX models to IR format.
+Use OpenVINO™’s Model Optimizer (`ovc`) to convert the exported ONNX models to IR format.
 
 ```bash
 ovc latest_obs_encoder.onnx

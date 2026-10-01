@@ -1,0 +1,33 @@
+.cardHorizontal {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .cardHorizontal {
+    flex-direction: row;
+    align-items: stretch;
+  }
+}
+
+.imageContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+@media (min-width: 768px) {
+  .imageContainer {
+    flex: 0 0 var(--size-300);
+    border-right: 1px solid var(--ifm-color-emphasis-200);
+    border-bottom: none;
+  }
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}

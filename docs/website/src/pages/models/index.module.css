@@ -1,0 +1,96 @@
+.page {
+  --accent: #00c7fd;
+  background: #031233;
+  min-height: 100%;
+  font-family: var(--font-body);
+}
+
+.heroTitle {
+  font-family: var(--geti-font-heading);
+}
+
+/* ── Hero ── */
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 2.5rem;
+}
+
+.heroTitle {
+  color: var(--geti-color-white);
+  font-weight: 700;
+  font-size: 60px;
+  line-height: 1;
+  margin: 0 0 1.5rem;
+  text-shadow: 2px 2px 2px rgba(23, 20, 98, 0.86);
+}
+
+.heroText {
+  color: var(--geti-color-white);
+  font-size: 18px;
+  line-height: 28px;
+  max-width: 860px;
+  margin: 0;
+  text-shadow: 2px 2px 2px rgba(23, 20, 98, 0.86);
+}
+
+/* ── Main ── */
+.main {
+  background:
+    linear-gradient(
+      0deg,
+      rgba(3, 18, 51, 0) 0%,
+      rgba(3, 18, 51, 0.5) 23%,
+      rgb(3, 18, 51) 45%
+    ),
+    linear-gradient(
+      90deg,
+      rgb(3, 18, 51) 0%,
+      rgb(9, 28, 70) 50%,
+      rgb(3, 18, 51) 100%
+    );
+}
+
+.container {
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* ── Tabs ── */
+.tabs {
+  width: 100%;
+
+  & > ul {
+    gap: 26px;
+    border-bottom: 1px solid #ffffff1f;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroContent {
+    padding: 6rem 1rem 2.5rem;
+  }
+
+  .heroTitle {
+    font-size: 36px;
+    line-height: 42px;
+  }
+
+  .heroText {
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .container {
+    padding: 2rem 1rem;
+    gap: 2rem;
+  }
+}

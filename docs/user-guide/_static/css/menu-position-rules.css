@@ -1,0 +1,75 @@
+/* ========================================================================================
+Menu Position Rules (Section Switcher)
+This file contains index-based layout/styling tied to the current menu item order.
+If the menu order changes, revisit nth-of-type selectors below.
+========================================================================================== */
+
+/* Notes for shared section-switcher geometry (defined in customstyle.css):
+  - min-width clamp(22.8rem, 51.3vw, 31.92rem)
+  - two columns: repeat(2, minmax(6.84rem, 1fr))
+  - column gap: 0.62rem
+*/
+
+/* Position-based two-column placement */
+#pst-nav-more-links {
+  &::before {
+    content: "";
+    grid-column: 2;
+    grid-row: 1;
+    pointer-events: none;
+  }
+
+  & li:nth-of-type(-n+8) {
+    grid-column: 1;
+  }
+
+  & li:nth-of-type(n+9) {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 659px) {
+  #pst-nav-more-links li:nth-of-type(-n+8),
+  #pst-nav-more-links li:nth-of-type(n+9) {
+    grid-column: auto;
+  }
+}
+
+/* Position-based section labels */
+#pst-nav-more-links li:nth-of-type(2) {
+  &:before {
+    content: "AI Suites";
+  }
+}
+
+#pst-nav-more-links li:nth-of-type(9) {
+  &:before {
+    content: "Software Development";
+  }
+}
+
+#pst-nav-more-links li:nth-of-type(2),
+#pst-nav-more-links li:nth-of-type(9),
+#pst-nav-more-links li:nth-of-type(13) {
+  &:before {
+    display: block;
+    margin: 0 0.8rem 0.2rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--pst-color-border);
+    color: var(--spark-color-primary);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+}
+
+/* Small indent for the three items under "Software Development" */
+#pst-nav-more-links li:nth-of-type(n+10):nth-of-type(-n+12) a.nav-link.dropdown-item {
+  padding-left: 2.25rem;
+}
+
+/* Left menu external icon exclusion for a specific item */
+.bd-sidebar-primary a.reference.external[href*="https://docs.openedgeplatform.intel.com/dev/ai-libraries.html"]::after {
+  content: none !important;
+  display: none !important;
+}

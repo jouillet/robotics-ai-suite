@@ -1,4 +1,4 @@
-# USB Cameras
+# USB Camera Guide
 
 USB cameras are ubiquitous in computer vision use cases.
 
@@ -8,7 +8,7 @@ They offer the simplest bring-up of any camera interface, making them ideal for 
 
 Some USB cameras require vendor-specific drivers to take full advantage, such as RealSense.
 
-## Supported Cameras
+## Validated Cameras
 
 ```{include} fragment_camera_table_usb.md
 ```

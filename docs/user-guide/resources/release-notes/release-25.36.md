@@ -11,10 +11,10 @@ Humanoid Toolkit v25.36 enhances model optimization capabilities with OpenVINO�
 - Fixed deadlock issue when reading i915 perf event in Preempt-RT kernel.
 - New EtherCAT Master stack features supporting user-space EtherCAT Master and multiple EtherCAT masters.
 - Added Diffusion Policy pipeline with OpenVINO™ toolkit optimization.
-- Added Robotics Diffusion Transformer (RDT) pipeline with OpenVINO toolkit optimization.
-- Added Improved 3D Diffusion Policy (IDP3) model with OpenVINO toolkit optimization.
-- Added Visual Servoing (CNS) model with OpenVINO toolkit optimization.
-- Provided new tutorials for typical AI model optimization with OpenVINO toolkit.
+- Added Robotics Diffusion Transformer (RDT) pipeline with OpenVINO™ toolkit optimization.
+- Added Improved 3D Diffusion Policy (IDP3) model with OpenVINO™ toolkit optimization.
+- Added Visual Servoing (CNS) model with OpenVINO™ toolkit optimization.
+- Provided new tutorials for typical AI model optimization with OpenVINO™ toolkit.
 - ACRN hypervisor's initial enablement on Arrow Lake platform.
 - Added new Dockerfile to build containerized Robotics Development Toolkit (RDT) pipeline.
 - Added pipelines:

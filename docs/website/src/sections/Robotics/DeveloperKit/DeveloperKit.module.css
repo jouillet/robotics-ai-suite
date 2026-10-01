@@ -1,0 +1,62 @@
+.description {
+  font-size: var(--size-14);
+  max-width: var(--size-336);
+  margin-top: var(--size-24);
+  line-height: var(--size-20);
+  letter-spacing: var(--size-0_25);
+}
+
+.textEnd {
+  text-align: end;
+}
+
+.dottedCard {
+  max-width: var(--size-240);
+}
+
+.mapContent {
+  gap: var(--size-24);
+  display: flex;
+  margin-top: var(--size-24);
+  margin-bottom: var(--size-24);
+  align-items: center;
+}
+
+.cards {
+  gap: var(--size-24);
+  display: flex;
+  flex-direction: column;
+}
+
+.motherBoard {
+  width: 100%;
+  max-width: var(--size-285);
+}
+
+.link {
+  font-size: var(--size-16);
+}
+
+@media (max-width: 640px) {
+  .description {
+    max-width: 100%;
+  }
+
+  .mapContent {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cards {
+    width: 100%;
+  }
+
+  .dottedCard {
+    max-width: 100%;
+  }
+
+  .motherBoard {
+    max-width: 240px;
+    margin: 0 auto;
+  }
+}

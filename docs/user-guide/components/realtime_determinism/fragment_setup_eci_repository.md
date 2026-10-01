@@ -1,8 +1,3 @@
-<!--hide_directive
-```{eval-rst}
-:orphan:
-```
-hide_directive-->
 
 1. Open a terminal prompt which will be used to execute the remaining steps.
 

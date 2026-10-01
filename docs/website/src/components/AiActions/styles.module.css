@@ -1,0 +1,93 @@
+.toolbar {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  margin: 0.5rem 0 1.25rem;
+}
+
+.split {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--ifm-background-surface-color);
+}
+
+.primary,
+.caret {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ifm-font-color-base);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.primary:hover,
+.caret:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.caret {
+  padding: 0.35rem 0.45rem;
+  border-left: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.caret[aria-expanded="true"] {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  min-width: 210px;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  box-shadow: var(--ifm-global-shadow-md);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.85rem;
+  color: var(--ifm-font-color-base);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.icon {
+  flex: 0 0 auto;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.item .icon {
+  color: inherit;
+}
+
+.external {
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: var(--ifm-color-emphasis-500);
+}

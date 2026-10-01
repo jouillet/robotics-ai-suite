@@ -1,5 +1,5 @@
-# Deployable Robot Software References
-This software reference series showcases actual real-world deployable algorithms and pipelines delivered by the Intel Robotics AI Suite.
+# Deployable Robot Software Solutions
+This software reference series showcases actual real-world deployable algorithms and pipelines delivered by the Robotics AI Suite.
 
 You'll start by validating direct keyboard control of a deployed robot. Next,
 you'll learn about mapping the real world for your robot using AI Robotics Suite, to give your software real, actionable data to power navigation, safety, and critical controls systems
@@ -14,7 +14,7 @@ a keyboard before moving on to autonomous workloads.
 In this software reference, you'll deploy the `wandering` pipeline to show dynamic sensing and control working on a real-world robot, mapping and learning about the environment using a combination of sensing techniques.
 
 ## Next Steps
-Now that you've completed both the simulation and deployment software reference series, you're ready to start using production-grade ingredients and pipelines included with the Robotics AI Suite with your own software. Head to [Optimized Solutions](../../../components/optimized_solutions/index.md) to see all of the AMR-specific ingredients, including components powered by OpenVINO and OpenVINO Physical AI framework to add Intel accelerated AI power to your software stack.
+Now that you've completed both the simulation and deployment software reference series, you're ready to start using production-grade ingredients and pipelines included with the Robotics AI Suite with your own software. Head to [Optimized Solutions](../../../components/optimized_solutions/index.md) to see all of the AMR-specific ingredients, including components powered by OpenVINO™ and OpenVINO™ Physical AI framework to add Intel accelerated AI power to your software stack.
 
 
 
