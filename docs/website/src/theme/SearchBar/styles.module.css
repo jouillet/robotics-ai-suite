@@ -45,6 +45,38 @@
   border-color: var(--geti-color-aqua, #00c7fd);
 }
 
+@media (max-width: 996px) {
+  .searchRoot {
+    width: 2.75rem;
+  }
+
+  .searchRoot:focus-within {
+    width: min(16rem, calc(100vw - 4.375rem));
+  }
+
+  .inputWrap {
+    width: 100%;
+  }
+
+  .input {
+    width: 100%;
+  }
+
+  .input:not(:focus)::placeholder {
+    color: transparent;
+  }
+
+  .input:focus {
+    width: 100%;
+  }
+}
+
+@media (max-width: 584px) {
+  .searchRoot:focus-within {
+    width: calc(100vw - 5.3125rem);
+  }
+}
+
 .panel {
   position: absolute;
   top: calc(100% + 0.4rem);
@@ -60,6 +92,12 @@
   box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.35);
   z-index: var(--ifm-z-index-dropdown, 100);
   padding: 0.35rem;
+}
+
+@media (max-width: 996px) {
+  .panel {
+    max-width: calc(100vw - 3rem);
+  }
 }
 
 .status {
