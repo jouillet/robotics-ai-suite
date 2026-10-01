@@ -40,4 +40,3 @@ pylint~=3.3.4
 black>=26.3.1
 yamllint~=1.35.1
 sphinxcontrib-spelling~=8.0.0
-

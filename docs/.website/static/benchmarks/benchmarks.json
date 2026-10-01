@@ -1,0 +1,650 @@
+[
+  {
+    "domain": "physical-ai",
+    "category": [
+      "action-policies-vla"
+    ],
+    "task": "pick-and-place",
+    "model": "PI0.5",
+    "slug": "pi05-libero-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "physical-ai",
+    "category": [
+      "action-policies-vla"
+    ],
+    "task": "pick-and-place",
+    "model": "PI0.5",
+    "slug": "pi05-libero-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "physical-ai",
+    "category": [
+      "action-policies-vla"
+    ],
+    "task": "pick-and-place",
+    "model": "PI0.5",
+    "slug": "pi05-libero-fp16-ov-catalog",
+    "hardware": "wcl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "physical-ai",
+    "category": [
+      "action-policies-vla"
+    ],
+    "task": "pick-and-place",
+    "model": "SmolVLA",
+    "slug": "smolvla-libero-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "physical-ai",
+    "category": [
+      "action-policies-vla"
+    ],
+    "task": "pick-and-place",
+    "model": "SmolVLA",
+    "slug": "smolvla-libero-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "physical-ai",
+    "category": [
+      "action-policies-vla"
+    ],
+    "task": "pick-and-place",
+    "model": "SmolVLA",
+    "slug": "smolvla-libero-fp16-ov-catalog",
+    "hardware": "wcl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "physical-ai",
+    "category": [
+      "action-policies-vla"
+    ],
+    "task": "pick-and-place",
+    "model": "Action Chunking Transformer",
+    "slug": "act-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "physical-ai",
+    "category": [
+      "action-policies-vla"
+    ],
+    "task": "pick-and-place",
+    "model": "Action Chunking Transformer",
+    "slug": "act-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "physical-ai",
+    "category": [
+      "action-policies-vla"
+    ],
+    "task": "pick-and-place",
+    "model": "Action Chunking Transformer",
+    "slug": "act-fp16-ov-catalog",
+    "hardware": "wcl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection"
+    ],
+    "task": "detection",
+    "model": "DINOv3 DETR S",
+    "slug": "rtdetr-50-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection"
+    ],
+    "task": "detection",
+    "model": "DINOv3 DETR S",
+    "slug": "rtdetr-50-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection"
+    ],
+    "task": "detection",
+    "model": "DINOv3 DETR S",
+    "slug": "rtdetr-50-fp16-ov-catalog",
+    "hardware": "wcl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection"
+    ],
+    "task": "detection",
+    "model": "YOLOX S",
+    "slug": "yolox-s-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection"
+    ],
+    "task": "detection",
+    "model": "YOLOX S",
+    "slug": "yolox-s-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection"
+    ],
+    "task": "detection",
+    "model": "YOLOX S",
+    "slug": "yolox-s-fp16-ov-catalog",
+    "hardware": "wcl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection"
+    ],
+    "task": "detection",
+    "model": "YOLOX M",
+    "slug": "yolox-l-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection"
+    ],
+    "task": "detection",
+    "model": "YOLOX M",
+    "slug": "yolox-l-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection"
+    ],
+    "task": "detection",
+    "model": "YOLOX M",
+    "slug": "yolox-l-fp16-ov-catalog",
+    "hardware": "wcl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "classification"
+    ],
+    "task": "classification",
+    "model": "ViT Tiny",
+    "slug": "vit-tiny-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "classification"
+    ],
+    "task": "classification",
+    "model": "ViT Tiny",
+    "slug": "vit-tiny-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "classification"
+    ],
+    "task": "classification",
+    "model": "ViT Tiny",
+    "slug": "vit-tiny-fp16-ov-catalog",
+    "hardware": "wcl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection",
+      "segmentation"
+    ],
+    "task": "segmentation",
+    "model": "RTMDet Tiny",
+    "slug": "rtmdet-tiny-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection",
+      "segmentation"
+    ],
+    "task": "segmentation",
+    "model": "RTMDet Tiny",
+    "slug": "rtmdet-tiny-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "vision-ai",
+    "category": [
+      "detection",
+      "segmentation"
+    ],
+    "task": "segmentation",
+    "model": "RTMDet Tiny",
+    "slug": "rtmdet-tiny-fp16-ov-catalog",
+    "hardware": "wcl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "throughput",
+        "value": 0,
+        "unit": "fps"
+      },
+      {
+        "name": "inference-latency",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "gen-ai",
+    "category": [
+      "image-video-generation"
+    ],
+    "task": "image-generation",
+    "model": "LCM_Dreamshaper_v7",
+    "slug": "lcm-dreamshaper-v7-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "generation-rate",
+        "value": 0,
+        "unit": "tokens/s"
+      },
+      {
+        "name": "time-to-first-token",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "gen-ai",
+    "category": [
+      "image-video-generation"
+    ],
+    "task": "image-generation",
+    "model": "LCM_Dreamshaper_v7",
+    "slug": "lcm-dreamshaper-v7-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "generation-rate",
+        "value": 0,
+        "unit": "tokens/s"
+      },
+      {
+        "name": "time-to-first-token",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "gen-ai",
+    "category": [
+      "image-video-generation"
+    ],
+    "task": "image-generation",
+    "model": "LCM_Dreamshaper_v7",
+    "slug": "lcm-dreamshaper-v7-fp16-ov-catalog",
+    "hardware": "wcl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "generation-rate",
+        "value": 0,
+        "unit": "tokens/s"
+      },
+      {
+        "name": "time-to-first-token",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "gen-ai",
+    "category": [
+      "speech-audio"
+    ],
+    "task": "speech-to-text",
+    "model": "Whisper_Large_v3",
+    "slug": "whisper-large-v3-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "generation-rate",
+        "value": 0,
+        "unit": "tokens/s"
+      },
+      {
+        "name": "time-to-first-token",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "gen-ai",
+    "category": [
+      "speech-audio"
+    ],
+    "task": "speech-to-text",
+    "model": "Whisper_Large_v3",
+    "slug": "whisper-large-v3-fp16-ov-catalog",
+    "hardware": "ptl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "generation-rate",
+        "value": 0,
+        "unit": "tokens/s"
+      },
+      {
+        "name": "time-to-first-token",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "domain": "gen-ai",
+    "category": [
+      "speech-audio"
+    ],
+    "task": "speech-to-text",
+    "model": "Whisper_Large_v3",
+    "slug": "whisper-large-v3-fp16-ov-catalog",
+    "hardware": "wcl",
+    "precision": "fp16",
+    "metrics": [
+      {
+        "name": "generation-rate",
+        "value": 0,
+        "unit": "tokens/s"
+      },
+      {
+        "name": "time-to-first-token",
+        "value": 0,
+        "unit": "ms"
+      }
+    ]
+  }
+]

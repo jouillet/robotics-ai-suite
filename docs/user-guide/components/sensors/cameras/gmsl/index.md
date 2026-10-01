@@ -42,7 +42,7 @@ Select the appropriate deserializer based on the your system's IPU below. Unlist
 | Intel Processor | IPU Version | Deserializer |
 | --- | --- | --- |
 | Series 3 Intel® Core™ Ultra Processor | IPU7 | `max96724` |
-| Series 2 Intel® Core™ Ultra Processor | IPU6 | `max9296` 
+| Series 2 Intel® Core™ Ultra Processor | IPU6 | `max9296`
 
 ![GMSL deserializer selection dialog](../../../../images/gmsl/gmsl-dkms-select.png "gmsl deserializer selection dialog")
 

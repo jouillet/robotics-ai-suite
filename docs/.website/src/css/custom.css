@@ -1,0 +1,357 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap");
+@import "./fonts/intel-one-display/intel-one-display.css";
+@import "./fonts/intel-one-text/intel-one-text.css";
+@import "./fonts/intel-one-mono/intel-one-mono.css";
+
+html {
+  scroll-behavior: smooth;
+}
+@import "./theme/dark.css";
+@import "./theme/light.css";
+@import "./footer.css";
+
+:root {
+  --geti-font-heading:
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --geti-font-heading-weight: 500;
+  --font-body:
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    "IntelOne Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+
+  --ifm-code-font-size: 95%;
+  --ifm-font-color-base: var(--geti-color-text-secondary);
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  --geti-feature-border-color: var(--geti-border-subtle-00);
+  --geti-h1-font-size: 2rem;
+  --ifm-heading-font-family: var(--geti-font-heading);
+  --ifm-heading-font-weight: var(--geti-font-heading-weight);
+  --ifm-menu-color-active: var(--ifm-link-color);
+  --ifm-color-primary: var(--geti-color-text-primary);
+
+  --ifm-menu-color-background-active: transparent;
+  --ifm-breadcrumb-item-background-active: transparent;
+
+  --ifm-tabs-color-active: var(--ifm-link-color);
+  --ifm-heading-margin-bottom: 0.75rem;
+
+  --ifm-navbar-height: 90px;
+  --ifm-navbar-padding-vertical: 8px;
+  --ifm-navbar-padding-horizontal: 16px;
+  --ifm-navbar-background-color: #1c223b;
+  --ifm-navbar-link-hover-color: var(--geti-navbar-link-active-color);
+  --ifm-footer-link-hover-color: var(--geti-color-link-hover);
+
+  --ifm-tabs-color-active: var(--geti-color-text-primary);
+  --ifm-tabs-color: var(--geti-color-text-secondary);
+  --ifm-footer-background-color: var(--ifm-background-color);
+  --ifm-menu-color: var(--geti-menu-color);
+
+  --prism-background-color: var(--ifm-background-color);
+
+  --max-container-width: 1210px;
+
+  /* Size tokens (px → rem, base 16px) */
+  --size-0_25: 0.0156rem; /* 0.25px */
+  --size-1: 0.0625rem; /* 1px */
+  --size-2: 0.125rem; /* 2px */
+  --size-3: 0.1875rem; /* 3px */
+  --size-4: 0.25rem; /* 4px */
+  --size-6: 0.375rem; /* 6px */
+  --size-7: 0.4375rem; /* 7px */
+  --size-8: 0.5rem; /* 8px */
+  --size-10: 0.625rem; /* 10px */
+  --size-11: 0.6875rem; /* 11px */
+  --size-12: 0.75rem; /* 12px */
+  --size-13: 0.8125rem; /* 13px */
+  --size-14: 0.875rem; /* 14px */
+  --size-16: 1rem; /* 16px */
+  --size-17: 1.0625rem; /* 17px */
+  --size-18: 1.125rem; /* 18px */
+  --size-20: 1.25rem; /* 20px */
+  --size-22: 1.375rem; /* 22px */
+  --size-24: 1.5rem; /* 24px */
+  --size-28: 1.75rem; /* 28px */
+  --size-30: 1.875rem; /* 30px */
+  --size-32: 2rem; /* 32px */
+  --size-36: 2.25rem; /* 36px */
+  --size-40: 2.5rem; /* 40px */
+  --size-44: 2.75rem; /* 44px */
+  --size-48: 3rem; /* 48px */
+  --size-50: 3.125rem; /* 50px */
+  --size-64: 4rem; /* 64px */
+  --size-68: 4.25rem; /* 68px */
+  --size-70: 4.375rem; /* 70px */
+  --size-72: 4.5rem; /* 72px */
+  --size-80: 5rem; /* 80px */
+  --size-82: 5.125rem; /* 82px */
+  --size-90: 5.625rem; /* 90px */
+  --size-100: 6.25rem; /* 100px */
+  --size-128: 8rem; /* 128px */
+  --size-160: 10rem; /* 160px */
+  --size-224: 14rem; /* 224px */
+  --size-240: 15rem; /* 240px */
+  --size-268: 16.75rem; /* 268px */
+  --size-270: 16.875rem; /* 270px */
+  --size-285: 17.8125rem; /* 285px */
+  --size-300: 18.75rem; /* 300px */
+  --size-330: 20.625rem; /* 330px */
+  --size-336: 21rem; /* 336px */
+  --size-390: 24.375rem; /* 390px */
+  --size-420: 26.25rem; /* 420px */
+  --size-500: 31.25rem; /* 500px */
+  --size-670: 41.875rem; /* 670px */
+  --size-690: 43.125rem; /* 690px */
+  --size-768: 48rem; /* 768px */
+  --size-996: 62.25rem; /* 996px */
+  --size-999: 62.4375rem; /* 999px */
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+h1 {
+  font-size: var(--geti-h1-font-size);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0px;
+}
+
+span,
+p,
+a {
+  font-family: var(--font-body);
+}
+
+pre,
+pre span,
+code,
+kbd,
+samp {
+  font-family: var(--font-mono);
+}
+
+.clean-btn {
+  color: var(--geti-clean-btn-color);
+}
+
+/* ── Unified Top Bar (aligned with Sphinx developer docs) ── */
+.navbar {
+  width: 100%;
+  height: 90px;
+  background-color: #1c223b !important;
+  border-top: 10px solid !important;
+  border-image: linear-gradient(
+    90deg,
+    #5400c0 5%,
+    #057aff 50%,
+    #16cfb1 98.99%
+  ) 1 !important;
+  border-bottom: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  padding: 0 !important;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: none;
+}
+
+.navbar__inner {
+  height: 80px;
+  max-width: 100%;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__brand {
+  margin-right: 28px !important;
+  padding: 8px 20px 8px 0 !important;
+  text-decoration: none;
+}
+
+.navbar__title {
+  font-family: "IntelOne Display", "IntelOne-Display-Regular", Roboto, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 33px;
+  color: #ffffff;
+  transition: color 0.2s ease;
+}
+
+.navbar__brand:hover .navbar__title {
+  color: #9c5ffd;
+  text-decoration: none;
+}
+
+.navbar__items {
+  align-items: center;
+}
+
+.navbar__link {
+  font-family: "IntelOne Display", "IntelOne-Display-Regular", Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26.4px;
+  color: #ffffff;
+  padding: 4px 6px !important;
+  margin: 0 2px;
+  transition: color 0.2s ease;
+}
+
+.navbar__link:hover {
+  color: #9c5ffd;
+  text-decoration: none;
+}
+
+.navbar__link.navbar__link--active {
+  color: #9c5ffd;
+}
+
+.navbar .clean-btn {
+  color: #ffffff;
+  background: transparent;
+}
+
+.navbar .clean-btn:hover {
+  color: #9c5ffd;
+  background: transparent;
+}
+
+/* Mobile sidebar drawer */
+.navbar-sidebar {
+  background-color: #1c223b;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 10px solid;
+  border-image: linear-gradient(
+    90deg,
+    #5400c0 5%,
+    #057aff 50%,
+    #16cfb1 98.99%
+  ) 1;
+}
+
+.navbar-sidebar__brand {
+  background-color: #1c223b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-sidebar .navbar__item {
+  color: #ffffff;
+  font-family: "IntelOne Display", "IntelOne-Display-Regular", Roboto, sans-serif;
+}
+
+.navbar-sidebar .navbar__item:hover,
+.navbar-sidebar .navbar__item.navbar__link--active {
+  color: var(--geti-color-aqua);
+}
+
+.navbar__toggle {
+  color: #ffffff;
+}
+
+.navbar__toggle:hover {
+  color: var(--geti-color-aqua);
+}
+
+.navbar__search-input {
+  color: var(--geti-navbar-search-input-color);
+  background-color: var(--geti-navbar-search-background-color);
+  font-family: var(--font-body);
+}
+
+.navbar__search-input::placeholder {
+  color: var(--geti-navbar-search-placeholder-color);
+}
+
+.tabs__item {
+  font-family: var(--font-body);
+  font-weight: 400;
+  padding: 0.75rem;
+}
+
+.tabs__item--active {
+  font-weight: 500;
+}
+
+.menu__link {
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  font-weight: 400;
+}
+
+.table-of-contents {
+  font-size: 0.9rem;
+}
+
+.table-of-contents__link {
+  position: relative;
+  padding: var(--ifm-menu-link-padding-vertical)
+    var(--ifm-menu-link-padding-horizontal);
+}
+
+.table-of-contents__link--active,
+.table-of-contents__link:hover {
+  background-color: var(--ifm-menu-color-background-active);
+  color: var(--ifm-link-color);
+}
+
+.theme-back-to-top-button {
+  background-color: var(--geti-back-to-top-button-background-color);
+}
+
+.theme-back-to-top-button::after {
+  background-color: var(--geti-back-to-top-button-color);
+}
+
+.breadcrumbs > .breadcrumbs__item:first-child {
+  display: none;
+}
+
+.breadcrumbs__item:not(:last-child)::after {
+  background: none;
+  content: "/";
+  margin: 0;
+}
+
+.hero--primary .hero__title {
+  color: #f4f6f8;
+}
+
+.hardware-catalogue-image {
+  background: #2d2d2d;
+  padding: 1rem;
+}
+
+.hardware-catalogue-image img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+/* ── SearchBar overrides ── */
+.navbar .navbar__search .navbar__search-input {
+  border: 0.0625rem solid;
+  border-radius: 0.1875rem;
+  background: #ffffff0f
+    url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13.3281 5.32812C13.3281 6.0625 13.1875 6.75521 12.9062 7.40625C12.6302 8.05208 12.25 8.61719 11.7656 9.10156C11.2812 9.58073 10.7161 9.96094 10.0703 10.2422C9.42448 10.5234 8.73438 10.6641 8 10.6641C7.40104 10.6641 6.82292 10.5677 6.26562 10.375C5.71354 10.1823 5.20052 9.90365 4.72656 9.53906L1.13281 13.1328C1.0026 13.263 0.846354 13.3281 0.664062 13.3281C0.481771 13.3281 0.325521 13.263 0.195312 13.1328C0.0651042 13.0026 0 12.8464 0 12.6641C0 12.4818 0.0651042 12.3255 0.195312 12.1953L3.78906 8.60156C3.42448 8.1276 3.14583 7.61458 2.95312 7.0625C2.76042 6.50521 2.66406 5.92708 2.66406 5.32812C2.66406 4.59375 2.80469 3.90365 3.08594 3.25781C3.36719 2.61198 3.7474 2.04688 4.22656 1.5625C4.71094 1.07812 5.27604 0.697917 5.92188 0.421875C6.57292 0.140625 7.26562 0 8 0C8.48958 0 8.96094 0.0651042 9.41406 0.195312C9.86719 0.320312 10.2917 0.5 10.6875 0.734375C11.0833 0.963542 11.4427 1.23958 11.7656 1.5625C12.0885 1.88542 12.3646 2.24479 12.5938 2.64062C12.8281 3.03646 13.0078 3.46094 13.1328 3.91406C13.263 4.36719 13.3281 4.83854 13.3281 5.32812ZM12 5.32812V5.25C12 4.70833 11.8906 4.20052 11.6719 3.72656C11.4583 3.2474 11.1667 2.83073 10.7969 2.47656C10.4323 2.1224 10.0078 1.84375 9.52344 1.64062C9.04427 1.43229 8.53646 1.32812 8 1.32812C7.44792 1.32812 6.92708 1.43229 6.4375 1.64062C5.95312 1.84896 5.52865 2.13542 5.16406 2.5C4.80469 2.85938 4.52083 3.28385 4.3125 3.77344C4.10417 4.25781 4 4.77604 4 5.32812C4 5.88021 4.10417 6.40104 4.3125 6.89062C4.52083 7.375 4.80469 7.79948 5.16406 8.16406C5.52865 8.52344 5.95312 8.80729 6.4375 9.01562C6.92708 9.22396 7.44792 9.32812 8 9.32812C8.55208 9.32812 9.07031 9.22396 9.55469 9.01562C10.0443 8.80729 10.4688 8.52344 10.8281 8.16406C11.1927 7.79948 11.4792 7.375 11.6875 6.89062C11.8958 6.40104 12 5.88021 12 5.32812Z' fill='white'/%3E%3C/svg%3E")
+    no-repeat 0.75rem center / 1rem 1rem;
+
+  border-image-source: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.093) 0%,
+    rgba(255, 255, 255, 0.0698) 9.57%
+  );
+}

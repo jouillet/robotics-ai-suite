@@ -149,7 +149,7 @@ node_modules/
 .docusaurus/
 build/
 # Staged Sphinx HTML copied in by plugins/sphinx-docs.js
-.website/.sphinx-static/
+docs/.website/.sphinx-static/
 
 # Sphinx "Development Stack" build output and venv
 docs/out/

@@ -1,0 +1,10 @@
+.badge {
+  gap: 0.25rem;
+  color: #ffffff99;
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: 400;
+  align-items: center;
+  border-width: 0.0625rem;
+  border-radius: 0.4375rem;
+}

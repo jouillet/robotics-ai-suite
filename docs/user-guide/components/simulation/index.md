@@ -62,7 +62,7 @@ flowchart TD
 
 ### Simulation Time Synchronization (`/clock`)
 
-In simulation, wall-clock time differs from virtual physics time. Gazebo publishes simulation time on the `/clock` topic. 
+In simulation, wall-clock time differs from virtual physics time. Gazebo publishes simulation time on the `/clock` topic.
 
 All ROS 2 nodes in the application stack must run with simulation time enabled:
 
@@ -170,4 +170,3 @@ Validate adaptive DBSCAN person detection and target tracking using simulated Li
 :::
 
 ::::
-

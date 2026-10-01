@@ -1,0 +1,161 @@
+---
+# SPDX-FileCopyrightText: (C) 2026 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+name: Deploy Website
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROD_ROLE: arn:aws:iam::153402917730:role/robotics-ai-suite
+  PROD_BUCKET: s3://intel-robotics-documentation
+  CF_DISTRO: E2MELGJBQJ2G04
+  SITE_URL: https://developer.robotics.intel.com
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.event_name != 'pull_request' || github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
+        with:
+          node-version: 22.12.0
+          cache: npm
+          cache-dependency-path: docs/.website/package-lock.json
+
+      - name: Install dependencies
+        working-directory: docs/.website
+        run: npm ci
+
+      - name: Build Sphinx and Docusaurus
+        working-directory: docs/.website
+        env:
+          BASE_URL: ${{ github.event_name == 'pull_request' && format('/pr/{0}/', github.event.number) || '/' }}
+          HF_ORG: ${{ vars.HF_ORG }}
+        run: npm run build
+
+      - name: Check PR preview routes
+        if: github.event_name == 'pull_request'
+        working-directory: docs/.website
+        env:
+          PREVIEW_BASE: /pr/${{ github.event.number }}/
+        run: |
+          test -s build/index.html
+          test -s build/models/index.html
+          test -s build/development-stack/ai-suite-robotics/index.html
+          test -s build/search-index.json
+          grep -Fq "href=\"${PREVIEW_BASE}models/\"" build/development-stack/ai-suite-robotics/index.html
+          grep -Fq "href=\"${PREVIEW_BASE}development-stack/ai-suite-robotics/\"" build/development-stack/ai-suite-robotics/index.html
+
+      - name: Upload website
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5.0.0
+        with:
+          name: website
+          path: docs/.website/build/
+          if-no-files-found: error
+
+  cleanup-pr-preview:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502  # v4.0.2
+        with:
+          role-to-assume: ${{ env.PROD_ROLE }}
+          role-session-name: Github
+          aws-region: us-east-1
+
+      - name: Delete PR preview from S3
+        run: aws s3 rm "${PROD_BUCKET}/pr/${{ github.event.number }}" --recursive
+
+      - name: Invalidate removed preview
+        run: aws cloudfront create-invalidation --distribution-id "$CF_DISTRO" --paths "/pr/${{ github.event.number }}/*"
+
+  deploy:
+    needs: build
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Download website
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+        with:
+          name: website
+          path: site-build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502  # v4.0.2
+        with:
+          role-to-assume: ${{ env.PROD_ROLE }}
+          role-session-name: Github
+          aws-region: us-east-1
+
+      - name: Deploy PR preview
+        if: github.event_name == 'pull_request'
+        run: |
+          aws s3 sync site-build/ "${PROD_BUCKET}/pr/${{ github.event.number }}" --delete
+          aws cloudfront create-invalidation --distribution-id "$CF_DISTRO" --paths "/pr/${{ github.event.number }}/*"
+
+      - name: Deploy to root
+        if: github.event_name != 'pull_request'
+        run: |
+          aws s3 sync site-build/ "$PROD_BUCKET" --delete --exclude "pr/*"
+          aws cloudfront create-invalidation --distribution-id "$CF_DISTRO" --paths "/*"
+
+      - name: Comment PR with preview link
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7
+        with:
+          script: |
+            const url = `${{ env.SITE_URL }}/pr/${{ github.event.number }}/index.html`;
+            const body = `Preview deployed for commit \`${{ github.event.pull_request.head.sha }}\`\n\n${url}`;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.user.type === 'Bot' && c.body.startsWith('Preview deployed for commit'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

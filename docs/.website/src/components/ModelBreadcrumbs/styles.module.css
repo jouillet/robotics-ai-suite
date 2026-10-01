@@ -1,0 +1,9 @@
+.container {
+  gap: var(--size-4);
+  display: flex;
+}
+
+.link {
+  display: inline-block;
+  font-weight: 600;
+}

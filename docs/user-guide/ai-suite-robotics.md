@@ -88,7 +88,7 @@ Sensors <components/sensors/index>
 
 
 :::{toctree}
-:caption: AI Toolkits 
+:caption: AI Toolkits
 :hidden:
 
 AI Developer Tools and Frameworks <ai_resources/intel_powered_ai>

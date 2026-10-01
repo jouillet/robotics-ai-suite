@@ -1,0 +1,147 @@
+.title {
+  font-weight: 600;
+  color: var(--geti-color-white);
+  font-size: var(--size-20);
+  line-height: var(--size-28);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item {
+  border-radius: var(--size-4);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.itemOpen {
+  background: linear-gradient(90deg, #2c0dad -0.06%, #073fad 99.97%);
+  border-color: transparent;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--geti-color-white, #fff);
+  font-size: 0.95rem;
+  font-family: var(--geti-font-heading);
+  font-weight: 500;
+  text-align: left;
+  gap: 8px;
+}
+
+.header:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.itemOpen .header:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Single slot — shows either the category icon or the CheckMark */
+.leadIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 18px;
+  color: var(--geti-color-white, #fff);
+}
+
+.label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.7);
+  transition: transform 0.2s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.subOptionsWrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s ease;
+}
+
+.subOptionsWrapperOpen {
+  grid-template-rows: 1fr;
+}
+
+.subOptionsInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.subOptions {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0 10px 0;
+}
+
+.subOption {
+  position: relative;
+  width: 100%;
+  padding: 9px 16px 9px 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.88rem;
+  text-align: left;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.subOptionCheck {
+  position: absolute;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  color: var(--geti-color-white, #fff);
+  flex-shrink: 0;
+}
+
+.subOption:hover {
+  color: var(--geti-color-white, #fff);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.subOptionSelected {
+  color: var(--geti-color-white, #fff);
+  font-weight: 600;
+}

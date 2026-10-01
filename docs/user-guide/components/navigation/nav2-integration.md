@@ -20,7 +20,7 @@ flowchart TD
     subgraph Nav2_Core["Nav2 Navigation Stack"]
         BT["Behavior Tree Navigator\n(bt_navigator)"]
         Lifecycle["Nav2 Lifecycle Manager\n(nav2_lifecycle_manager)"]
-        
+
         subgraph Servers["Nav2 Functional Servers"]
             Planner["Planner Server\n(Navfn / Smac / ITS Planner)"]
             Controller["Controller Server\n(DWB / MPPI / FollowPath)"]

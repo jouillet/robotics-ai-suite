@@ -32,6 +32,7 @@ author = "Intel Corporation"
 
 version = "dev"
 release = version
+site_baseurl = os.environ.get("BASE_URL", "/").rstrip("/") + "/"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -106,6 +107,7 @@ html_theme = "pydata_sphinx_theme"
 
 html_context = {
     "default_mode": "dark",
+    "site_baseurl": site_baseurl,
 }
 
 html_theme_options = {
@@ -130,13 +132,17 @@ html_theme_options = {
     ],
     "logo": {
         "text": "Robotics Dev Resources",
-        "link": "/",
+        "link": site_baseurl,
         # "image_dark": "_static/logo-dark.svg",
     },
     "show_prev_next": False,
 }
 # common theme options
-html_baseurl = "https://docs.robotics.intel.com/"
+html_baseurl = (
+    os.environ.get("SITE_URL", "https://developer.robotics.intel.com").rstrip("/")
+    + site_baseurl
+    + "development-stack/"
+)
 html_favicon = "_static/logo.svg"
 # html_show_sourcelink = True  # Show source link
 html_show_sphinx = False  # Hide "Built with Sphinx"
