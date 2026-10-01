@@ -66,7 +66,7 @@ To enable this, the PyTorch model must first be converted to the OpenVINO™ IR 
 
 ### Export Depth-Anything-V2 to ONNX
 
-Before converting the model to OpenVINO IR, it is best practice to first export the PyTorch model to ONNX format.
+Before converting the model to OpenVINO™ IR, it is best practice to first export the PyTorch model to ONNX format.
 The repository [Depth-Anything-ONNX](https://github.com/fabio-sim/Depth-Anything-ONNX) provides a simple command-line tool, `dynamo.py`, based on [Typer](https://typer.tiangolo.com/) to facilitate this conversion.
 
 #### Installation
@@ -92,19 +92,19 @@ python dynamo.py export --encoder vitb --output weights/vitb.onnx --use-dynamo -
 
 > **Hint:** If you encountered a downloading error, please refer to [Troubleshooting](../../../resources/troubleshooting.md).
 
-### Convert ONNX to OpenVINO IR
+### Convert ONNX to OpenVINO™ IR
 
-#### Ensure OpenVINO is Installed
+#### Ensure OpenVINO™ is Installed
 
 > [!NOTE]
-> Make sure OpenVINO is installed by following the guide:
-> [Install OpenVINO via pip](../../developer_tools/openvino.md)
+> Make sure OpenVINO™ is installed by following the guide:
+> [Install OpenVINO™ via pip](../../developer_tools/openvino.md)
 
-Once the model is in ONNX format, it can be converted to OpenVINO's Intermediate Representation (IR) format using OpenVINO's command-line model conversion tool, `ovc`.
+Once the model is in ONNX format, it can be converted to OpenVINO™'s Intermediate Representation (IR) format using OpenVINO™'s command-line model conversion tool, `ovc`.
 
-#### Convert ONNX to OpenVINO IR using ovc
+#### Convert ONNX to OpenVINO™ IR using ovc
 
-The `ovc` tool simplifies the process of converting an ONNX model to OpenVINO IR format.
+The `ovc` tool simplifies the process of converting an ONNX model to OpenVINO™ IR format.
 
 Run the following command to perform the conversion:
 

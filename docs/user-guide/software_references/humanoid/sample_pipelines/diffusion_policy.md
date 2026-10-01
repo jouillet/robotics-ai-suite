@@ -4,7 +4,7 @@ Diffusion Policy presents an innovative method for generating robot actions by c
 
 A diffusion policy pipeline is provided for evaluating the diffusion policy model on the `Push-T` task in simulation. This pipeline includes source code optimized with OpenVINO™ for improved performance, and supports both Transformer-based and CNN-based diffusion policy for inference on the `Push-T` task.
 
-In this tutorial, we will introduce how to setup Diffusion Policy simulation pipeline.
+This tutorial explains how to set up the Diffusion Policy simulation pipeline.
 
 ## Simulation Task
 
@@ -23,7 +23,7 @@ The maximum step of the task is 300, and the reward is defined as the maximum ov
 
 ## Prerequisites
 
-Please make sure you have finished setup steps in [Get Started](../../../platform_foundation/getting_started.md).
+Please make sure you have completed the setup steps in [Getting Started](../../../platform_foundation/getting_started.md).
 
 ## Installation
 
@@ -77,7 +77,7 @@ pip install huggingface_hub==0.24.7 openvino==2024.6
 1. Refer to `<diffusion-policy_SOURCE_CODE_PATH>/ov_convert/README.md` for instructions on downloading the pre-trained checkpoints, there are four available checkpoints for Push-T task.
 
    > [!NOTE]
-   > For detailed instructions on the model conversion process, refer to [OpenVINO Model Guidance - Diffusion Policy](../../../components/ai_resources/openvino/models/model_dp.md).
+   > For detailed instructions on the model conversion process, refer to [OpenVINO™ Supported Models - Diffusion Policy](../../../components/ai_resources/openvino/models/model_dp.md).
 
    | Item | Pre-trained checkpoint Name | Low-dim or image | Policy | Parameters |
    |---|---|---|---|---|
@@ -86,7 +86,7 @@ pip install huggingface_hub==0.24.7 openvino==2024.6
    | `image_t748.ckpt` | `epoch=0100-test_mean_score=0.748.ckpt` | image | diffusion policy transformer | 20.18M |
    | `image_c884.ckpt` | `epoch=0500-test_mean_score=0.884.ckpt` | image | diffusion policy CNN | 262.71M |
 
-2. Refer to `<diffusion-policy_SOURCE_CODE_PATH>/ov_convert/README.md` for instructions on converting the model checkpoint to OpenVINO IR format.
+2. Refer to `<diffusion-policy_SOURCE_CODE_PATH>/ov_convert/README.md` for instructions on converting the model checkpoint to OpenVINO™ IR format.
 
    > **Attention:** You need to set the `--output_dir` to save the converted model to `~/ov_models/pushT/` directory.
 
@@ -118,7 +118,7 @@ pip install huggingface_hub==0.24.7 openvino==2024.6
    > - You need to set the `--checkpoint` to select the pre-trained checkpoint because it contains the policy model configuration.
    > - You need to set the `--output_dir` to save the inference results.
    > - You can set the `--seed` to control the randomness of the inference; the default value is 4300000.
-   > - For converted OpenVINO IR, you don't need to set the model path since the default load directory is `~/ov_models/pushT/`.
+   > - For converted OpenVINO™ IR, you don't need to set the model path since the default load directory is `~/ov_models/pushT/`.
 
    ```bash
    conda activate robodiff

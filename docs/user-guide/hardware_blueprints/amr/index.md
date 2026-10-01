@@ -17,7 +17,7 @@
 
 The Autonomous Mobile Robot provides software packages and pre-validated hardware modules for sensor data ingestion, classification, environment modeling, action planning, action control. It supports documented ROS 2 Jazzy and Humble configuration tracks, with reference algorithms and working examples.
 
-Beyond autonomous mobility, this package demonstrates map building and Simultaneous Localization And Mapping (SLAM) loop closure functionality. It utilizes an open source version of visual SLAM with input from an RealSense camera. Optionally, the package allows you to run Light Detection and Ranging (LiDAR) based SLAM and compare those results with visual SLAM results on accuracy and performance indicators. Additionally, it detects and highlights the objects on the map. Depending on the platform that is used, workloads are executed on an integrated GPU or on Intel® CPU.
+Beyond autonomous mobility, this package demonstrates map building and Simultaneous Localization And Mapping (SLAM) loop closure functionality. It utilizes an open source version of visual SLAM with input from a RealSense camera. Optionally, the package allows you to run Light Detection and Ranging (LiDAR) based SLAM and compare those results with visual SLAM results on accuracy and performance indicators. Additionally, it detects and highlights the objects on the map. Depending on the platform that is used, workloads are executed on Intel® Arc™ graphics or on Intel® CPU.
 
 The Autonomous Mobile Robot addresses industrial, manufacturing, consumer market, and smart cities use cases, facilitating data collection, storage, and analytics across various nodes on the factory floor.
 Develop, build, and deploy end-to-end mobile robot applications with this purpose-built, open, and modular software development kit that includes libraries, middleware, and sample applications based on the open source ROS 2 Humble robot operating system.
@@ -43,7 +43,7 @@ supports every hardware or middleware combination.
 
 | Configuration track | Compute platform and robot | Operating system | ROS 2 | Sensors | Setup guide |
 | --- | --- | --- | --- | --- | --- |
-| PTL reference platform | Intel Panther Lake (PTL) platform with an Intel 358H processor and an integrated robot kit | Canonical Ubuntu 24.04 LTS | Jazzy Jalisco | RealSense camera; additional sensors are application dependent | Consult the platform integration guide. |
+| Intel® Core™ Ultra Series 3 reference platform | Intel® Core™ Ultra Series 3 platform with an Intel 358H processor and an integrated robot kit | Canonical Ubuntu 24.04 LTS | Jazzy Jalisco | RealSense camera; additional sensors are application dependent | Consult the platform integration guide. |
 | Clearpath Jackal | Clearpath Jackal onboard computer | Canonical Ubuntu 24.04 LTS | Jazzy Jalisco | RealSense D435i | [Clearpath Robotics Jackal](clearpath-jackal.md) |
 
 

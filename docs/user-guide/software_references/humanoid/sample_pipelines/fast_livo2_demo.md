@@ -36,7 +36,7 @@ apply to.
 | [0004-Reformat-sources-to-the-real-clang-format-style.patch](https://github.com/open-edge-platform/edge-ai-suites/blob/main/robotics-ai-suite/pipelines/fast-livo2-demo/patches/0004-Reformat-sources-to-the-real-clang-format-style.patch) | Reformats `IMU_Processing.cpp`, `LIVMapper.cpp`, `main.cpp`, `preprocess.cpp`, and `vio.cpp` to the Google-based clang-format style used elsewhere in this fork; no logic changes. |
 | [0005-Fix-crash-race-risks-and-an-info-leak-in-the-ROS2-no.patch](https://github.com/open-edge-platform/edge-ai-suites/blob/main/robotics-ai-suite/pipelines/fast-livo2-demo/patches/0005-Fix-crash-race-risks-and-an-info-leak-in-the-ROS2-no.patch) | Wraps `main()` in a try/catch so a startup exception logs via `RCLCPP_FATAL` instead of taking the node down unhandled; reorders null-pointer checks to test-before-dereference and repositions two mutex locks so the shared state they guard is actually covered; guards three VIO score/residual computations and `plane_judge` against division by zero; frees a leaked scratch patch buffer in `updateVisualMapPoints`; replaces an internal lab IP address in a camera-intrinsics config comment with a generic rig description (a BDBA information-leakage finding); lists the ROS2-port maintainer in `package.xml`. |
 
-## Environment setup (Ubuntu 24.04 / ROS 2 Jazzy, Intel Core Ultra / PTL)
+## Environment setup (Ubuntu 24.04 / ROS 2 Jazzy, Intel® Core™ Ultra Series 3)
 
 The following [scripts](https://github.com/open-edge-platform/edge-ai-suites/tree/main/robotics-ai-suite/pipelines/fast-livo2-demo/scripts) automate the one-time host prerequisites and repository-specific setup:
 
@@ -99,19 +99,19 @@ USE_RVIZ=true ./run_ntu_viral.sh   # or: USE_RVIZ=true ./reproduce_all.sh
 ```
 
 Run this directly on the target machine's own logged-in Ubuntu desktop
-session (e.g. on the PTL board's display, not over plain SSH) — rviz2's
+session (e.g. on the Intel® Core™ Ultra Series 3 board's display, not over plain SSH) — rviz2's
 point-cloud rendering needs a real GPU display, so X11-forwarding it over
 SSH is impractical. It opens with the
 [ntu_viral.rviz](https://github.com/hku-mars/FAST-LIVO2/blob/0d2c0346107b75b59934975adec9a6eeeb913c64/rviz_cfg/ntu_viral.rviz) config, showing the
 live point cloud and pose trajectory as the bag plays back.
 
-### Reference: running on Intel PTL
+### Reference: running on Intel® Core™ Ultra Series 3
 
 `run_ntu_viral.sh` ships a reference core-pinning + frequency-locking
-setup for Intel PTL (validated on Core Ultra X7 358H: 4 P-cores `cpu0-3` up
+setup for Intel® Core™ Ultra Series 3 (validated on Core™ Ultra X7 358H: 4 P-cores `cpu0-3` up
 to 4700 MHz, 8 E-cores `cpu4-11` up to 3500 MHz, 4 LP-E-cores `cpu12-15` up
 to 3300 MHz). Core numbering is specific to this SKU — re-check `lscpu -e`
-before reusing these defaults on a different PTL SKU or platform.
+before reusing these defaults on a different Intel® Core™ Ultra Series 3 SKU or platform.
 
 | Task | Pinned to | Why |
 | ---- | --------- | --- |
@@ -120,7 +120,7 @@ before reusing these defaults on a different PTL SKU or platform.
 | `rviz2` (when `USE_RVIZ=true`) | P-core `2` (`CPUSET_RVIZ`) | Point-cloud rendering is bursty GUI work best kept off the algorithm's isolated cores; a P-core has the headroom for it. |
 
 These three assignments are independent of each other and of `USE_RVIZ`:
-the algorithm always runs on `12,13` whether or not rviz is enabled, and
+the algorithm always runs on `12,13` whether or not RViz is enabled, and
 `rviz2` always runs as its own separate process on P-core `2` (never as a
 child of the algorithm's `ros2 launch`, so it never shares or inherits the
 algorithm's affinity).
@@ -181,7 +181,7 @@ the governor/min/max/current frequency actually applied. Its targets
 plain CycloneDDS with no iceoryx zero-copy shared-memory transport for
 same-host pub/sub. [scripts/setup_dds_shm.sh](https://github.com/open-edge-platform/edge-ai-suites/blob/main/robotics-ai-suite/pipelines/fast-livo2-demo/scripts/setup_dds_shm.sh) adds
 that missing piece — the same DDS transport Bing's own benchmark harness for
-this project (`run_live_benchmark.sh`) uses on PTL/Orin, for two reasons: (1)
+this project (`run_live_benchmark.sh`) uses on Intel® Core™ Ultra Series 3/Orin, for two reasons: (1)
 `rmw_fastrtps_cpp`/plain-CycloneDDS + SHM has hit CDR deserialize failures on
 large `PointCloud2` bag replay — silently corrupting or dropping frames — and
 (2) a dedicated DDS domain plus this transport keeps traffic isolated and
@@ -227,7 +227,7 @@ relative paths are relative to that directory).
 ./scripts/install_deps.sh
 ```
 
-### 2. Apply the Intel patches
+### 2. Apply the Intel® patches
 
 ```bash
 cd FAST-LIVO2
@@ -325,9 +325,9 @@ ros2 bag play ~/ntu_viral_dataset/eee_01
 Once playback finishes, stop `fast_livo2` (`Ctrl-C` in Terminal A — a clean
 SIGTERM, not `kill -9`, so it flushes the trajectory file) and check
 `FAST-LIVO2/Log/result/eee_01.txt` was written. The core-pinning/SCHED_FIFO
-wrapping `run_ntu_viral.sh` applies on PTL (taskset/chrt) is an optional
+wrapping `run_ntu_viral.sh` applies on Intel® Core™ Ultra Series 3 (taskset/chrt) is an optional
 performance extra, not required for a correctness repro — see "Reference:
-running on Intel PTL" above if you want that too.
+running on Intel® Core™ Ultra Series 3" above if you want that too.
 
 **Optional — the CycloneDDS+iceoryx shared-memory transport, by hand**
 (equivalent to `scripts/setup_dds_shm.sh start` — run that script instead if

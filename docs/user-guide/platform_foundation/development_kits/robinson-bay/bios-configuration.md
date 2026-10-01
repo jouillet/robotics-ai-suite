@@ -3,7 +3,7 @@
 ## Overview
 
 This guide describes how to enable the camera and AI accelerator devices in the BIOS so the
-IPU, NPU, and MIPI cameras are available to the operating system. It also describes how to
+Intel® IPU, Intel NPU, and MIPI cameras are available to the operating system. It also describes how to
 disable the Smart Fan for continuous cooling during validation.
 
 ## Enter the BIOS

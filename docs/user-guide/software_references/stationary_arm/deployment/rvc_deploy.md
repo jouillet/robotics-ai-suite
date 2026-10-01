@@ -19,7 +19,7 @@ flowchart LR
 
 The Stationary Robot Toolkit architecture isolates perception into interchangeable components so developers can substitute algorithms to match specific application demands:
 
-* **Rotated 2D Object Detection & 3D Pose Estimation**: Uses YOLO inference optimized via Intel OpenVINO on the RGB stream, followed by PointCloud alignment (PCL RANSAC / ICP) to estimate 6-DoF poses of moving objects.
+* **Rotated 2D Object Detection & 3D Pose Estimation**: Uses YOLO inference optimized via  on the RGB stream, followed by PointCloud alignment (PCL RANSAC / ICP) to estimate 6-DoF poses of moving objects.
 * **2.5D Planar Feature Extraction**: Employs ORB feature matching and homography projection to calculate 3D object poses on flat surfaces directly from single RGB images.
 * **ADBSCAN Point Cloud Clustering (Roadmap)**: An upcoming clustering component leveraging the Adaptive Density-Based Spatial Clustering of Applications with Noise (ADBSCAN) algorithm for 3D segmenting of unmodeled objects and novel geometries directly from depth point clouds.
 * **Vision-Language-Action (VLA) Model Controller (Roadmap)**: An upcoming end-to-end Physical AI model integrating multimodal sensory inputs and natural language instructions directly into robot action policies, replacing discrete perception and planning nodes.
@@ -30,7 +30,7 @@ The Stationary Robot Toolkit architecture isolates perception into interchangeab
 | --- | --- | --- |
 | Camera Streamer | `realsense2_camera` | Publishes synchronized RGB (`sensor_msgs/Image`) and PointCloud (`sensor_msgs/PointCloud2`) streams |
 | Perception Engine | `stationary_robotics_vision_main` | Encapsulates detection and 3D pose extraction within a shared process for zero-copy efficiency |
-| Object Detection | `stationary_robotics_rotated_object_detection` | Executes OpenVINO-accelerated object detection and outputs oriented bounding boxes (`RotateBBList`) |
+| Object Detection | `stationary_robotics_rotated_object_detection` | Executes OpenVINO™-accelerated object detection and outputs oriented bounding boxes (`RotateBBList`) |
 | Grasp Planner | `stationary_robotics_oriented_grasp` | Calculates feasible gripper approach vectors and grasp points based on object class and orientation |
 | State Machine | `stationary_robotics_dynamic_demo` | Orchestrates cycle states: search, track, approach, grasp, transfer, and release |
 | Motion Controller | `stationary_robotics_moveit2_servo_motion_controller` | Translates task waypoints into Cartesian velocity commands (`delta_twist_cmds`) with collision avoidance |

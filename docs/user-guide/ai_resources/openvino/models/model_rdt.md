@@ -32,7 +32,7 @@ python -m scripts.convert.ov_convert --pretrained <pretrained_rdt_model_path> --
 ```
 
 - `<pretrained_rdt_model_path>`: The path to the pre-trained RDT-1B model.
-- `<output_dir>`: (optional) The directory where the converted OpenVINO IR files will be saved. Default is `ov_ir`.
+- `<output_dir>`: (optional) The directory where the converted OpenVINO™ IR files will be saved. Default is `ov_ir`.
 
 ### Convert by Jupyter Notebook
 

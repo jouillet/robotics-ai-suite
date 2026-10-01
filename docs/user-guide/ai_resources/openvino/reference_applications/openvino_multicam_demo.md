@@ -4,11 +4,11 @@ This reference application showcases using one or multiple cameras to run simult
 It supports one to four USB or GMSL connected cameras.
 
 Object detection and segmentation masking are run in parallel using up to four camera streams.
-This application uses an OpenVINO-optimized version of YOLOv8, available here:
+This application uses an OpenVINO™-optimized version of YOLOv8, available here:
 [Ultralytics YOLOv8 object detection model](https://docs.ultralytics.com/).
 
 ## Prerequisites
-To run this reference applications, make sure you've completed the [Getting Started](../../../platform_foundation/getting_started.md) guide to onboard your device, install the relevant packages, and setup your device drivers.
+To run this software solutions, make sure you've completed the [Getting Started](../../../platform_foundation/getting_started.md) guide to onboard your device, install the relevant packages, and setup your device drivers.
 
 To use GMSL-enabled cameras, make sure you've followed the [GMSL Setup Guide](../../../components/sensors/cameras/gmsl/index.md).
 
@@ -96,7 +96,7 @@ source .venv/bin/activate
 
 ## Run the Reference Application
 
-Before running the application, you need to set configure it to use the appropriate camera streams. A script called `find_cameras.sh` will scan for RGB-compatible camera streams and create a reusable config file at `.config/config_camera.json`. You can modify this file after creation to adjust model, OpenVINO inference device, input stream settings, and other parameters. After, you can run the demo:
+Before running the application, you need to set configure it to use the appropriate camera streams. A script called `find_cameras.sh` will scan for RGB-compatible camera streams and create a reusable config file at `.config/config_camera.json`. You can modify this file after creation to adjust model, OpenVINO™ inference device, input stream settings, and other parameters. After, you can run the demo:
 
 ::::{tab-set}
 :::{tab-item} **Jazzy**

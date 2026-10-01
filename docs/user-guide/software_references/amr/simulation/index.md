@@ -1,4 +1,4 @@
-# Simulation Software References
+# Simulation Software Solutions
 
 In this software reference series, you'll learn how to simulate robots powered by Intel's Robotics AI Suite in Gazebo, the companion simulator to ROS.
 

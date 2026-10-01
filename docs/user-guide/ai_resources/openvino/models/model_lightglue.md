@@ -43,7 +43,7 @@ To enable this, the PyTorch model must first be converted to the OpenVINO™ IR 
 
 ### Export LightGlue to ONNX
 
-Before converting the model to OpenVINO IR, it is best practice to first export the PyTorch model to ONNX format. The ONNX model format allows for interoperability across different platforms with support for multiple execution providers and removes Python-specific dependencies such as PyTorch.
+Before converting the model to OpenVINO™ IR, it is best practice to first export the PyTorch model to ONNX format. The ONNX model format allows for interoperability across different platforms with support for multiple execution providers and removes Python-specific dependencies such as PyTorch.
 The repository [LightGlue-ONNX](https://github.com/fabio-sim/LightGlue-ONNX) provides a simple command-line tool, `dynamo.py`, to easily export LightGlue to ONNX and perform inference using ONNX Runtime, based on [Typer](https://typer.tiangolo.com/) to facilitate this conversion.
 
 #### Exporting the model to ONNX
@@ -65,19 +65,19 @@ python dynamo.py export --output weights/superpoint_lightglue_pipeline_static.on
 - `--use-dynamo` : Enables the use of `torch.compile` via Dynamo for optimized tracing.
 - `-h 1280 -w 720` : Specifies the height and width of the input images.
 
-### Convert ONNX to OpenVINO IR
+### Convert ONNX to OpenVINO™ IR
 
-#### Ensure OpenVINO is Installed
+#### Ensure OpenVINO™ is Installed
 
 > [!NOTE]
-> Make sure OpenVINO is installed by following the guide:
-> [Install OpenVINO via pip](../../developer_tools/openvino.md)
+> Make sure OpenVINO™ is installed by following the guide:
+> [Install OpenVINO™ via pip](../../developer_tools/openvino.md)
 
-Once the model is in ONNX format, it can be converted to OpenVINO's Intermediate Representation (IR) format using OpenVINO’s command-line model conversion tool, `ovc`.
+Once the model is in ONNX format, it can be converted to OpenVINO™'s Intermediate Representation (IR) format using OpenVINO™’s command-line model conversion tool, `ovc`.
 
-#### Convert ONNX to OpenVINO IR using ovc
+#### Convert ONNX to OpenVINO™ IR using ovc
 
-The `ovc` tool simplifies the process of converting an ONNX model to OpenVINO IR format.
+The `ovc` tool simplifies the process of converting an ONNX model to OpenVINO™ IR format.
 
 Run the following command to perform the conversion:
 

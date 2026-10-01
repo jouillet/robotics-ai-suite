@@ -5,13 +5,13 @@ This document demonstrates the steps for setting up an environment that implemen
 
 ## Scenario
 
-The following diagram shows the overall architecture of the Robotics KVM solution on Intel Core Ultra Series 3 (code name PTL), organized into three layers: the PTL hardware, the Host OS, and the Guest OS. Each of the hardware and Host OS layers is further partitioned into a real-time (RT) domain and a non-real-time (non-RT) domain.
+The following diagram shows the overall architecture of the Robotics KVM solution on Intel® Core™ Ultra Series 3, organized into three layers: the Intel® Core™ Ultra Series 3 hardware, the Host OS, and the Guest OS. Each of the hardware and Host OS layers is further partitioned into a real-time (RT) domain and a non-real-time (non-RT) domain.
 
 ![kvm_solution](./assets/kvm/kvm_arch.png)
 
-- **(Hardware, PTL platform)** — Using PTL X7 358H as an example: dedicated to the RT domain (4x LPE cores + a NIC), shared by the non-RT domain and Guest OS (4x P cores, 8x E cores, NIC, USB, and NVMe), and passed through to the Guest OS (iGPU, NPU, USB controller)
+- **(Hardware, Intel® Core™ Ultra Series 3 platform)** — Using Intel® Core™ Ultra Series 3 X7 358H as an example: dedicated to the RT domain (4x LPE cores + a NIC), shared by the non-RT domain and Guest OS (4x P cores, 8x E cores, NIC, USB, and NVMe), and passed through to the Guest OS (Intel® Arc™ graphics, Intel NPU, USB controller)
 - **(Host OS)** — Ubuntu 24.04 with a 6.17 RT kernel. Its RT domain maps to the L1 RT hardware and runs motion control, using the RT NIC to drive external motors over EtherCAT. Its non-RT domain maps to the L1 non-RT hardware and provides KVM + QEMU virtualization services.
-- **(Guest OS)** — Ubuntu 24.04 with a 6.17 kernel. It receives the iGPU, NPU, and USB controller via KVM passthrough from the Host, and shares net and NVMe with the Host through virtio.
+- **(Guest OS)** — Ubuntu 24.04 with a 6.17 kernel. It receives Intel® Arc™ graphics, Intel NPU, and USB controller via KVM passthrough from the Host, and shares net and NVMe with the Host through virtio.
 
 ## Basic Environment Setup
 
@@ -55,15 +55,15 @@ The following sections provide examples for configuring device parameters using 
 
 ### CPU
 
-<!--hide_directive::::{tab-set}hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **QEMU**
+::::{tab-set}
+:::{tab-item} **QEMU**
 
 ```bash
 -cpu host -smp cores=12,threads=1,sockets=1
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **Libvirt**
+:::
+:::{tab-item} **Libvirt**
 
 ```xml
 <vcpu placement='static'>12</vcpu>
@@ -72,13 +72,13 @@ The following sections provide examples for configuring device parameters using 
 </cpu>
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive::::hide_directive-->
+:::
+::::
 
 ### CPU Affinity
 
-<!--hide_directive::::{tab-set}hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **QEMU**
+::::{tab-set}
+:::{tab-item} **QEMU**
 
 Add the following QEMU parameter:
 
@@ -98,8 +98,8 @@ Then use `taskset` to pin CPUs. For example:
 taskset -pc "$pcpu" "$lwp"
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **Libvirt**
+:::
+:::{tab-item} **Libvirt**
 
 ```xml
 <cputune>
@@ -117,8 +117,8 @@ taskset -pc "$pcpu" "$lwp"
   <vcpupin vcpu='11' cpuset='11'/>
 </cputune>
 ```
-<!--hide_directive:::hide_directive-->
-<!--hide_directive::::hide_directive-->
+:::
+::::
 
 ### Memory
 
@@ -128,8 +128,8 @@ Add the following host kernel parameters if you need 1 GiB hugepage size.
 default_hugepagesz=1G hugepagesz=1G hugepages=24
 ```
 
-<!--hide_directive::::{tab-set}hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **QEMU**
+::::{tab-set}
+:::{tab-item} **QEMU**
 
 ```bash
 -m 24G
@@ -141,8 +141,8 @@ Add the following if hugepages are required:
 -object memory-backend-memfd,hugetlb=on,hugetlbsize=1G,id=mem1,size=24G -machine memory-backend=mem1
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **Libvirt**
+:::
+:::{tab-item} **Libvirt**
 
 ```xml
 <memory unit='GiB'>24</memory>
@@ -153,20 +153,20 @@ Add the following if hugepages are required:
   </hugepages>
 </memoryBacking>
 ```
-<!--hide_directive:::hide_directive-->
-<!--hide_directive::::hide_directive-->
+:::
+::::
 
 ### Disk
 
-<!--hide_directive::::{tab-set}hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **QEMU**
+::::{tab-set}
+:::{tab-item} **QEMU**
 
 ```bash
 -drive file=/var/lib/libvirt/images/ubuntu24.04.qcow2,format=qcow2,cache=none,if=virtio
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **Libvirt**
+:::
+:::{tab-item} **Libvirt**
 
 ```xml
 <disk type='file' device='disk'>
@@ -177,8 +177,8 @@ Add the following if hugepages are required:
 </disk>
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive::::hide_directive-->
+:::
+::::
 
 ### Bridge Network
 
@@ -252,8 +252,8 @@ sudo ip addr flush dev enp2s0
 ```
 
 4. Add virtio-net parameters.
-<!--hide_directive::::{tab-set}hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **QEMU**
+::::{tab-set}
+:::{tab-item} **QEMU**
 
 ```bash
 VM_NET_MAC="52:54:00:8d:85:0d"
@@ -262,8 +262,8 @@ VM_NET_MAC="52:54:00:8d:85:0d"
 ```
 Suggest different VM uses different mac address to avoid mac address conflict when more VMs are deployed.
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **Libvirt**
+:::
+:::{tab-item} **Libvirt**
 
 ```xml
 <interface type='bridge'>
@@ -274,13 +274,13 @@ Suggest different VM uses different mac address to avoid mac address conflict wh
 </interface>
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive::::hide_directive-->
+:::
+::::
 
 ### Passthrough PCI Device
 
-<!--hide_directive::::{tab-set}hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **QEMU**
+::::{tab-set}
+:::{tab-item} **QEMU**
 
 1. Bind the VFIO driver for the passthrough device.
 
@@ -297,8 +297,8 @@ echo 0000:00:0b.0 | sudo tee /sys/bus/pci/drivers/vfio-pci/bind
 -device vfio-pci,host=0000:00:0b.0
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **Libvirt**
+:::
+:::{tab-item} **Libvirt**
 
 ```xml
 <hostdev mode='subsystem' type='pci' managed='yes'>
@@ -309,15 +309,15 @@ echo 0000:00:0b.0 | sudo tee /sys/bus/pci/drivers/vfio-pci/bind
 </hostdev>
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive::::hide_directive-->
+:::
+::::
 
-### Passthrough Intel iGPU
+### Passthrough Intel® iGPU
 
 Please refer to [Build Romfile](#build-the-ovmf-and-igpu-rom-file) for the iGPU ROM file(`iGPU_GOP.rom`).
 
-<!--hide_directive::::{tab-set}hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **QEMU**
+::::{tab-set}
+:::{tab-item} **QEMU**
 1. Bind the VFIO driver for the passthrough device.
 
 ```bash
@@ -331,8 +331,8 @@ echo 0000:00:02.0 | sudo tee /sys/bus/pci/drivers/vfio-pci/bind
 -device vfio-pci,host=00:02.0,x-igd-gms=2,id=hostdev0,x-igd-opregion=on,romfile=/var/lib/libvirt/roms/iGPU_GOP.rom,addr=0x2
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **Libvirt**
+:::
+:::{tab-item} **Libvirt**
 
 ```xml
 <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
@@ -355,23 +355,23 @@ echo 0000:00:02.0 | sudo tee /sys/bus/pci/drivers/vfio-pci/bind
 </domain>
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive::::hide_directive-->
+:::
+::::
 
 ### OVMF
 
 Refer to [Build OVMF Romfile](#build-the-ovmf-and-igpu-rom-file) to build custom OVMF files (`OVMF_CODE_iGPU.fd`, `OVMF_VARS_iGPU.fd`).
 
-<!--hide_directive::::{tab-set}hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **QEMU**
+::::{tab-set}
+:::{tab-item} **QEMU**
 
 ```bash
 -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_iGPU.fd \
 -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_iGPU.fd
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **Libvirt**
+:::
+:::{tab-item} **Libvirt**
 
 ```xml
 <os>
@@ -382,8 +382,8 @@ Refer to [Build OVMF Romfile](#build-the-ovmf-and-igpu-rom-file) to build custom
 </os>
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive::::hide_directive-->
+:::
+::::
 
 ## Launch Ubuntu Virtual Machines
 
@@ -432,8 +432,8 @@ You can launch the guest VM with either:
 - A direct QEMU command (good for quick iteration)
 - libvirt (`virsh`) domain management (good for lifecycle management)
 
-<!--hide_directive::::{tab-set}hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **QEMU**
+::::{tab-set}
+:::{tab-item} **QEMU**
 
 1. Bind the VFIO driver for the passthrough device.
 
@@ -498,8 +498,8 @@ sudo qemu-system-x86_64 \
   -vga none
 ```
 
-<!--hide_directive:::hide_directive-->
-<!--hide_directive:::{tab-item}hide_directive--> **Libvirt**
+:::
+:::{tab-item} **Libvirt**
 
 1. Prepare the domain XML.
 
@@ -519,8 +519,8 @@ virsh list --all
 virsh reboot ubuntu24.04
 virsh destroy ubuntu24.04
 ```
-<!--hide_directive:::hide_directive-->
-<!--hide_directive::::hide_directive-->
+:::
+::::
 
 ## KVM Management Solutions
 

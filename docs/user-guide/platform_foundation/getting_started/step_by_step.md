@@ -13,7 +13,7 @@ configuration.
 
 ## 2. Install and Configure ROS 2
 
-Follow the [ROS 2 Runtime](../../components/middleware/ros2.md) guide to install ROS 2
+Follow the [ROS 2 Runtime](../../components/runtime/index.md) guide to install ROS 2
 Jazzy and configure the environment.
 
 ## 3. Set up Robotics AI Suite, oneAPI, and Graphics APT Repositories
@@ -41,7 +41,7 @@ This section explains the procedure to configure the APT package manager to use 
    echo -e "Package: *\nPin: origin amrdocs.intel.com\nPin-Priority: 1001" | sudo tee /etc/apt/preferences.d/amr
    ```
 
-5. Configure the APT repository for the Intel® oneAPI Base Toolkit:
+5. Configure the APT repository for the Intel® oneAPI Toolkit:
 
    ```bash
    wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
@@ -103,7 +103,7 @@ The following steps will add the OpenVINO™ APT repository to your package mana
 3. Run the following commands to create the file ``/etc/apt/preferences.d/intel-openvino``.
 
    This will pin the OpenVINO™ version to 2025.3.0. Earlier versions of OpenVINO™
-   might not support inferencing on the NPU of Intel® Core™ Ultra processors.
+   might not support inferencing on the Intel NPU of Intel® Core™ Ultra processors.
 
    ::::{tab-set}
    :::{tab-item} **Jazzy**
@@ -356,7 +356,7 @@ This section details steps to install Robotics AI Suite Deb packages.
       The standard version of the Autonomous Mobile Robot. This package includes almost everything except for a handful of tutorials and bag files.
 
    **ros-jazzy-robotics-sdk-complete**
-      The complete version of the Autonomous Mobile Robot. It also includes those items excluded from the standard version. Please note that the complete SDK downloads approximately 20GB of additional files.
+      The complete version of the Autonomous Mobile Robot. It includes everything in the standard package plus the excluded items. The complete SDK downloads approximately 20 GB of additional files.
 
    :::
    :::{tab-item} **Humble**
@@ -366,7 +366,7 @@ This section details steps to install Robotics AI Suite Deb packages.
       The standard version of the Autonomous Mobile Robot. This package includes almost everything except for a handful of tutorials and bag files.
 
    **ros-humble-robotics-sdk-complete**
-      The complete version of the Autonomous Mobile Robot. It also includes those items excluded from the standard version. Please note that the complete SDK downloads approximately 20GB of additional files.
+      The complete version of the Autonomous Mobile Robot. It includes everything in the standard package plus the excluded items. The complete SDK downloads approximately 20 GB of additional files.
 
    :::
    ::::
@@ -411,7 +411,7 @@ This section details steps to install Robotics AI Suite Deb packages.
      :sync: jazzy
 
      ```bash
-     # Required for Intel® Atom® processor-based systems
+     # Required for Intel Atom® processor-based systems
      sudo apt-get install ros-jazzy-collab-slam-sse
      ```
 
@@ -420,7 +420,7 @@ This section details steps to install Robotics AI Suite Deb packages.
      :sync: humble
 
      ```bash
-     # Required for Intel® Atom® processor-based systems
+     # Required for Intel Atom® processor-based systems
      sudo apt-get install ros-humble-collab-slam-sse
      ```
 
@@ -488,14 +488,14 @@ This section details steps to install Robotics AI Suite Deb packages.
      |``gen11``|Products formerly Ice Lake|
      |``gen9``|Products formerly Skylake|
 
-## 7. Install the Intel® NPU Driver on Intel® Core™ Ultra Processors
+## 7. Install the Intel NPU Driver on Intel® Core™ Ultra Processors
 
-If you want to run OpenVINO™ inferencing applications on the NPU device
-of Intel® Core™ Ultra processors, you need to install the Intel® NPU driver.
+If you want to run OpenVINO™ inferencing applications on the Intel NPU device
+of Intel® Core™ Ultra processors, you need to install the Intel NPU driver.
 If your system does not have an Intel® Core™ Ultra Processor, you should skip
 this step.
 
-General information on the Intel® NPU driver can be found on the
+General information on the Intel NPU driver can be found on the
 [Linux NPU Driver](https://github.com/intel/linux-npu-driver/releases)
 website. The driver consists of the following packages:
 
@@ -516,7 +516,7 @@ website. The driver consists of the following packages:
 > and install the packages from the downloaded files. Installation through this method
 > will not include automatic updating through `apt-get`.
 
-To install the Intel® NPU driver, complete the following steps:
+To install the Intel NPU driver, complete the following steps:
 
 1. Install the NPU packages:
 

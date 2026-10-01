@@ -18,7 +18,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: robotics-ai-suite/components/fast-mapping
+    working-directory: src/components/fast-mapping
 
 jobs:
   lint:
@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
           fetch-depth: 0
-          sparse-checkout: ./robotics-ai-suite/components/fast-mapping
+          sparse-checkout: ./src/components/fast-mapping
           persist-credentials: false
 
       - name: Lint
@@ -44,7 +44,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
-          sparse-checkout: robotics-ai-suite/components/fast-mapping
+          sparse-checkout: src/components/fast-mapping
           persist-credentials: false
 
       - name: Run REUSE
@@ -64,7 +64,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
-          sparse-checkout: robotics-ai-suite/components/fast-mapping
+          sparse-checkout: src/components/fast-mapping
           persist-credentials: false
 
       - name: Build [colcon]
@@ -98,7 +98,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
-          sparse-checkout: robotics-ai-suite/components/fast-mapping
+          sparse-checkout: src/components/fast-mapping
           persist-credentials: false
 
       - name: Build package
@@ -140,7 +140,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
-          sparse-checkout: robotics-ai-suite/components/fast-mapping
+          sparse-checkout: src/components/fast-mapping
           persist-credentials: false
 
       - name: Download debian packages

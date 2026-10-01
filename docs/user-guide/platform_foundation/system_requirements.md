@@ -4,13 +4,13 @@ The Robotics AI Suite supports the platform and middleware configurations below.
 Each Blueprint defines the hardware, drivers, packages, and peripherals that
 have been validated for its workflows.
 
-## Supported Intel Processors
+## Supported Intel® Processors
 
-| Code Name | Intel Processor
-| --- | --- |
-| Panther Lake | Series 3 Intel® Core™ Ultra Processor |
-| Wildcat Lake | Series 3 Intel® Core™ Processor |
-| Arrow Lake | Series 2 Intel® Core™ Ultra Processor |
+| Intel Processor |
+| --- |
+| Intel® Core™ Ultra Series 3 |
+| Intel® Core™ Series 3 |
+| Intel® Core™ Ultra Series 2 |
 
 ## Supported Operating Systems
 
@@ -24,7 +24,7 @@ have been validated for its workflows.
 ```{include} getting_started/fragment_configurations.md
 ```
 
-Use the [Middleware](../components/middleware/index.md) guidance to configure
+Use the [Runtime](../components/runtime/index.md) guidance to configure
 the ROS 2 distribution for the selected system profile. Before installing a
 robot application, review its Blueprint for compatible hardware, sensor,
 firmware, and package requirements.

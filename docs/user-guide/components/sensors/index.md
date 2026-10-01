@@ -6,12 +6,20 @@ Robotics AI Suite applications.
 
 ::::{grid} 2
 
-:::{grid-item-card} **Cameras**
-:link: cameras/index
+:::{grid-item-card} **GMSL Cameras**
+:link: cameras/gmsl/index
 :link-type: doc
 :link-alt: clickable cards
 
-Connect and stream uncompressed video and volumetric depth for computer vision and manipulation.
+Connect and stream uncompresed video and volumetric depth for computer vision and manipulation.
+:::
+
+:::{grid-item-card} **USB Cameras**
+:link: cameras/usb/index
+:link-type: doc
+:link-alt: clickable cards
+
+Configure and use without requiring specialized software to provide vision for perception use cases.
 :::
 
 :::{grid-item-card} **LiDAR**
@@ -24,7 +32,7 @@ Bring up 3D point clouds for mapping and obstacle avoidance.
 ::::
 
 
-## Reference Applications
+## Software Solutions
 
 Use these applications to validate RealSense cameras and process 3D point cloud data from RealSense cameras or LiDAR sensors.
 
@@ -53,7 +61,9 @@ Process 3D point cloud data to segment ground surfaces and detect traversable re
 :::{toctree}
 :hidden:
 
-Cameras <cameras/index>
+Verified Supported Edge Cameras <https://builders.intel.com/solutionslibrary/verified-supported-edge-camera>
+GMSL Camera Guide <cameras/gmsl/index>
+USB Camera Guide <cameras/usb/index>
 LiDAR <lidar>
-Reference Applications <reference_applications/index>
+Software Tutorials <reference_applications/index>
 :::

@@ -18,7 +18,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: robotics-ai-suite/components/wandering
+    working-directory: src/components/wandering
 
 jobs:
   license-check:
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
-          sparse-checkout: robotics-ai-suite/components/wandering
+          sparse-checkout: src/components/wandering
           persist-credentials: false
 
       - name: Run REUSE

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2025 Intel Corporation
+# Copyright (C) 2026 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,13 +13,10 @@
 # See the License for the specific language governing permissions
 # and limitations under the License.
 
-"""docconf.py - common configuration for docs sites"""
-
-# this file contains common configuration
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
 # pylint - sphinx doesn't use UPPER_CASE naming style for constants
 # pylint: disable=invalid-name
+# Some configurations are longer than 80 characters
+# pylint: disable=line-too-long
 
 import os
 import sys
@@ -30,10 +27,10 @@ import shutil
 
 project = "Robotics AI Suite Documentation"
 
-copyright = "2025, Intel Corporation"  # pylint: disable=redefined-builtin
+copyright = "2026, Intel Corporation"  # pylint: disable=redefined-builtin
 author = "Intel Corporation"
 
-version = "3.0"
+version = "dev"
 release = version
 
 # -- General configuration ---------------------------------------------------
@@ -44,12 +41,13 @@ warning_is_error = True
 
 # extensions
 extensions = [
-    "sphinx.ext.autosectionlabel",
+    #    "sphinx.ext.autosectionlabel",
     "sphinx.ext.intersphinx",
     "sphinx_copybutton",
     "sphinx_design",
     "sphinx_favicon",
     "sphinx_sitemap",
+    "sphinx_togglebutton",
     "sphinxcontrib.asciinema",
     #    "sphinxcontrib.images",
     "sphinxcontrib.jquery",
@@ -57,16 +55,8 @@ extensions = [
     "sphinxcontrib.openapi",
     "sphinxcontrib.spelling",
     "sphinxcontrib.video",
-    "sphinxcontrib.mermaid",
-    "sphinx_tabs.tabs",
     "myst_parser",
-    "breathe",
 ]
-
-breathe_projects = {
-    "rvc_control": "rvc/_assets/doxygen/rvc_control/xml/",
-    "rvc_vision": "rvc/_assets/doxygen/rvc_vision/xml/",
-}
 
 templates_path = ["_templates"]
 
@@ -76,10 +66,11 @@ exclude_patterns = [
     "Thumbs.db",
     ".DS_Store",
     "README.md",
+    "components/sensors/cameras/index.md",
 ]
 
 # The suffix(es) of source filenames.
-source_suffix = {".rst": "restructuredtext"}
+source_suffix = [".rst", ".md"]
 
 # text encoding
 source_encoding = "UTF-8"
@@ -91,7 +82,7 @@ language = "en"
 master_doc = "index"
 
 # rst_epilog, added to the end of every rst doc
-# include substituions in base directory
+# include substitutions in base directory
 rst_epilog = """
 .. include:: /substitutions.txt
 """
@@ -104,54 +95,58 @@ myst_substitutions = {}
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 3
 
-# list of words that shouldn't fail the spellchecker
-spelling_word_list_filename = [
-    "../dict.txt",
-]
-
 spelling_filters = ["sphinxcontrib.spelling.filters.ContractionFilter"]
 
-spelling_exclude_patterns = [
-    "release_notes/containers_helm_charts*",
-    "release_notes/third_party_components*",
-]
+spelling_exclude_patterns = []
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 html_title = "Robotics AI Suite Documentation"
-# Conditionally use Spark Sphinx theme if available, fallback to PyData theme
-try:
-    import spark_sphinx_theme
-except ImportError:
-    html_theme = "pydata_sphinx_theme"
-else:
-    html_theme = "spark_sphinx_theme"
+html_theme = "pydata_sphinx_theme"
 
-# these are specific to the spark_sphinx_theme
 html_context = {
-    "default_mode": "auto",
-    "header_variant": "spark-color",
-    "footer_variant": "simple",
-    "content_width": "large",
-    "color_scheme": "tb",
+    "default_mode": "dark",
 }
+
 html_theme_options = {
-    "navigation_depth": 3,
+    "navigation_depth": 6,
     "show_toc_level": 1,
     "show_nav_level": 1,
     # "collapse_navigation": False,
     # "navigation_with_keys": True,
     # Navbar Configuration
     # "navbar_start": [],  # Logo on the left
-    "navbar_center": ["navbar-nav"],  # Main navigation in the center
+    # Custom links (see _templates/navbar-links.html) mirroring the Docusaurus navbar.
+    "navbar_center": ["navbar-links"],
     # "navbar_end": ["search-field"],  # Search + Theme Switcher on the right
     "header_links_before_dropdown": 4,
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/open-edge-platform/robotics-ai-suite",
+            "icon": "fa-brands fa-github",
+            "type": "fontawesome",
+        }
+    ],
     "logo": {
-        "text": "Robotics AI Suite",
+        "text": "Robotics Dev Resources",
+        "link": "/",
         # "image_dark": "_static/logo-dark.svg",
     },
     "show_prev_next": False,
 }
+# common theme options
+html_baseurl = "https://docs.robotics.intel.com/"
+html_favicon = "_static/logo.svg"
+# html_show_sourcelink = True  # Show source link
+html_show_sphinx = False  # Hide "Built with Sphinx"
+html_static_path = ["_static"]
+html_css_files = ["./css/customstyle.css", "./css/menu-position-rules.css"]
+html_js_files = ["external-links.js"]
+
+# Omit the language segment from sitemap URLs (default scheme is "{lang}{version}{link}")
+sitemap_url_scheme = "{version}{link}"
+
 # Dynamically add switcher content if switcher_data.txt exists
 switcher_data_file = os.path.dirname(os.path.abspath(__file__)) + "/switcher_data.txt"
 if os.path.isfile(switcher_data_file):
@@ -167,23 +162,17 @@ if os.path.isfile(switcher_data_file):
     }
     html_theme_options.update(html_theme_options_append)
 
-# common theme options
-html_baseurl = (
-    "https://docs.openedgeplatform.intel.com/edge-ai-suites/robotics-ai-suite/"
-)
-html_favicon = "_static/logo.svg"
-html_show_sourcelink = True  # Show source link
-html_show_sphinx = False  # Hide "Built with Sphinx"
-html_static_path = ["_static"]
-
 # Linkcheck options
 linkcheck_timeout = 5
 linkcheck_retries = 4
+linkcheck_workers = 20  # Specify number of worker threads
 
 linkcheck_ignore = [
     "https://www.intel.com/",
     "https://ark.intel.com/",
     "../static",  # ignore links to OpenAPI docs
+    "localhost",
+    "127.0.0.1",
 ]
 
 # replacement user agent to avoid 403 errors
@@ -200,56 +189,132 @@ linkcheck_exclude_documents = [
     "release_notes/third_party_components*",
 ]
 
+myst_fence_as_directive = ["mermaid"]
 myst_heading_anchors = 5
-suppress_warnings = ["myst.xref_missing"]
+suppress_warnings = ["myst.xref_missing", "myst.domains"]
 myst_enable_extensions = [
     "attrs_inline",
     "attrs_block",
     "substitution",
     "colon_fence",
+    "alert",
 ]
 
+# -- Functions for handling linkcheck ignore and substitutions lists ---------
+# Allow appending to linkcheck_ignore
+linkcheck_ignore_append = []
+linkcheck_ignore_append_file = str(pathlib.Path.cwd()) + "/linkcheck_ignore_append.txt"
+if os.path.isfile(linkcheck_ignore_append_file):
+    with open(linkcheck_ignore_append_file, encoding="utf-8") as file:
+        linkcheck_ignore_append = [line.strip() for line in file if line.strip()]
 
+
+# -- Functions for uncommenting hidden directives in Markdown files ----------
 def show_hidden_directives(app, config):  # pylint: disable=unused-argument
     """
     Remove custom html comment tags used to hide the Sphinx directives in .md files
     """
+    found_file = 0
     mdocs = pathlib.Path(__file__).parent
     mdfiles = glob.iglob(os.path.join(mdocs, "*/**/*.md"), recursive=True)
     for md in mdfiles:
-        if os.path.isfile(md):
-            try:
-                with open(md, "r+", encoding="utf-8") as md_file:
-                    contents = md_file.read()
-                    start_tag = re.findall(r"<!--\s{0,2}hide.{0,2}directive", contents)
-                    if start_tag:
-                        # Remove the "<!--hide_directive" comment tag that hides content in GitHub.
-                        rm_start_tag = [
-                            (re.sub(r"<!--\s{0,2}hide.{0,2}directive", "", h))
-                            for h in start_tag
-                        ]
-                        for a, b in zip(start_tag, rm_start_tag):
-                            contents = contents.replace(a, b)
-                        # Remove the "hide_directive-->" comment tag that hides content in GitHub.
-                        end_tag = re.findall(r"hide.{0,2}directive\s{0,2}-->", contents)
-                        rm_end_tag = [
-                            (re.sub(r"hide.{0,2}directive\s{0,2}-->", "", i))
-                            for i in end_tag
-                        ]
-                        for c, d in zip(end_tag, rm_end_tag):
-                            contents = contents.replace(c, d)
-                        md_file.seek(0)
-                        md_file.write(contents)
-                        md_file.truncate()
-                        print("Uncommented directives in " + str(md))
-            except Exception:  # pylint: disable=broad-exception-caught
-                pass
+        if not os.path.isfile(md):
+            continue
+        try:
+            with open(md, "r+", encoding="utf-8") as md_file:
+                contents = md_file.read()
+                if not re.search(r"<!--\s{0,2}hide.{0,2}directive", contents):
+                    continue
+                # Remove the "<!--hide_directive" comment tag that hides content in GitHub.
+                for tag in re.findall(r"<!--\s{0,2}hide.{0,2}directive", contents):
+                    contents = contents.replace(
+                        tag, re.sub(r"<!--\s{0,2}hide.{0,2}directive", "", tag)
+                    )
+                # Remove the "hide_directive-->" comment tag that hides content in GitHub.
+                for tag in re.findall(r"hide.{0,2}directive\s{0,2}-->", contents):
+                    contents = contents.replace(
+                        tag, re.sub(r"hide.{0,2}directive\s{0,2}-->", "", tag)
+                    )
+                md_file.seek(0)
+                md_file.write(contents)
+                md_file.truncate()
+                found_file += 1
+        except Exception:  # pylint: disable=broad-exception-caught
+            pass
+    print(f"Uncommented directives in {found_file} files", flush=True)
 
 
+def filter_blueprints_sidebar(html_content):
+    """
+    Jinja filter: For pages under hardware_blueprints, filter the sidebar toctree
+    so it only displays the Hardware Blueprints section.
+    """
+    from bs4 import BeautifulSoup
+    from markupsafe import Markup
+
+    is_soup = isinstance(html_content, BeautifulSoup)
+    soup = html_content if is_soup else BeautifulSoup(str(html_content), "html.parser")
+
+    current_keep = False
+    elements_to_remove = []
+    for child in list(soup.children):
+        if child.name == "p" and "caption" in child.get("class", []):
+            caption_text = child.get_text(strip=True)
+            current_keep = "blueprint" in caption_text.lower()
+        if not current_keep:
+            elements_to_remove.append(child)
+    for el in elements_to_remove:
+        el.decompose()
+
+    if is_soup:
+        return soup
+    return Markup(str(soup))
+
+
+def filter_development_stack_sidebar(html_content):
+    """
+    Jinja filter: For development stack pages (outside hardware_blueprints),
+    filter the sidebar toctree so it hides the Hardware Blueprints section.
+    """
+    from bs4 import BeautifulSoup
+    from markupsafe import Markup
+
+    is_soup = isinstance(html_content, BeautifulSoup)
+    soup = html_content if is_soup else BeautifulSoup(str(html_content), "html.parser")
+
+    current_keep = True
+    elements_to_remove = []
+    for child in list(soup.children):
+        if child.name == "p" and "caption" in child.get("class", []):
+            caption_text = child.get_text(strip=True)
+            current_keep = "blueprint" not in caption_text.lower()
+        if not current_keep:
+            elements_to_remove.append(child)
+    for el in elements_to_remove:
+        el.decompose()
+
+    if is_soup:
+        return soup
+    return Markup(str(soup))
+
+
+def register_custom_jinja_filters(app):
+    """
+    Register custom filters with the Sphinx Jinja2 environment.
+    """
+    if hasattr(app.builder, "templates") and hasattr(app.builder.templates, "environment"):
+        app.builder.templates.environment.filters["filter_blueprints_sidebar"] = (
+            filter_blueprints_sidebar
+        )
+        app.builder.templates.environment.filters["filter_development_stack_sidebar"] = (
+            filter_development_stack_sidebar
+        )
+
+
+# -- Function for setting up Sphinx extensions and event handlers ------------
 def setup(app):
     """
     Sphinx entrypoint function
     """
     app.connect("config-inited", show_hidden_directives)
-    app.add_css_file("robotics-custom.css")
-    app.add_js_file("robotics-custom.js")
+    app.connect("builder-inited", register_custom_jinja_filters)

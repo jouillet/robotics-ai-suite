@@ -1,22 +1,22 @@
 # Deploying `wandering` on Clearpath Jackal
 
-This software reference details how to deploy and run the `wandering` mobile robot application on a Clearpath Robotics Jackal robot upgraded with an Intel® Core™ Ultra Series 3 "Panther Lake" (PTL) onboard compute board (e.g., Intel Core Ultra X7 358H reference platform).
+This software reference details how to deploy and run the `wandering` mobile robot application on a Clearpath Robotics Jackal robot upgraded with an Intel® Core™ Ultra Series 3 onboard compute board (e.g., Intel® Core™ Ultra X7 358H reference platform).
 
-The pipeline combines Intel® RealSense™ depth camera sensing, RTAB-Map visual SLAM, multi-sensor point cloud fusion (`adbscan_sensor_fusion`), fast 3D clustering obstacle perception (`adbscan_ros2`), Nav2 navigation with custom costmap layers (`nav2_adbscan_layer`), and autonomous frontier exploration (`wandering_app`).
+The pipeline combines RealSense depth camera sensing, RTAB-Map visual SLAM, multi-sensor point cloud fusion (`adbscan_sensor_fusion`), fast 3D clustering obstacle perception (`adbscan_ros2`), Nav2 navigation with custom costmap layers (`nav2_adbscan_layer`), and autonomous frontier exploration (`wandering_app`).
 
 ## Architecture
 
-The Panther Lake onboard compute board handles on-robot perception, SLAM, costmap marking, and autonomous navigation:
+The Intel® Core™ Ultra Series 3 onboard compute board handles on-robot perception, SLAM, costmap marking, and autonomous navigation:
 
 ```{mermaid}
 flowchart TD
-    subgraph Hardware["Onboard Hardware (Clearpath Jackal + Panther Lake)"]
-        RS["Intel® RealSense™ Camera\n(RGB-D PointCloud2 & Depth)"]
+    subgraph Hardware["Onboard Hardware (Clearpath Jackal + Intel® Core™ Ultra Series 3)"]
+        RS["RealSense Camera\n(RGB-D PointCloud2 & Depth)"]
         LiDAR3D["360° 3D LiDAR (e.g. Velodyne Puck)\n(PointCloud2)"]
         BaseServices["Clearpath Base Services / MCU\n(Encoders, IMU, Teleop Mux)"]
     end
 
-    subgraph Perception["Onboard Perception & SLAM (Panther Lake)"]
+    subgraph Perception["Onboard Perception & SLAM (Intel® Core™ Ultra Series 3)"]
         D2L["depthimage_to_laserscan\n(/scan)"]
         Fusion["adbscan_sensor_fusion\n(Time-sync & Voxel filter)"]
         ADBSCAN["ADBSCAN Node\n(3D Clustering)"]
@@ -50,7 +50,7 @@ flowchart TD
 
 ### Perception and Navigation Pipeline
 
-1. **Depth Sensing & 2D Scan Derivation**: The onboard Intel RealSense camera provides depth and color streams. The `depthimage_to_laserscan` node projects depth images into a 2D `/scan` topic used for SLAM and base obstacle clearing.
+1. **Depth Sensing & 2D Scan Derivation**: The onboard RealSense camera provides depth and color streams. The `depthimage_to_laserscan` node projects depth images into a 2D `/scan` topic used for SLAM and base obstacle clearing.
 2. **Visual SLAM**: `dep_rtabmap_jackal` runs RTAB-Map visual SLAM with RGB-D synchronization, producing real-time 3D and 2D occupancy mapping, loop closure, and the `map` $\rightarrow$ `odom` coordinate frame transform.
 3. **Sensor Fusion**: `adbscan_sensor_fusion` time-synchronizes the 2D scan and 3D point cloud (from either the RealSense camera or an optional 360° 3D LiDAR such as a Velodyne Puck), transforms them into the `base_link` frame, and applies voxel downsampling to generate `/adbscan/points`.
 4. **3D Obstacle Perception**: `adbscan_ros2` executes 3D density-based spatial clustering on `/adbscan/points`, detecting object-sized obstacles and publishing `nav2_dynamic_msgs/ObstacleArray` messages on `/obstacle_array`.
@@ -61,10 +61,10 @@ flowchart TD
 
 Before deploying the pipeline:
 
-1. **Hardware Setup**: Follow the [Clearpath Robotics Jackal setup](../../../hardware_blueprints/amr/clearpath-jackal.md) guide to install the Panther Lake onboard compute board, mount and connect the Intel RealSense camera (e.g. D435i), and configure the robot network and MCU firmware.
+1. **Hardware Setup**: Follow the [Clearpath Robotics Jackal setup](../../../hardware_blueprints/amr/clearpath-jackal.md) guide to install the Intel® Core™ Ultra Series 3 onboard compute board, mount and connect the RealSense camera (e.g. D435i), and configure the robot network and MCU firmware.
 2. **Clearpath Base Services**: Verify that the Clearpath systemd services (`clearpath-platform.service`, `clearpath-sensors.service`, `clearpath-robot.service`) are active and publishing topics under the robot's namespace.
 3. **Motor Control**: Verify motor control and drive commands following the [Validate Motor Control](../../../hardware_blueprints/amr/clearpath-jackal.md#validate-motor-control) section.
-4. **Target Environment**: Ensure Ubuntu 24.04 LTS with ROS 2 Jazzy (or Ubuntu 22.04 LTS with ROS 2 Humble) is installed on the Panther Lake board along with OpenVINO™ packages and Intel® NPU drivers (if applicable for Intel Core Ultra).
+4. **Target Environment**: Ensure Ubuntu 24.04 LTS with ROS 2 Jazzy (or Ubuntu 22.04 LTS with ROS 2 Humble) is installed on the Intel® Core™ Ultra Series 3 board along with OpenVINO™ packages and Intel NPU drivers (if applicable for Intel® Core™ Ultra).
 
 ## Install the Application
 
@@ -124,7 +124,7 @@ Clearpath Jackal base services publish transforms and topics under a robot names
 export ROBOT_NAMESPACE=/j100_0812
 ```
 
-### Autonomous Exploration Mode (Default: Intel RealSense Depth Sensing)
+### Autonomous Exploration Mode (Default: RealSense Depth Sensing)
 
 Launch the complete autonomous pipeline using the RealSense depth camera:
 

@@ -55,7 +55,7 @@ Complete the [Getting Started](../../platform_foundation/getting_started.md) gui
 1. Prepare the environment:
 
    ```bash
-   sudo apt install liborb-lze-dev libgflags-dev
+   sudo apt install liborb-lze-dev build-essential cmake libgflags-dev libopencv-dev
    cp -r /opt/intel/orb_lze/samples/ ~/orb_lze_samples
    cd ~/orb_lze_samples/
    ```
@@ -65,6 +65,7 @@ Complete the [Getting Started](../../platform_foundation/getting_started.md) gui
 3. Build the code:
 
    ```bash
+   source /opt/intel/oneapi/setvars.sh
    mkdir build && cd build
    cmake ../
    make -j

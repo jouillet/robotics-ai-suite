@@ -7,11 +7,11 @@ Isaac-GR00T is an open embodied AI foundation-model stack for robot manipulation
 :width: 85%
 ```
 
-This project demonstrates an implementation the gr00t n1.7 using the OpenVINO toolkit, specifically accelerating inference on Intel platforms. It provides a comprehensive end-to-end pipeline.
+This project demonstrates an implementation the gr00t n1.7 using the OpenVINO™ toolkit, specifically accelerating inference on Intel platforms. It provides a comprehensive end-to-end pipeline.
 
 ## Installation
 
-This project extends the open-source project [isaac-gr00t](https://github.com/NVIDIA/Isaac-GR00T) to provide OpenVINO acceleration features on Intel compute platforms. Get [the source code](https://github.com/open-edge-platform/edge-ai-suites/tree/main/robotics-ai-suite/pipelines/gr00t-n1d7-ov) from the Open Edge Platform repo. To set up the environment, you need to initialize and patch the submodule:
+This project extends the open-source project [isaac-gr00t](https://github.com/NVIDIA/Isaac-GR00T) to provide OpenVINO™ acceleration features on Intel compute platforms. Get [the source code](https://github.com/open-edge-platform/edge-ai-suites/tree/main/robotics-ai-suite/pipelines/gr00t-n1d7-ov) from the Open Edge Platform repo. To set up the environment, you need to initialize and patch the submodule:
 
 ```bash
 git submodule update --init --recursive isaac-gr00t
@@ -48,7 +48,7 @@ pip install -e . --extra-index https://download.pytorch.org/whl/cpu
 
 ## Model Preparation
 
-Running model inference with the OpenVINO toolkit requires converting the model to the OpenVINO IR format.
+Running model inference with the OpenVINO™ toolkit requires converting the model to the OpenVINO™ IR format.
 You can download the finetuned checkpoint form HF on a simulation task for convenience.
 
 ```bash
@@ -63,7 +63,7 @@ Alternatively, you can convert your own checkpoints trained using the Gr00t fram
 
 ### Convert Gr00t n1.7 model
 
-To convert the standard Gr00t n1.7 model to OpenVINO single-IR, use the `export_ov_n1d7_single_ov.py` script.
+To convert the standard Gr00t n1.7 model to OpenVINO™ single-IR, use the `export_ov_n1d7_single_ov.py` script.
 
 **Arguments:**
 
@@ -71,7 +71,7 @@ To convert the standard Gr00t n1.7 model to OpenVINO single-IR, use the `export_
 - `--dataset-path`: optional; use a real sample source to capture representative input shapes, or omit it to use dummy capture mode
 - `--embodiment-tag`: embodiment configuration to load from the checkpoint and sample
 - `--output-dir`: directory where the merged IR, metadata, and copied checkpoint config files are written
-- `--precision fp16`: save the exported OpenVINO weights with fp16 compression
+- `--precision fp16`: save the exported OpenVINO™ weights with fp16 compression
 - `--device`: optional; defaults to `cpu`; this script also falls back to CPU for OV verification if the requested OV device is unavailable
 - `--llm-lang-tokens`: optional; reserve 64 language-token slots here for static-sequence export, or omit it to bake in the captured sequence length
 
@@ -90,7 +90,7 @@ uv run python scripts/deployment/export_ov_n1d7_single_ov.py \
   --llm-lang-tokens 64
 ```
 
-To convert the standard Gr00t n1.7 model to Osplit-component OpenVINO, use the `export_ov_n1d7.py` script.
+To convert the standard Gr00t n1.7 model to Osplit-component OpenVINO™, use the `export_ov_n1d7.py` script.
 
 **Arguments:**
 
@@ -100,7 +100,7 @@ To convert the standard Gr00t n1.7 model to Osplit-component OpenVINO, use the `
 - `--output-dir`: directory where the exported component IR files, metadata, and copied checkpoint config files are written
 - `--export-mode full_pipeline`: export ViT + LLM + VL self-attention + action head
 - `--use-fused-dit`: optional; export the fused denoising loop instead of a separate DiT IR when supported
-- `--precision fp16`: save the exported OpenVINO weights with fp16 compression
+- `--precision fp16`: save the exported OpenVINO™ weights with fp16 compression
 - `--device`: optional; defaults to `cpu`, or set it to `cuda` when you want export-time PyTorch execution on GPU
 - `--llm-lang-tokens`: optional; reserve 64 language-token slots here for static-sequence export, or omit it to bake in the captured sequence length
 
@@ -138,8 +138,8 @@ uv run python scripts/deployment/run_base_single_ov_inference.py \
 - `--ov-model-dir`: directory containing exactly one merged single-OV XML model
 - `--embodiment-tag LIBERO_PANDA`: embodiment configuration to use for dummy input generation and inference
 - `--num-samples`: optional; number of timed inference iterations, default `10`
-- `--device GPU`: run OpenVINO inference on the GPU plugin
-- `--static-shape`: optional; reshape the single OpenVINO model to the actual input shapes before compilation
+- `--device GPU`: run OpenVINO™ inference on the GPU plugin
+- `--static-shape`: optional; reshape the single OpenVINO™ model to the actual input shapes before compilation
 
 Run the `run_base_ov_inference.py` script to benchmark the multi-component full policy inference pipeline, which includes preprocessing, model inference, and postprocessing.
 
@@ -156,10 +156,10 @@ uv run python scripts/deployment/run_base_ov_inference.py \
 
 **Arguments:**
 
-- `--ov-model-dir`: directory containing the exported multi-component OpenVINO IR files
+- `--ov-model-dir`: directory containing the exported multi-component OpenVINO™ IR files
 - `--embodiment-tag LIBERO_PANDA`: embodiment configuration to use for dummy input generation and inference
 - `--num-samples 10`: run 10 timed inference iterations
-- `--device GPU`: run OpenVINO inference on the GPU plugin
+- `--device GPU`: run OpenVINO™ inference on the GPU plugin
 - `--static-shape`: optional; reshape each OV component to static shapes captured from the first inference call before compilation
 - `--use-fused-dit`: optional; use the fused DiT IR when `dit_fused_*.xml` is present. If it is missing, the runtime falls back to the non-fused 3-component action-head path when those files are available
-- `--full-ov`: enable the full OpenVINO path for ViT, LLM, VL self-attention, and action head
+- `--full-ov`: enable the full OpenVINO™ path for ViT, LLM, VL self-attention, and action head

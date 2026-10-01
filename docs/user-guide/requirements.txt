@@ -2,42 +2,42 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Sphinx
-sphinx~=7.4.7
+sphinx~=9.1.0
 
 # Themes
-pydata-sphinx-theme~=0.16.1
+pydata-sphinx-theme~=0.21.0
 
-# Extensions
-sphinx_design~=0.6.1
+# Frontend Extensions
+sphinx_design~=0.7.0
 sphinx-copybutton~=0.5.2
+sphinxcontrib-contentui~=0.2.5
+sphinxcontrib-video~=0.4.2
+sphinx-togglebutton~=0.3.2
+sphinxcontrib-images~=0.9.4
+sphinxcontrib-mermaid~=1.0.0
+sphinxcontrib-jquery~=4.1
+
+# Build System Extensions
+myst-parser~=5.1
+breathe~=4.36.0
 sphinx-favicon~=1.0.1
 sphinx-sitemap~=2.6.0
-sphinxcontrib-images~=0.9.4
-sphinxcontrib-jquery~=4.1
-sphinxcontrib-mermaid~=1.0.0
-sphinxcontrib-openapi~=0.8.4
-sphinxcontrib-spelling~=8.0.0
-sphinxcontrib.asciinema~=0.4.2
 sphinx-autobuild~=2024.10.3
-sphinxcontrib-contentui~=0.2.5
-sphinxcontrib-video~=0.4.1
-sphinxcontrib-mermaid~=1.0.0
-sphinx-tabs~=3.4.7
-myst-parser~=3.0.1
-
-# documentation linting
-doc8~=1.1.2
+sphinxcontrib-openapi~=0.8.4
+swagger-plugin-for-sphinx~=7.2.1
+sphinxcontrib.asciinema~=0.4.2
 
 # license check
-reuse~=5.0.2
+reuse~=6.2.0
 
 # autogeneration
 ruamel.yaml~=0.18.10
 jinja2~=3.1.6
 
 # linting and formatting
+doc8~=1.1.2
 pylint~=3.3.4
+black>=26.3.1
 yamllint~=1.35.1
+sphinxcontrib-spelling~=8.0.0
 
-# Doxygen
-breathe~=4.35.0

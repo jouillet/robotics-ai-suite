@@ -18,7 +18,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: robotics-ai-suite/components/groundfloor
+    working-directory: src/components/groundfloor
 
 jobs:
   lint:
@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
           fetch-depth: 0
-          sparse-checkout: ./robotics-ai-suite/components/groundfloor
+          sparse-checkout: ./src/components/groundfloor
           persist-credentials: false
 
       - name: Lint
@@ -44,7 +44,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
-          sparse-checkout: robotics-ai-suite/components/groundfloor
+          sparse-checkout: src/components/groundfloor
           persist-credentials: false
 
       - name: Run REUSE
