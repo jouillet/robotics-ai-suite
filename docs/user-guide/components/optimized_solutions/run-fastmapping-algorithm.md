@@ -66,7 +66,7 @@ flowchart TD
 ## Source Code
 
 The source repository for this component is hosted at:
-[FastMapping on GitHub](https://github.com/open-edge-platform/edge-ai-suites/tree/main/robotics-ai-suite/components/fast-mapping)
+[FastMapping on GitHub](https://github.com/open-edge-platform/robotics-ai-suite/tree/main/src/components/fast-mapping)
 
 ---
 
@@ -74,7 +74,7 @@ The source repository for this component is hosted at:
 
 ### Supported Systems
 
-Complete target platform configuration following the [Platform Foundation Getting Started Guide](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html).
+Complete target platform configuration following the [Platform Foundation Getting Started Guide](../../platform_foundation/getting_started.md).
 
 ### Install via APT
 
@@ -321,7 +321,7 @@ ros2 launch fast_mapping fast_mapping.launch.py
 ```
 
 Expected video demonstration:
-[FastMapping Sample Video](https://github.com/open-edge-platform/edge-ai-suites/blob/main/robotics-ai-suite/docs/robotics/videos/fast_mapping.mp4)
+[FastMapping Sample Video](../../software_references/amr/videos/fast_mapping.mp4)
 
 ---
 
@@ -372,4 +372,4 @@ To manually visualize FastMapping outputs in an existing RViz2 session:
 - **`[fast_mapping] Image has distortion. Not yet supported!`**
   - **Cause:** Camera provides raw unrectified depth with significant distortion coefficients.
   - **Resolution:** Use rectified depth topics (e.g., `aligned_depth_to_color/image_raw` or `image_rect_raw`).
-- **For general platform assistance**, refer to the [Robotics AI Suite Troubleshooting Guide](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/resources/troubleshooting.html).
+- **For general platform assistance**, refer to the [Robotics AI Suite Troubleshooting Guide](../../resources/troubleshooting.md).

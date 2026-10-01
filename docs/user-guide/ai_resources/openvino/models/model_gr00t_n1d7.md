@@ -11,7 +11,7 @@ This project demonstrates an implementation the gr00t n1.7 using the OpenVINO™
 
 ## Installation
 
-This project extends the open-source project [isaac-gr00t](https://github.com/NVIDIA/Isaac-GR00T) to provide OpenVINO™ acceleration features on Intel compute platforms. Get [the source code](https://github.com/open-edge-platform/edge-ai-suites/tree/main/robotics-ai-suite/pipelines/gr00t-n1d7-ov) from the Open Edge Platform repo. To set up the environment, you need to initialize and patch the submodule:
+This project extends the open-source project [isaac-gr00t](https://github.com/NVIDIA/Isaac-GR00T) to provide OpenVINO™ acceleration features on Intel compute platforms. Get [the source code](https://github.com/open-edge-platform/robotics-ai-suite/tree/main/src/pipelines/gr00t-n1d7-ov) from the Open Edge Platform repo. To set up the environment, you need to initialize and patch the submodule:
 
 ```bash
 git submodule update --init --recursive isaac-gr00t

@@ -162,7 +162,7 @@ cd ~/physical-ai-studio/application/ui && nvm use && npm run start  # terminal 2
 
 ## Additional Resource Links
 
-- [Robotics AI Suite](https://docs.openedgeplatform.intel.com/dev/ai-suite-robotics.html)
+- [Robotics AI Suite](../ai-suite-robotics.md)
 - [NPU Driver](https://github.com/intel/linux-npu-driver)
 - [iGPU Driver](https://dgpu-docs.intel.com/installation-guides/installing-packages-from-the-intel-ppa.html)
 - [Physical AI Studio](https://github.com/open-edge-platform/physical-ai-studio)
