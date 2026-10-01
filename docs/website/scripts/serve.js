@@ -9,7 +9,7 @@ const serveHandler = require("serve-handler");
 const baseUrl = (process.env.BASE_URL || "/").replace(/\/?$/, "/");
 const host = process.env.HOST || "127.0.0.1";
 const port = Number(process.env.PORT || 3000);
-const publicDir = path.resolve(__dirname, "..", "build");
+const publicDir = process.env.SITE_BUILD_DIR || path.resolve(__dirname, "..", "build");
 
 http.createServer((request, response) => {
   let url;

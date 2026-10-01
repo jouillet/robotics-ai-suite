@@ -150,6 +150,7 @@ node_modules/
 build/
 # Staged Sphinx HTML copied in by plugins/sphinx-docs.js
 docs/website/.sphinx-static/
+docs/website/.serve.lock
 
 # Sphinx "Development Stack" build output and venv
 docs/out/

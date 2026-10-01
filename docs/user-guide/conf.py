@@ -71,7 +71,7 @@ exclude_patterns = [
 ]
 
 # The suffix(es) of source filenames.
-source_suffix = [".rst", ".md"]
+source_suffix = [".rst_", ".rst", ".md"]
 
 # text encoding
 source_encoding = "UTF-8"

@@ -46,9 +46,9 @@ This section explains the procedure to configure the APT package manager to use 
    ```bash
    wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
    echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list > /dev/null
-   echo -e "Package: intel-oneapi-runtime-*\nPin: version 2025.3.*\nPin-Priority: 1001\n" | sudo tee /etc/apt/preferences.d/oneapi > /dev/null
-   echo -e "Package: intel-oneapi-compiler-*\nPin: version 2025.3.*\nPin-Priority: 1001\n" | sudo tee -a /etc/apt/preferences.d/oneapi > /dev/null
-   echo -e "Package: intel-oneapi-mkl-*\nPin: version 2025.3.*\nPin-Priority: 1001" | sudo tee -a /etc/apt/preferences.d/oneapi > /dev/null
+   echo -e "Package: intel-oneapi-runtime-*\nPin: version 2026.1.*\nPin-Priority: 1001\n" | sudo tee /etc/apt/preferences.d/oneapi > /dev/null
+   echo -e "Package: intel-oneapi-compiler-*\nPin: version 2026.1.*\nPin-Priority: 1001\n" | sudo tee -a /etc/apt/preferences.d/oneapi > /dev/null
+   echo -e "Package: intel-oneapi-mkl-*\nPin: version 2026.1.*\nPin-Priority: 1001" | sudo tee -a /etc/apt/preferences.d/oneapi > /dev/null
    ```
 
 6. For the latest Intel graphics support, add the ``kobuk`` PPA. For Ubuntu 22, `kisak` is used:
