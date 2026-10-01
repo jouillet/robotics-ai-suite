@@ -4,11 +4,18 @@ The **Robotics AI Suite** is a preview collection of robotics applications, libr
 
 ## Website
 
-The Sphinx user guide lives in `docs/user-guide/`, and the Docusaurus site lives in `docs/.website/`. Build and serve the complete site locally with:
+The Sphinx user guide lives in `docs/user-guide/`, and the Docusaurus site lives in `docs/website/`. Build and serve the complete site locally with:
 
 ```bash
 make build
 make serve
+```
+
+For a PR-style preview, use the same prefix when building and serving:
+
+```bash
+BASE_URL=/pr/2/ make build
+BASE_URL=/pr/2/ make serve
 ```
 
 The **Robotics AI Suite** is organized into **collections** that group workflows and capabilities for different robot categories. Each collection provides:

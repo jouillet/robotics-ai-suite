@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="_static/css/style_home_section_tiles.css">
+<link rel="stylesheet" type="text/css" href="../_static/css/style_home_section_tiles.css">
 
 # Robotics AI Suite
 

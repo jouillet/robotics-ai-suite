@@ -40,14 +40,14 @@ jobs:
         with:
           node-version: 22.12.0
           cache: npm
-          cache-dependency-path: docs/.website/package-lock.json
+          cache-dependency-path: docs/website/package-lock.json
 
       - name: Install dependencies
-        working-directory: docs/.website
+        working-directory: docs/website
         run: npm ci
 
       - name: Build Sphinx and Docusaurus
-        working-directory: docs/.website
+        working-directory: docs/website
         env:
           BASE_URL: ${{ github.event_name == 'pull_request' && format('/pr/{0}/', github.event.number) || '/' }}
           HF_ORG: ${{ vars.HF_ORG }}
@@ -55,14 +55,17 @@ jobs:
 
       - name: Check PR preview routes
         if: github.event_name == 'pull_request'
-        working-directory: docs/.website
+        working-directory: docs/website
         env:
           PREVIEW_BASE: /pr/${{ github.event.number }}/
         run: |
           test -s build/index.html
           test -s build/models/index.html
           test -s build/development-stack/ai-suite-robotics/index.html
+          test -s build/development-stack/_static/styles/pydata-sphinx-theme.css
           test -s build/search-index.json
+          grep -Fq 'href="../_static/styles/pydata-sphinx-theme.css?digest=' build/development-stack/ai-suite-robotics/index.html
+          grep -Fq 'href="../_static/css/style_home_section_tiles.css"' build/development-stack/ai-suite-robotics/index.html
           grep -Fq "href=\"${PREVIEW_BASE}models/\"" build/development-stack/ai-suite-robotics/index.html
           grep -Fq "href=\"${PREVIEW_BASE}development-stack/ai-suite-robotics/\"" build/development-stack/ai-suite-robotics/index.html
 
@@ -70,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5.0.0
         with:
           name: website
-          path: docs/.website/build/
+          path: docs/website/build/
           if-no-files-found: error
 
   cleanup-pr-preview:

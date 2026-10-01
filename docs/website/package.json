@@ -10,7 +10,7 @@
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
+    "serve": "node scripts/serve.js",
     "test:mobile": "node scripts/check-mobile-viewports.js"
   },
   "dependencies": {
@@ -27,7 +27,8 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^10.1.0",
     "recharts": "^3.10.1",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "serve-handler": "6.1.7"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.7.0",

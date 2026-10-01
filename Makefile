@@ -87,20 +87,20 @@ sphinx-spelling: $(VENV_DIR)
     sphinx-build -b spelling "$(SOURCEDIR)" "$(OUT_DIR)/spelling"
 
 build: ## Build the documentation website
-	npm ci --prefix docs/.website
-	npm run build --prefix docs/.website
+	npm ci --prefix docs/website
+	npm run build --prefix docs/website
 
 serve: ## Serve the built documentation website locally
-	npm run serve --prefix docs/.website
+	npm run serve --prefix docs/website
 
 ### cleanup targets ###
 clean: ## delete website build artifacts
 	$(MAKE) -C docs clean
-	rm -rf docs/.website/build docs/.website/.docusaurus docs/.website/.sphinx-static
+	rm -rf docs/website/build docs/website/.docusaurus docs/website/.sphinx-static
 
 clean-all: clean ## delete all built artifacts and downloaded tools
 	$(MAKE) -C docs clean-all
-	rm -rf docs/.website/node_modules
+	rm -rf docs/website/node_modules
 
 ### documentation generation targets ###
 generate: docs/shared/shared_iam_groups.rst  ## generate role documentation from config
