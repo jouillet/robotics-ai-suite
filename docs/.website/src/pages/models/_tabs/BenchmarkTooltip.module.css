@@ -1,0 +1,57 @@
+.tooltip {
+  background: #031233;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 220px;
+  box-shadow:
+    0 4px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 1px var(--geti-color-energy-blue, #00c7fd),
+    0 0 20px rgba(0, 199, 253, 0.12);
+}
+
+.tooltipTitle {
+  margin: 0 0 12px;
+  font-family: var(--geti-font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--geti-color-white, #fff);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--geti-color-divider, rgba(255, 255, 255, 0.08));
+}
+
+.tooltipGroup {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--geti-color-divider, rgba(255, 255, 255, 0.08));
+}
+
+.tooltipGroup:first-of-type {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.tooltipHardware {
+  margin: 0 0 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--geti-color-white);
+}
+
+.tooltipRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  padding: 3px 0;
+  color: var(--geti-color-white);
+}
+
+.tooltipValue {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--geti-color-energy-blue, #00c7fd);
+}

@@ -1,0 +1,65 @@
+.imageContainer {
+  gap: var(--size-40);
+  padding: var(--size-48);
+  border-radius: var(--size-8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    url("../../../../static/img/robot-perception/gradient-bk-blue-2.png"),
+    url("../../../../static/img/robot-perception/gradient-bk-blue-2.png");
+  mix-blend-mode: plus-lighter;
+  background-size: cover;
+}
+
+.title {
+  font-size: var(--size-36);
+  font-weight: 600;
+  line-height: var(--size-48);
+  text-shadow: var(--size-2) var(--size-2) 0 #171462db;
+  color: var(--geti-color-white);
+}
+
+@media (max-width: 768px) {
+  .imageContainer {
+    flex-direction: column-reverse;
+    padding: var(--size-24) var(--size-20);
+    gap: var(--size-24);
+
+    img {
+      max-width: 200px;
+      height: auto;
+    }
+  }
+
+  .title {
+    font-size: var(--size-24);
+    line-height: var(--size-32);
+  }
+}
+
+.description {
+  font-size: var(--size-16);
+  font-weight: 600;
+  line-height: var(--size-24);
+  letter-spacing: var(--size-0_25);
+}
+
+.items {
+  font-size: var(--size-14);
+  font-weight: 400;
+  line-height: var(--size-24);
+  margin-top: var(--size-24);
+  letter-spacing: var(--size-0_25);
+}
+
+.link {
+  margin-top: var(--size-24);
+}
+
+.list {
+  max-width: var(--size-420);
+  font-size: var(--size-14);
+  margin-top: var(--size-24);
+  font-weight: 400;
+}

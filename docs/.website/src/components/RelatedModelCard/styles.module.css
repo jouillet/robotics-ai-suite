@@ -1,0 +1,4 @@
+.card {
+  flex: 1;
+  max-width: var(--size-268);
+}

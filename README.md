@@ -1,6 +1,15 @@
 # Robotics AI Suite
 
-The **Robotics AI Suite** is a preview collection of robotics applications, libraries, samples, and benchmarking tools to help you build solutions faster. It includes models and pipelines optimized with the OpenVINO™ toolkit for accelerated performance on Intel® CPUs, integrated GPUs, and NPUs. Refer to the [detailed user guide and documentation](https://docs.openedgeplatform.intel.com/dev/ai-suite-robotics.html).
+The **Robotics AI Suite** is a preview collection of robotics applications, libraries, samples, and benchmarking tools to help you build solutions faster. It includes models and pipelines optimized with the OpenVINO™ toolkit for accelerated performance on Intel® CPUs, integrated GPUs, and NPUs. Refer to the [detailed user guide and documentation](https://developer.robotics.intel.com/development-stack/ai-suite-robotics/).
+
+## Website
+
+The Sphinx user guide lives in `docs/user-guide/`, and the Docusaurus site lives in `docs/.website/`. Build and serve the complete site locally with:
+
+```bash
+make build
+make serve
+```
 
 The **Robotics AI Suite** is organized into **collections** that group workflows and capabilities for different robot categories. Each collection provides:
 

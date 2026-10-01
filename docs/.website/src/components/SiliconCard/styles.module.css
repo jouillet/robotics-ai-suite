@@ -1,0 +1,35 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.tier {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ifm-color-primary);
+  background: var(--ifm-color-primary-lightest);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--size-999);
+  margin-bottom: 0.6rem;
+}
+
+.title {
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  font-size: 0.95rem;
+  color: var(--ifm-color-emphasis-800);
+  margin-bottom: 0.75rem;
+}
+
+.points {
+  font-size: 0.9rem;
+  padding-left: 1.2rem;
+  margin-bottom: 0;
+}

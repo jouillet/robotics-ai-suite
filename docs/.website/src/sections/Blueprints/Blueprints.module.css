@@ -1,0 +1,33 @@
+.container {
+  padding: calc(var(--size-70) / 2) 0;
+  background:
+    url("../../../static/img/blueprints/blueprints-bk.png"),
+    linear-gradient(90deg, #031233 0%, #091c46 50%, #031233 100%),
+    linear-gradient(
+      0deg,
+      rgba(3, 18, 51, 0) 0%,
+      rgba(3, 18, 51, 0.5) 22.63%,
+      #031233 45.26%
+    ),
+    linear-gradient(90deg, #0e1566 0%, #2c2cb6 100%);
+  background-size: 100% 100%;
+}
+
+.cards {
+  gap: var(--size-24);
+  display: flex;
+  margin-top: var(--size-48);
+  align-items: stretch;
+}
+
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column;
+    margin-top: var(--size-32);
+    gap: var(--size-16);
+  }
+}
+
+.humanoidIcon {
+  transform: scaleX(-1);
+}

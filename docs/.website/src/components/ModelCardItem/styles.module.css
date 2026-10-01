@@ -1,0 +1,215 @@
+.card {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  min-height: 360px;
+  flex-direction: column;
+  border-radius: var(--size-7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 var(--size-2) var(--size-4) 0 rgba(0, 0, 0, 0.13);
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.cardImageWrap {
+  position: relative;
+  background: rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  padding-bottom: 52%;
+}
+
+.abstractHeader {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerPhysical {
+  background:
+    radial-gradient(circle at 85% 20%, rgba(74, 222, 128, 0.22) 0%, transparent 45%),
+    linear-gradient(135deg, #09261f 0%, #031418 100%);
+  border-bottom: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+.headerPhysical .iconWatermark {
+  color: #4ade80;
+}
+
+.headerVision {
+  background:
+    radial-gradient(circle at 85% 20%, rgba(56, 189, 248, 0.22) 0%, transparent 45%),
+    linear-gradient(135deg, #0a2540 0%, #031224 100%);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.headerVision .iconWatermark {
+  color: #38bdf8;
+}
+
+.headerGen {
+  background:
+    radial-gradient(circle at 85% 20%, rgba(192, 132, 252, 0.22) 0%, transparent 45%),
+    linear-gradient(135deg, #221238 0%, #0e071c 100%);
+  border-bottom: 1px solid rgba(192, 132, 252, 0.2);
+}
+
+.headerGen .iconWatermark {
+  color: #c084fc;
+}
+
+.ghostCharm {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 82%;
+  width: auto;
+  max-width: 80%;
+  object-fit: contain;
+  opacity: 0.16;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.card:hover .ghostCharm {
+  transform: translate(-50%, -50%) scale(1.06);
+  opacity: 0.24;
+}
+
+.archWatermark {
+  position: absolute;
+  right: 0.75rem;
+  top: 38%;
+  transform: translateY(-50%);
+  font-family: var(--geti-font-heading, sans-serif);
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.09);
+  user-select: none;
+  pointer-events: none;
+  white-space: nowrap;
+  max-width: 80%;
+  overflow: hidden;
+  text-overflow: clip;
+  z-index: 2;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.card:hover .archWatermark {
+  transform: translateY(-50%) scale(1.05);
+  color: rgba(255, 255, 255, 0.14);
+}
+
+.iconWatermark {
+  position: absolute;
+  left: 0.875rem;
+  top: 0.875rem;
+  width: 2rem;
+  height: 2rem;
+  opacity: 0.55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  svg path,
+  svg g {
+    fill: currentColor;
+  }
+}
+
+.cardImage {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardTags {
+  position: absolute;
+  bottom: var(--size-8);
+  left: var(--size-8);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-4);
+  max-width: calc(100% - var(--size-16));
+  z-index: 2;
+}
+
+.tags {
+  display: flex;
+  gap: var(--size-4);
+  overflow: hidden;
+  margin-top: auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tagBadge {
+  display: inline-flex;
+  padding: var(--size-4) var(--size-8);
+  border-radius: var(--size-12);
+  font-size: var(--size-11);
+  font-weight: 500;
+  line-height: var(--size-16);
+  white-space: nowrap;
+  background: rgba(3, 18, 51, 0.9);
+  letter-spacing: 0.02em;
+}
+
+.cardBody {
+  gap: 0.5rem;
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardTitle {
+  font-family: var(--geti-font-heading);
+  color: var(--geti-color-white);
+  font-size: var(--size-18);
+  font-weight: 600;
+  line-height: var(--size-28);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardDesc {
+  color: var(--geti-color-white);
+  font-size: var(--size-13);
+  line-height: var(--size-22);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.chipsetBadge {
+  margin-top: auto;
+}

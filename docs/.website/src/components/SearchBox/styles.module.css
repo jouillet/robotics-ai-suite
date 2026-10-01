@@ -1,0 +1,35 @@
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  position: absolute;
+  left: 0.1rem;
+  width: 1rem;
+  height: 1rem;
+  color: var(--ifm-color-emphasis-500);
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #ffffff99;
+  background: none;
+  padding: 0.5rem 0.5rem 0.5rem 1.9rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1rem;
+  color: inherit;
+}
+
+.input::placeholder {
+  color: var(--ifm-color-emphasis-500);
+}
+
+.input:focus {
+  outline: none;
+  border-bottom-color: var(--ifm-color-primary);
+}
