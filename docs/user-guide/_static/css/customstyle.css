@@ -80,6 +80,10 @@ html[data-theme=dark] .bd-content img:not(.only-dark,.dark-light) {
   border-radius: unset !important;
 }
 
+html[data-theme=dark] pre.mermaid > svg {
+  filter: none;
+}
+
 /* Fix the top admonition banner (dev version + old version) animating at each reload      */
 .pst-async-banner-revealer {
     transition: none !important;
