@@ -1,4 +1,4 @@
-# RealSense USB Depth Cameras
+# RealSense USB Depth Cameras Guide
 
 RealSense USB depth cameras provide color, depth, and motion data for robot perception workloads.
 Review the [System Requirements](../../../../platform_foundation/system_requirements.md)

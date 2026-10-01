@@ -1,6 +1,6 @@
 # Autonomous Mobile Robot Tutorials and Demos
 
-The Autonomous Mobile Robot (AMR) Software References provide tested and expandable pipelines for building, simulating, and deploying mobile robot navigation and mapping pipelines on Intel hardware.
+The Autonomous Mobile Robot (AMR) Software Solutions provide tested and expandable pipelines for building, simulating, and deploying mobile robot navigation and mapping pipelines on Intel hardware.
 
 
 ::::{grid} 2
@@ -23,7 +23,7 @@ Learn how to deploy robotics workloads to physical robot hardware, covering keyb
 ::::
 
 
-## Available Software References
+## Available Software Solutions
 
 ### Simulation
 - **[Simulated Robotics with Gazebo](simulation/basic_sim.md)** — Introduces digital twin simulation in Gazebo before deploying to physical hardware.

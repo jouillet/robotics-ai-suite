@@ -6,7 +6,7 @@
 
 Autonomous Mobile Robot has been updated to fully support ROS 2 Jazzy. This brings latest
 generation ROS support on the latest Intel silicon, enabling workloads to take the
-advantage of hardware accelerators such as the GPU and NPU.
+advantage of hardware accelerators such as Intel® Arc™ graphics and Intel NPU.
 
 **New**:
 
@@ -63,9 +63,9 @@ advantage of hardware accelerators such as the GPU and NPU.
   - Jazzy + Gazebo Harmonic support enabled
     - Added and updated simulation, launch, model, packaging, and documentation assets to support ROS 2 Jazzy with Gazebo Harmonic.
     - Expanded follow-me simulation coverage across lidar, RealSense, gesture, and audio-assisted launch paths.
-  - OpenVINO 2024 compatibility updates
-    - Updated audio recognition components and related scripts/configuration to support OpenVINO 2024.
-    - Applied changelog updates across multiple packages to reflect OpenVINO 2024 compatibility and related improvements.
+  - OpenVINO™ 2024 compatibility updates
+    - Updated audio recognition components and related scripts/configuration to support OpenVINO™ 2024.
+    - Applied changelog updates across multiple packages to reflect OpenVINO™ 2024 compatibility and related improvements.
   - Dependency and packaging fixes
     - Corrected Humble dependency definitions in simulation package metadata.
     - Updated Debian changelog/control-related package maintenance entries for both Humble and Jazzy package sets.
@@ -139,9 +139,9 @@ with precise physical control capabilities.
 
 **New**:
 
-- [OpenVINO](https://docs.openvino.ai) Integration: Enable Pi0.5
-  pipeline policy with OpenVINO inference optimized on Intel integrated GPU
-- Add a script for OpenVINO model conversion.
+- [OpenVINO™](https://docs.openvino.ai) Integration: Enable Pi0.5
+  pipeline policy with OpenVINO™ inference optimized on Intel integrated GPU
+- Add a script for OpenVINO™ model conversion.
 - [Aloha](https://tonyzhaozh.github.io/aloha/) Pipeline Support: Include example
   implementation for both simulator and real robot environments.
 - Image Processing Optimization: Enhanced Pi0.5 model structure for

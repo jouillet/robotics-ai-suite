@@ -77,7 +77,7 @@ Run a Pi0.5 vision-language-action model with real-time action chunking.
 :link-type: doc
 :link-alt: clickable cards
 
-Deploy an OpenClaw agent with AgenticROS and an OpenVINO Model Server.
+Deploy an OpenClaw agent with AgenticROS and an OpenVINO™ Model Server.
 :::
 
 :::{grid-item-card} **Fast-LIVO2 Demo**

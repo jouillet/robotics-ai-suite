@@ -1,0 +1,645 @@
+/* ========================================================================================
+Custom styling on top of the PyData Sphinx Theme
+========================================================================================== */
+/* VARIABLES */
+html[data-theme='light'] {
+    --spark-color-primary: #09857c;
+    --spark-color-heading-background: #1c223b;
+    --spark-color-page-background: #ffffff;
+    --spark-color-highlight-background: #f7f7f8;
+    --spark-color-highlight-background-reverse: #0d132b;
+    --pst-color-secondary-bg: #16cfb1 !important;
+}
+html[data-theme='dark'] {
+    --spark-color-primary: #09857c;
+    --spark-color-heading-background: #1c223b;
+    --spark-color-page-background: #020316;
+    --spark-color-highlight-background: #0d132b;
+    --spark-color-highlight-background-reverse: #f7f7f8;
+    --pst-color-secondary-bg: #5400c0 !important;
+}
+:root {
+    --sd-color-card-background: var(--spark-color-highlight-background) !important;
+    --pst-color-on-background:  var(--spark-color-highlight-background) !important;
+}
+
+@import url("../fonts/intel-one-display/intel-one-display.css");
+@import url("../fonts/intel-one-text/intel-one-text.css");
+@import url("../fonts/intel-one-mono/intel-one-mono.css");
+
+/* Map legacy custom font-family names to actual loaded font */
+@font-face {
+  font-family: 'IntelOne-Display-Regular';
+  src: url('../fonts/intel-one-display/intelone-display-regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'IntelOne-Display-Light';
+  src: url('../fonts/intel-one-display/intelone-display-light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'IntelOne-Display-Mono';
+  src: url('../fonts/intel-one-mono/IntelOneMono-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+/* GENERAL =============================================================================== */
+html, body, html * {font-family: 'IntelOne Display', 'IntelOne-Display-Regular', 'Roboto', sans-serif;}
+.bd-container {
+  background-color: var(--spark-color-page-background) !important;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: var(--spark-color-primary);
+    font-family: 'IntelOne Display', 'IntelOne-Display-Light', 'Roboto', sans-serif;
+    font-weight: 300;
+}
+h1 {font-size: 2.5rem}
+h2 {font-size: 1.9rem}
+h3 {font-size: 1.5rem}
+
+hr {
+  border-color: var(--spark-color-primary);
+  border-width: 0.1rem;
+  opacity: 100%;
+}
+
+.bd-page-width {
+  max-width: 100% !important;  /* default is 88rem */
+}
+.bd-main .bd-content .bd-article-container {
+  max-width: 70rem;  /* default is 60em */
+}
+
+html[data-theme=dark] .bd-content img:not(.only-dark,.dark-light) {
+  background-color: unset !important;
+  border-radius: unset !important;
+}
+
+/* Fix the top admonition banner (dev version + old version) animating at each reload      */
+.pst-async-banner-revealer {
+    transition: none !important;
+}
+
+/* SIDEBARS ============================================================================== */
+.sidebar-secondary-items > .sidebar-secondary-item > [aria-label="source link"] {
+  display: none;
+}
+.bd-docs-nav .bd-links__title {
+  display: none;
+}
+#pst-primary-sidebar {
+  background-color: var(--spark-color-highlight-background);
+  max-width: 300px;
+  border-right: 1px solid var(--pst-color-border);
+  border-left: 1px solid var(--pst-color-border);
+}
+#pst-secondary-sidebar {
+  background-color: var(--spark-color-page-background);
+}
+
+/* buttons to toggle sidebar */
+button.theme-switch-button:hover {color: var(--pst-color-secondary) !important;}
+button.theme-switch-button:hover::before {border-bottom-style:none;}
+
+button.sidebar-toggle {color: var(--spark-color-highlight-background) !important;}
+button.sidebar-toggle:hover {color: var(--pst-color-secondary) !important;}
+button.sidebar-toggle:hover::before {border-bottom-style:none;}
+
+
+
+
+/* LEFT MENU GLYPHS  ===================================================================== */
+/* PyData 0.16+ uses details/summary + .toctree-toggle (not .toctree-checkbox). */
+.bd-sidebar-primary li.has-children {
+  position: relative;
+}
+
+.bd-sidebar-primary nav.bd-links ul ul {
+  padding: 0;
+}
+
+/* move expander from right edge to left edge */
+.bd-sidebar-primary li.has-children > details > summary .toctree-toggle {
+  left: 0;
+  right: auto;
+  width: 1rem;
+  justify-content: flex-start;
+}
+
+/* reserve gutter on the left instead of the right */
+.bd-sidebar-primary li.has-children .caption,
+.bd-sidebar-primary li.has-children > .reference,
+.bd-sidebar-primary li.has-children > details > summary > .caption,
+.bd-sidebar-primary li.has-children > details > summary > .reference {
+  margin-right: 0;
+}
+
+/* keep expanded state pointing down, rotate collapsed state to point right */
+.bd-sidebar-primary li.has-children > details > summary .toctree-toggle .fa-chevron-down {
+  transform: rotate(-90deg);
+}
+
+.bd-sidebar-primary li.has-children > details[open] > summary .toctree-toggle .fa-chevron-down {
+  transform: rotate(0deg);
+}
+
+/* remove the theme's current-page notch/vertical line */
+.bd-sidebar-primary nav.bd-links .current > a {
+  box-shadow: none;
+}
+
+.bd-sidebar-primary nav.bd-links .current > a:focus-visible {
+  box-shadow: 0 0 0 0.1875rem var(--pst-color-accent);
+}
+
+/* tighter wrapped lines inside one menu item, while item spacing stays from link padding */
+.bd-sidebar-primary nav.bd-links li > a,
+.bd-sidebar-primary li.has-children > details > summary > .caption,
+.bd-sidebar-primary li.has-children > details > summary > .reference,
+.bd-sidebar-primary li.has-children > .reference,
+.bd-sidebar-primary li.has-children > .caption {
+  line-height: 1.35;
+}
+
+/* align expander with each toctree nesting level */
+.bd-sidebar-primary .toctree-l1.has-children > details > summary .toctree-toggle { left: 0rem; }
+.bd-sidebar-primary .toctree-l2.has-children > details > summary .toctree-toggle { left: 1.25rem; }
+.bd-sidebar-primary .toctree-l3.has-children > details > summary .toctree-toggle { left: 2.25rem; }
+.bd-sidebar-primary .toctree-l4.has-children > details > summary .toctree-toggle { left: 3.25rem; }
+.bd-sidebar-primary .toctree-l5.has-children > details > summary .toctree-toggle { left: 4.25rem; }
+.bd-sidebar-primary .toctree-l6.has-children > details > summary .toctree-toggle { left: 5.25rem; }
+
+.bd-sidebar-primary .toctree-l1.has-children .caption,
+.bd-sidebar-primary .toctree-l1.has-children > .reference,
+.bd-sidebar-primary .toctree-l1.has-children > details > summary > .caption,
+.bd-sidebar-primary .toctree-l1.has-children > details > summary > .reference,
+.bd-sidebar-primary .toctree-l1:not(.has-children) > a.reference {
+  margin-left: 1.25rem;
+  padding-left: 0;
+}
+
+.bd-sidebar-primary .toctree-l2.has-children .caption,
+.bd-sidebar-primary .toctree-l2.has-children > .reference,
+.bd-sidebar-primary .toctree-l2.has-children > details > summary > .caption,
+.bd-sidebar-primary .toctree-l2.has-children > details > summary > .reference,
+.bd-sidebar-primary .toctree-l2:not(.has-children) > a.reference {
+  margin-left: 2.25rem;
+  padding-left: 0;
+}
+
+.bd-sidebar-primary .toctree-l3.has-children .caption,
+.bd-sidebar-primary .toctree-l3.has-children > .reference,
+.bd-sidebar-primary .toctree-l3.has-children > details > summary > .caption,
+.bd-sidebar-primary .toctree-l3.has-children > details > summary > .reference,
+.bd-sidebar-primary .toctree-l3:not(.has-children) > a.reference {
+  margin-left: 3.25rem;
+  padding-left: 0;
+}
+
+.bd-sidebar-primary .toctree-l4.has-children .caption,
+.bd-sidebar-primary .toctree-l4.has-children > .reference,
+.bd-sidebar-primary .toctree-l4.has-children > details > summary > .caption,
+.bd-sidebar-primary .toctree-l4.has-children > details > summary > .reference,
+.bd-sidebar-primary .toctree-l4:not(.has-children) > a.reference {
+  margin-left: 4.25rem;
+  padding-left: 0;
+}
+
+.bd-sidebar-primary .toctree-l5.has-children .caption,
+.bd-sidebar-primary .toctree-l5.has-children > .reference,
+.bd-sidebar-primary .toctree-l5.has-children > details > summary > .caption,
+.bd-sidebar-primary .toctree-l5.has-children > details > summary > .reference,
+.bd-sidebar-primary .toctree-l5:not(.has-children) > a.reference {
+  margin-left: 5.25rem;
+  padding-left: 0;
+}
+
+.bd-sidebar-primary .toctree-l6.has-children .caption,
+.bd-sidebar-primary .toctree-l6.has-children > .reference,
+.bd-sidebar-primary .toctree-l6.has-children > details > summary > .caption,
+.bd-sidebar-primary .toctree-l6.has-children > details > summary > .reference,
+.bd-sidebar-primary .toctree-l6:not(.has-children) > a.reference {
+  margin-left: 6.25rem;
+  padding-left: 0;
+}
+
+
+/* TOP BAR =============================================================================== */
+/* top bar Spark border */
+header.bd-header {
+    border-top-width: 10px;
+    border-top-style: solid;
+    background-color: var(--spark-color-heading-background) !important;
+    border-image: linear-gradient(90deg, #5400c0 5%, #057aff 50%, #16cfb1 98.99%) 1
+}
+
+/* top bar menu shift to left */
+div.col-lg-3.navbar-header-items__start {
+    width: auto;
+    padding-right: 20px;
+}
+
+/* top bar text */
+.logo__title,
+.navbar-header-items__center ul li a,
+.navbar-item button {
+    color: #ffffff !important;
+}
+
+.navbar-header-items__center ul li a:hover,
+.navbar-header-items__center ul li a.active {
+    color: var(--pst-color-secondary) !important;
+    text-decoration: none;
+}
+
+.navbar-brand .logo__title {
+  padding-right: 20px;
+  &:hover {
+    text-decoration: none;
+    color: var(--pst-color-secondary) !important;
+  }
+}
+
+
+/* top bar text buttons and menus ======================================================== */
+/* top bar buttons */
+button.version-switcher__button,
+.bd-header ul.navbar-nav>li.nav-item.dropdown>button.btn.dropdown-toggle.nav-item,
+button.btn.search-button-field {
+    border-style: solid;
+    border-width: 2px !important;
+    border-color: var(--pst-color-border);
+    border-radius: 0em;
+}
+button.version-switcher__button:hover,
+.bd-header ul.navbar-nav>li.nav-item.dropdown>button.dropdown-toggle:hover,
+button.btn.search-button-field:hover {
+    box-shadow: 0 0 0 .1875rem var(--pst-color-secondary) !important;
+    border-color: transparent !important;
+}
+
+/* top bar search */
+button.btn.search-button-field,
+.search-button__kbd-shortcut .kbd-shortcut__modifier {
+    background-color: var(--spark-color-heading-background) !important;
+    color: #ffffff;
+}
+button.btn.search-button-field {
+    padding-left:1em;
+    padding-right:1em;
+}
+
+
+
+
+/* SECTION SWITCHER tweaks =============================================================== */
+/* component selector dropdown area */
+#pst-nav-more-links {
+    background-color: var(--spark-color-heading-background);
+    border: 1px solid var(--pst-color-border);
+    border-radius: 0em;
+    min-width: clamp(22.8rem, 51.3vw, 31.92rem);
+    max-width: 90vw;
+    max-height: min(70vh, 38rem);
+    overflow-y: auto;
+    padding: 0.35rem 0;
+    margin-top: 0.45rem !important;
+    box-shadow: 0 0.75rem 1.8rem rgba(0, 0, 0, 0.35);
+    z-index: 1050;
+    grid-template-columns: repeat(2, minmax(6.84rem, 1fr));
+    grid-auto-flow: row dense;
+    column-gap: 0.62rem;
+    row-gap: 0;
+    align-content: start;
+    & li {
+        list-style: none;
+    }
+    & a.nav-link.dropdown-item {
+        color: #ffffff;
+        padding: 0.45rem 1rem;
+        line-height: 1.35;
+        white-space: normal;
+    }
+    & a.nav-link.dropdown-item:hover {
+        background-color: rgba(22, 207, 177, 0.12);
+        text-decoration-color: var(--pst-color-secondary) !important;
+    }
+    & a.nav-link.dropdown-item:focus-visible {
+        outline: none;
+        box-shadow: inset 0 0 0 0.125rem var(--pst-color-secondary);
+        background-color: rgba(22, 207, 177, 0.16);
+    }
+    & a.nav-link.dropdown-item.active,
+    & a.nav-link.dropdown-item[aria-current="page"] {
+        color: var(--pst-color-secondary) !important;
+        font-weight: 600;
+        background-color: rgba(22, 207, 177, 0.1);
+    }
+}
+
+  #pst-nav-more-links.show {
+    display: grid;
+  }
+
+.bd-header ul.navbar-nav > li.nav-item.dropdown > button.dropdown-toggle[aria-expanded="true"] {
+    border-color: transparent !important;
+    box-shadow: 0 0 0 0.1875rem var(--pst-color-secondary) !important;
+}
+
+@media (max-width: 659px) {
+    #pst-nav-more-links.show {
+        display: block;
+        min-width: 100%;
+        max-width: 100%;
+    }
+}
+
+button.theme-switch-button:hover {color: var(--pst-color-secondary) !important;}
+button.theme-switch-button:hover::before {border-bottom-style:none;}
+
+
+
+/* CONTENT ELEMENTS ====================================================================== */
+
+/* LINK WIDGET FOR INDEX PAGES */
+.component_card_widget {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: left;
+  float: right;
+  padding: 1rem;
+  margin: 0 0 1rem 1rem;
+  background-color: var(--sd-color-card-background);
+  border: solid 1px var(--spark-color-highlight-background-reverse);
+  & a {
+    margin-bottom: 0.5rem;
+    & img {
+      width: 2em;
+      height: 2em;
+    }
+  }
+  &:after {
+    clear: both;
+  }
+  & a:before {
+    content: "";
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    background-size: 1.7rem !important;
+    background-position: center;
+    float: left;
+    margin-right: 0.5em;
+  }
+}
+
+html[data-theme="light"] .component_card_widget {
+  & a.icon_document:before {background: url("../images/icon_document_l.svg") no-repeat;}
+  & a.icon_download:before {background: url("../images/icon_download_l.svg") no-repeat;}
+  & a.icon_github:before {background: url("../images/icon_github_l.svg") no-repeat;}
+}
+
+html[data-theme="dark"] .component_card_widget {
+  & a.icon_document:before {background: url("../images/icon_document_d.svg") no-repeat;}
+  & a.icon_download:before {background: url("../images/icon_download_d.svg") no-repeat;}
+  & a.icon_github:before {background: url("../images/icon_github_d.svg") no-repeat;}
+}
+
+/* when admonition is at the top next to link block ====================================== */
+/* enclose both with a container */
+.component-header-row,
+.component_header_row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 1rem;
+  margin: 0 0 1.5rem;
+}
+
+.component-header-row > *,
+.component_header_row > * {
+  margin: 0;
+}
+
+.component-header-row > :only-child,
+.component_header_row > :only-child {
+  flex-basis: 100%;
+}
+
+.component-header-row .component_card_widget,
+.component_header_row .component_card_widget {
+  flex: 0 0 auto;
+  width: max-content;
+  max-width: 100%;
+  float: none;
+  margin: 0;
+  margin-left: auto;
+  align-self: stretch;
+  order: 2;
+}
+
+.component-header-row .component_card_widget a:last-child,
+.component_header_row .component_card_widget a:last-child {
+  margin-bottom: 0;
+}
+
+.component-header-row .component_card_widget a,
+.component_header_row .component_card_widget a {
+  white-space: nowrap;
+}
+
+.component-header-row .admonition,
+.component-header-row blockquote,
+.component_header_row .admonition,
+.component_header_row blockquote {
+  flex: 1 1 28rem;
+  min-width: min(100%, 20rem);
+  margin: 0;
+  order: 1;
+}
+
+@media (max-width: 768px) {
+  .component-header-row,
+  .component_header_row {
+    gap: 0.75rem;
+  }
+
+  .component-header-row .component_card_widget,
+  .component-header-row .admonition,
+  .component-header-row blockquote,
+  .component_header_row .component_card_widget,
+  .component_header_row .admonition,
+  .component_header_row blockquote {
+    flex-basis: 100%;
+  }
+}
+
+
+
+
+
+
+#searchbox .highlight-link {
+  background-color: var(--spark-color-primary);
+}
+
+/* height of the Metro SDK manager container */
+iframe#installerFrame {
+    height: fit-content !important;
+}
+
+
+/* CODE BLOCKS */
+:root {
+  --pst-font-family-monospace: 'IntelOne-Display-Mono', SFMono-Regular, Menlo, Consolas, Monaco, 'Liberation Mono', 'Courier New', monospace;
+}
+div.highlight,
+div.highlight pre,
+div.highlight pre *,
+code, code *, kbd, samp, pre, tt, tt *,
+code.literal, .docutils.literal, .docutils.literal *,
+span.pre {
+  font-family: 'IntelOne-Display-Mono', SFMono-Regular, Menlo, Consolas, Monaco, 'Liberation Mono', 'Courier New', monospace !important;
+}
+
+
+/* KAPA.AI CONSENT FALLBACK BUTTON */
+/* Shown in place of the Kapa.ai chat widget when functional cookie consent has
+   not been granted. Hidden by default; toggled via footer.html inline script. */
+#oep-consent-chat-fallback {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9998;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #0068b5;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.2s;
+}
+#oep-consent-chat-fallback:hover,
+#oep-consent-chat-fallback:focus {
+  background-color: #005a9e;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+#oep-consent-chat-fallback svg {
+  width: 26px;
+  height: 26px;
+  fill: #ffffff;
+  pointer-events: none;
+}
+#oep-consent-chat-fallback-tip {
+  display: none;
+  position: fixed;
+  bottom: 90px;
+  right: 16px;
+  background: #1a1a1a;
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 7px 11px;
+  border-radius: 6px;
+  white-space: nowrap;
+  z-index: 9999;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+#oep-consent-chat-fallback-tip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 19px;
+  border: 6px solid transparent;
+  border-top-color: #1a1a1a;
+}
+#oep-consent-chat-fallback:hover + #oep-consent-chat-fallback-tip,
+#oep-consent-chat-fallback:focus + #oep-consent-chat-fallback-tip {
+  display: block;
+}
+
+/* Attention state when ?chat is requested but consent is missing. */
+#oep-consent-chat-fallback.oep-chat-fallback-attention {
+  width: 68px;
+  height: 68px;
+  bottom: 18px;
+  right: 18px;
+  box-shadow: 0 0 0 0 rgba(0, 104, 181, 0.65), 0 6px 16px rgba(0, 0, 0, 0.3);
+  animation: oep-chat-fallback-pulse 1.5s ease-out infinite;
+}
+
+#oep-consent-chat-fallback.oep-chat-fallback-attention svg {
+  width: 30px;
+  height: 30px;
+}
+
+#oep-consent-chat-fallback-tip.oep-chat-fallback-tip-pinned {
+  display: block;
+  bottom: 96px;
+  right: 20px;
+  background: #005a9e;
+  font-size: 13px;
+}
+
+#oep-consent-chat-fallback-message {
+  display: none;
+  position: fixed;
+  right: 16px;
+  bottom: 174px;
+  width: min(320px, calc(100vw - 24px));
+  padding: 11px 13px;
+  border-radius: 10px;
+  color: #ffffff;
+  background: #003c71;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  font-size: 13px;
+  line-height: 1.4;
+  z-index: 9999;
+}
+
+#oep-consent-chat-fallback-message.oep-chat-fallback-message-visible {
+  display: block;
+}
+
+@keyframes oep-chat-fallback-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 104, 181, 0.65), 0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+  70% {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 18px rgba(0, 104, 181, 0), 0 8px 18px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 104, 181, 0), 0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #oep-consent-chat-fallback.oep-chat-fallback-attention {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  #oep-consent-chat-fallback-message {
+    right: 12px;
+    width: calc(100vw - 24px);
+    bottom: 168px;
+  }
+}

@@ -44,7 +44,7 @@ For detailed instructions, see the [Image Composer Tool repository](https://gith
    sudo -E ./image-composer-tool build image-templates/ubuntu24-x86_64-robotics-jazzy-iso.yml
    ```
 
-7. Once image is successfully built, modify the below command to point to the built image location (shown after build). Change ``/dev/sdX`` to proper USB drive location (i.e. ``/dev/sdb``). Flash ISO Image to USB drive:
+7. Once image is successfully built, modify the command below to point to the built image location (shown after build). Change ``/dev/sdX`` to proper USB drive location (i.e. ``/dev/sdb``). Flash ISO Image to USB drive:
 
    ```bash
    sudo dd if=builds/robotics-jazzy-ubuntu24-24.04.iso of=/dev/sdX bs=4M status=progress conv=fsync

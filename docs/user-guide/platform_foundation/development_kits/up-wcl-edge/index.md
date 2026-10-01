@@ -11,7 +11,7 @@ This guide describes how to set up the AAEON UP WCL Edge (UP-WCL01-SYS) developm
 hardware and confirm that it powers on and boots correctly.
 
 The kit is powered by an **Intel® Core™ 7 processor 350**, **Intel® Core™ 5 processor
-320**, or **Intel® Core™ 3 processor 304** (Wildcat Lake). It ships as a single,
+320**, or **Intel® Core™ 3 processor 304**. It ships as a single,
 actively-cooled unit with onboard LPDDR5 memory and UFS storage in a compact
 95 × 70 × 42.3 mm footprint.
 

@@ -1,0 +1,84 @@
+/* cards on the homepage, with suite icons =============================================== */
+.homepage-card-container-big {
+    border-radius: 0;
+    margin-bottom: 1.5em;
+    display: flex;
+    flex-flow: row;
+    align-items: flex-start;
+    & .sd-card-img-top {
+        width: 80px !important;
+        padding: 10px;
+    }
+}
+
+html[data-theme=dark] .bd-content .homepage-card-container-big .sd-card-img-top {
+    background-color: unset;
+}
+
+/* cards on section pages ================================================================ */
+
+.homepage-card-container,
+.homepage-card-container-highlight {
+    border-radius: 0;
+    margin-bottom: 1.5em;
+    /*border-width: 0.2cqb;*/
+    & .sd-card-body {
+        padding-top: 4.5rem;
+    }
+    & .sd-card-title {
+        position: absolute;
+        top: 1rem;
+    }
+}
+.homepage-card-container-highlight {
+    border-color: var(--pst-color-info-highlight) !important;
+}
+
+.homepage-card-container-wrap {
+    border-radius: 0;
+    margin-bottom: 1.5em;
+    & > .sd-card-body {
+        padding-bottom: 0 !important;
+        & > .sd-card-title {
+           font-weight: normal !important;
+        }
+    }
+    & .sd-container-fluid {
+        margin-bottom: 0 !important;
+    }
+}
+
+/* card badges for the top-page cards */
+.homepage-card-container .sd-outline-primary:hover {
+    background-color: var(--sd-color-primary) !important;
+    color: #fff !important;
+}
+
+.homepage-card-container .sd-outline-secondary:hover {
+    background-color: var(--sd-color-secondary) !important;
+    color: #fff !important;
+}
+
+.homepage-card-container .sd-outline-muted:hover {
+    background-color: var(--sd-color-muted) !important;
+    color: #fff !important;
+}
+
+
+
+
+
+/* grid text on section pages for tools and microservices ================================ */
+
+.homepage-tool-container > div > div {
+    min-width: 15rem;
+    & a {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      & img {
+          height: 2rem;
+          margin-right: 0.5rem;
+      }
+    }
+}

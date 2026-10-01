@@ -10,7 +10,7 @@ This tutorial tells you how to:
 
 This RealSense with ROS 2 Sample Application can be run using two
 different types of RealSense cameras. The next section explains how to
-run this sample application using an RealSense camera connected through
+run this sample application using a RealSense camera connected through
 USB (for example, RealSense camera D435i). The subsequent section focuses
 on an [RealSense Depth Camera D457.](https://www.realsenseai.com/products/d457-gmsl-fakra/)
 
@@ -52,7 +52,7 @@ Complete the [Getting Started guide](../../../platform_foundation/getting_starte
 
 ## Using RealSense camera connected through USB
 
-1. Connect an RealSense camera (for example, RealSense D435i)
+1. Connect a RealSense camera (for example, RealSense D435i)
    to the host, through USB.
 
 2. Run the RealSense camera with ROS 2 sample application, passing the
@@ -76,7 +76,7 @@ Connect the RealSense Depth Camera D457 to a GMSL-enabled platform, then power o
 
 > [!NOTE]
 > Select the "MIPI" mode of the RealSense Depth Camera D457
-> by moving the select switch on the camera to "M", as shown in the below picture:
+> by moving the select switch on the camera to "M", as shown in the picture below:
 > ![MIPI_USB_Switch_in_D457](../../../hardware_blueprints/amr/images/MIPI_USB_Switch_in_D457.jpeg)
 
 Follow the [GMSL Cameras guide](../cameras/gmsl/index.md) to configure the BIOS,

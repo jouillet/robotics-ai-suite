@@ -1,0 +1,15 @@
+{# Top navbar links mirroring the Docusaurus site navigation. These point at the
+   Docusaurus content that hosts this Sphinx site under /development-stack/. #}
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link nav-internal{% if not pagename.startswith('hardware_blueprints') %} active{% endif %}" href="{{ site_baseurl }}development-stack/ai-suite-robotics/">Robotics AI Suite</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link nav-internal" href="{{ site_baseurl }}models/">AI Models</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link nav-internal{% if pagename.startswith('hardware_blueprints') %} active{% endif %}" href="{{ site_baseurl }}development-stack/hardware_blueprints/">Blueprints</a>
+    </li>
+  </ul>
+</nav>

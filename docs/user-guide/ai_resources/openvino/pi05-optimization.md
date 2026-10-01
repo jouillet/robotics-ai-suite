@@ -18,13 +18,13 @@ This tutorial covers:
 
 - Converting the Pi0.5 model from PyTorch to ONNX
 - Exporting the ONNX model to OpenVINO™ intermediate representation
-- Compressing model weights to INT8 using NNCF
+- Compressing model weights to INT8 using Neural Network Compression Framework
 - Benchmarking the model using the OpenVINO™ benchmark tool
 - Validating the optimized model outputs
 
 ## Source Code
 
-The source code for this sample can be found here: [VLA-Pi0.5-OpenVINO](https://github.com/open-edge-platform/edge-ai-suites/tree/main/robotics-ai-suite/pipelines/vla-pi0.5-openvino)
+The source code for this sample can be found here: [VLA-Pi0.5-OpenVINO™](https://github.com/open-edge-platform/edge-ai-suites/tree/main/robotics-ai-suite/pipelines/vla-pi0.5-openvino)
 
 ## Environment and Model Setup
 
@@ -44,7 +44,7 @@ The source code for this sample can be found here: [VLA-Pi0.5-OpenVINO](https://
    pip install -e ".[pi]"
    ```
 
-3. Install additional dependencies including OpenVINO™ and NNCF:
+3. Install additional dependencies including OpenVINO™ and Neural Network Compression Framework:
 
    ```bash
    pip install onnx==1.20.0 openvino==2025.4.0 nncf==2.19.0
@@ -127,7 +127,7 @@ The source code for this sample can be found here: [VLA-Pi0.5-OpenVINO](https://
 
 4. Run the `nncf_int8_compression.py` file to quantize the OpenVINO™ Pi0.5 model to INT8.
 
-   The snippet below shows how the uncompressed OpenVINO™ model is compressed to INT8 using Intel Neural Network Compression (NNCF):
+   The snippet below shows how the uncompressed OpenVINO™ model is compressed to INT8 using Neural Network Compression Framework:
 
    ```python
    from nncf import compress_weights

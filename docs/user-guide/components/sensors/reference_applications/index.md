@@ -1,4 +1,4 @@
-# Sensor Reference Applications
+# Sensor Software Solutions
 
 Use these applications to validate RealSense cameras and process 3D
 point cloud data from RealSense cameras or LiDAR sensors.

@@ -17,9 +17,9 @@ Similar to the Action Chunking Transformer (ACT), the Diffusion Policy is anothe
 
 ## Model Conversion
 
-Diffusion Policy (DP) models are trained using **PyTorch**, but optimized inference performance on Intel devices can be achieved using **OpenVINO**. To enable this, PyTorch models should first be converted to **OpenVINO Intermediate Representation (IR)** format.
+Diffusion Policy (DP) models are trained using **PyTorch**, but optimized inference performance on Intel devices can be achieved using **OpenVINO™**. To enable this, PyTorch models should first be converted to **OpenVINO™ Intermediate Representation (IR)** format.
 
-This document demonstrates how to convert DP model checkpoints to OpenVINO IR using the `low_dim transformer` and `image transformer` architectures as examples. The conversion process involves first converting the models to **ONNX**, followed by using OpenVINO’s `ovc` command-line tool to convert to IR format.
+This document demonstrates how to convert DP model checkpoints to OpenVINO™ IR using the `low_dim transformer` and `image transformer` architectures as examples. The conversion process involves first converting the models to **ONNX**, followed by using OpenVINO™’s `ovc` command-line tool to convert to IR format.
 
 ### Model Checkpoints
 
@@ -118,15 +118,15 @@ convert_model = ConvertModel(policy)
 convert_model.export_onnx(output_dir, ckpt_name)
 ```
 
-#### 5. Ensure OpenVINO is Installed
+#### 5. Ensure OpenVINO™ is Installed
 
 > [!NOTE]
-> Make sure OpenVINO is installed by following the official guide:
-> [Install OpenVINO via pip](../../developer_tools/openvino.md)
+> Make sure OpenVINO™ is installed by following the official guide:
+> [Install OpenVINO™ via pip](../../developer_tools/openvino.md)
 
-#### 6. Convert ONNX to OpenVINO IR Format
+#### 6. Convert ONNX to OpenVINO™ IR Format
 
-Once the model is exported to ONNX, use OpenVINO’s `ovc` (OpenVINO Model Converter) to convert it to IR format:
+Once the model is exported to ONNX, use OpenVINO™’s `ovc` (OpenVINO™ Model Converter) to convert it to IR format:
 
 ```bash
 ovc lowdim_t967_unet.onnx
@@ -139,7 +139,7 @@ By default, the model will be converted to **FP16 IR format**. The following out
 
 ### Image Transformer DP Model Key Conversion Steps
 
-This guide outlines the steps to convert the Image Transformer model—including the observation encoder and diffusion model—into OpenVINO Intermediate Representation (IR) format.
+This guide outlines the steps to convert the Image Transformer model—including the observation encoder and diffusion model—into OpenVINO™ Intermediate Representation (IR) format.
 
 ### 1. Load the Trained Checkpoint
 
@@ -245,15 +245,15 @@ convert_model = ConvertModel(policy)
 convert_model.export_onnx(output_dir, ckpt_name)
 ```
 
-### 5. Install OpenVINO
+### 5. Install OpenVINO™
 
 > [!NOTE]
-> Ensure that OpenVINO is installed. Follow the official installation guide:
-> [Install OpenVINO via pip](https://docs.openvino.ai/2026/get-started/install-openvino/install-openvino-pip.html)
+> Ensure that OpenVINO™ is installed. Follow the official installation guide:
+> [Install OpenVINO™ via pip](https://docs.openvino.ai/canonical/get-started/install-openvino/install-openvino-pip.html)
 
-### 6. Convert ONNX to OpenVINO IR
+### 6. Convert ONNX to OpenVINO™ IR
 
-Use OpenVINO’s Model Optimizer (`ovc`) to convert the exported ONNX models to IR format.
+Use OpenVINO™’s Model Optimizer (`ovc`) to convert the exported ONNX models to IR format.
 
 ```bash
 ovc image_t748_obs_encoder_onepass.onnx

@@ -31,12 +31,12 @@ Action Chunking with Transformers (ACT) is an **end-to-end imitation learning** 
 
 ## Model Conversion
 
-ACT model is trained by PyTorch, but can get an optimized inference performance on Intel devices using OpenVINO toolkit. PyTorch model should be converted to OpenVINO IR format.
+ACT model is trained by PyTorch, but can get an optimized inference performance on Intel devices using OpenVINO™ toolkit. PyTorch model should be converted to OpenVINO™ IR format.
 
-The following steps will guide you through the process of converting the ACT model to OpenVINO IR format.
+The following steps will guide you through the process of converting the ACT model to OpenVINO™ IR format.
 
 > [!NOTE]
-> We provide a pretrained checkpoint and also a model conversion script to help you convert model to OpenVINO IR format. Get the information at the Imitation Learning sample pipeline page [Install ACT pipeline of OpenVINO](../../../software_references/humanoid/sample_pipelines/imitation_learning_act.md#install-act-package).
+> We provide a pretrained checkpoint and also a model conversion script to help you convert model to OpenVINO™ IR format. Get the information at the Imitation Learning sample pipeline page [Install ACT pipeline of OpenVINO™](../../../software_references/humanoid/sample_pipelines/imitation_learning_act.md#install-act-package).
 
 ### Load the trained checkpoint
 
@@ -80,7 +80,7 @@ input_names = [inp.debugName() for inp in graph.inputs() if inp.debugName() != '
 print("Input tensor names:", input_names)
 ```
 
-### Convert jit trace to OpenVINO IR and save model
+### Convert jit trace to OpenVINO™ IR and save model
 
 ```python
 # Save converted model (input tensor names are required)

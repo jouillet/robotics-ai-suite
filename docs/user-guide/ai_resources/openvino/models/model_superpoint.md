@@ -50,17 +50,17 @@ After downloading, extract the model using the following command:
 tar -xvzf sp_v6.tgz
 ```
 
-### Convert TensorFlow Model to OpenVINO IR
+### Convert TensorFlow Model to OpenVINO™ IR
 
-#### Ensure OpenVINO is Installed
+#### Ensure OpenVINO™ is Installed
 
 > [!NOTE]
-> Make sure OpenVINO is installed by following the guide:
-> [Install OpenVINO via pip](../../developer_tools/openvino.md)
+> Make sure OpenVINO™ is installed by following the guide:
+> [Install OpenVINO™ via pip](../../developer_tools/openvino.md)
 
-#### Convert the Model using OpenVINO Conversion Tool
+#### Convert the Model using OpenVINO™ Conversion Tool
 
-Since the model is in TensorFlow format, it can be converted to OpenVINO's Intermediate Representation (IR) format using OpenVINO's command-line model conversion tool, `ovc`.
+Since the model is in TensorFlow format, it can be converted to OpenVINO™'s Intermediate Representation (IR) format using OpenVINO™'s command-line model conversion tool, `ovc`.
 
 Run the following command to perform the conversion:
 

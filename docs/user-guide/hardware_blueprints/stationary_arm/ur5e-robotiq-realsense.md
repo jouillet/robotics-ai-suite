@@ -1,15 +1,15 @@
 # UR5e Vision and Controls Deployment Configuration
 
-The Universal Robots UR5e with Robotiq 2F-85 gripper and Intel RealSense camera provides a verified hardware and software baseline for vision-guided pick-and-place workflows with the Stationary Robot Toolkit.
+The Universal Robots UR5e with Robotiq 2F-85 gripper and RealSense camera provides a verified hardware and software baseline for vision-guided pick-and-place workflows with the Stationary Robot Toolkit.
 
 ## Hardware Bill of Materials
 
 | Component | Model / Specification | Purpose |
 | --- | --- | --- |
-| Host Compute | Intel Core Ultra Series 3 platform | Runs ROS 2 Jazzy, AI perception pipeline, MoveIt 2 Servo orchestration, and robot driver nodes |
+| Host Compute | Intel® Core™ Ultra Series 3 platform | Runs ROS 2 Jazzy, AI perception pipeline, MoveIt 2 Servo orchestration, and robot driver nodes |
 | Manipulator | Universal Robots UR5e (e-Series, 6-DoF) | Physical manipulation and trajectory execution |
 | End Effector | Robotiq 2F-85 Adaptive Gripper | Two-finger parallel gripping |
-| Camera | Intel RealSense Depth Camera (e.g., D415 / D435 / D455) | Overhead RGB and depth streaming for 2D/3D perception |
+| Camera | RealSense Depth Camera (e.g., D415 / D435 / D455) | Overhead RGB and depth streaming for 2D/3D perception |
 | Interface Network | Dedicated Gigabit Ethernet cable | Low-latency private network connecting host compute and UR5e control box |
 
 ## Network Configuration
@@ -77,7 +77,7 @@ Every UR arm possesses slight physical manufacturing tolerances recorded during 
 ## Camera Setup and Extrinsics Registration
 
 ### 1. Camera Interface Verification
-The Intel RealSense camera streams RGB and depth point clouds to the perception pipeline over USB 3.2.
+The RealSense camera streams RGB and depth point clouds to the perception pipeline over USB 3.2.
 
 1. Connect the RealSense camera using a USB 3.2-rated Type-C cable to a high-speed host USB port.
 2. Verify that the device is detected on a SuperSpeed (USB 3.2) link:

@@ -4,7 +4,7 @@ Robotics Diffusion Transformer (RDT) is the largest bimanual manipulation founda
 
 A RDT pipeline is provided for evaluating the VLA model on the simulation task. This pipeline includes source code optimized with OpenVINO™ for improved performance, and supports running inference on Intel GPUs (discrete GPU and integrated GPU).
 
-In this tutorial, we will introduce how to setup RDT simulation pipeline.
+This tutorial explains how to set up the RDT simulation pipeline.
 
 ## Simulation Task
 
@@ -53,7 +53,7 @@ After installing the `rdt-ov` package, follow the `README.md` file in `/opt/rdt-
 
 The RDT pipeline uses the MUJOCO simulation environment, which is also used in the [Imitation Learning - ACT](./imitation_learning_act.md) pipeline. So you can copy the MUJOCO environment setup from the ACT pipeline.
 
-> **Attention:** If you haven't set up the complete source code of the `ACT` package, please follow [Install ACT pipeline of OpenVINO](./imitation_learning_act.md#install-act-package) to set up the complete source code environment first.
+> **Attention:** If you haven't set up the complete source code of the `ACT` package, please follow [Install ACT pipeline of OpenVINO™](./imitation_learning_act.md#install-act-package) to set up the complete source code environment first.
 
 Next, copy these assets to the RDT pipeline directory as follows:
 
@@ -184,7 +184,7 @@ docker run -it \
 3. You can download our fine-tuned weights from this link: [Download Link](https://eci.intel.com/embodied-sdk-docs/_downloads/RDT-sim-ft-weights.zip), and then follow the instructions in `<rdt_SOURCE_CODE_PATH>/scripts/convert/README.md` to convert the model to the OpenVINO™ format.
 
    > [!NOTE]
-   > For detailed instructions on the model conversion process, refer to [OpenVINO Model Guidance - RDT](../../../components/ai_resources/openvino/models/model_rdt.md).
+   > For detailed instructions on the model conversion process, refer to [OpenVINO™ Supported Models - RDT](../../../components/ai_resources/openvino/models/model_rdt.md).
    >
    > Of course, you can download [the pre-trained RDT-1B weights](https://hf-mirror.com/robotics-diffusion-transformer/rdt-1b) from the Hugging Face Hub, but it is recommended to fine-tune the weights with ALOHA dataset for better performance to achieve the best results in the ALOHA MUJOCO simulation tasks.
 

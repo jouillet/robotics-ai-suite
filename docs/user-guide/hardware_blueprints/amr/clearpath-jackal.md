@@ -28,8 +28,8 @@ the robot with a RealSense D435i camera.
 | Component | Model / Specification | Purpose |
 | --- | --- | --- |
 | Robot Base | Clearpath Robotics Jackal (J100) | Unmanned ground vehicle base, motor control, and chassis |
-| Onboard Compute | [AAEON UP Nexus WCL Edge](../../platform_foundation/development_kits/up-nexus-wcl-edge/index.md) (Wildcat Lake) | Validated replacement for the stock onboard computer; runs ROS 2 Jazzy, the Clearpath Robotics services, and the Autonomous Mobile Robot perception pipeline |
-| Camera | Intel RealSense D435i | RGB-D perception input for SLAM, navigation, and follow-me workflows |
+| Onboard Compute | [AAEON UP Nexus WCL Edge](../../platform_foundation/development_kits/up-nexus-wcl-edge/index.md) | Validated replacement for the stock onboard computer; runs ROS 2 Jazzy, the Clearpath Robotics services, and the Autonomous Mobile Robot perception pipeline |
+| Camera | RealSense D435i | RGB-D perception input for SLAM, navigation, and follow-me workflows |
 
 ## Set Up the Jackal
 

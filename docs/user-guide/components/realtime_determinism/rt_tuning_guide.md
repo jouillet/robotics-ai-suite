@@ -1,10 +1,10 @@
 # Real-time Tuning Guide
 
-For the improved performance with real-time, follow the below guide to set boot paramaters and learn how to optimize your solution for determinisitic workloads.
+To improve real-time performance, follow this guide to adjust boot parameters and optimize your system for deterministic workloads.
 
 ## UEFI Setup
 
-To achieve real-time determinism and utilize the available Intel® silicon features, you need to configure certain BIOS settings. Reboot the target system and access the BIOS (press the `Delete` or `F2` keys while booting to open the BIOS menu).
+To achieve real-time determinism and utilize the available Intel silicon features, you need to configure certain BIOS settings. Reboot the target system and access the BIOS (press the `Delete` or `F2` keys while booting to open the BIOS menu).
 
 1. Select **Restore Defaults** or **Load Defaults**, and then select **Save Changes and Reset**. As the target system boots, access the BIOS again.
 
@@ -72,7 +72,7 @@ To achieve real-time determinism and utilize the available Intel® silicon featu
    :::
    ::::
 
-   **Note<sup>*</sup>**: Active SOC-North Efficient-cores can be enabled **all** on Intel® Core™ Ultra Series 3 (Panther Lake) processor, while still **0** on Intel® Core™ Ultra Series 2 (Arrow Lake) processor under Real-time Optimization.
+   **Note<sup>*</sup>**: Active SOC-North Efficient-cores can be enabled **all** on Intel® Core™ Ultra Series 3 processor, while still **0** on Intel® Core™ Ultra Series 2 processor under Real-time Optimization.
 
 ## Modify Boot Parameters
 
@@ -139,7 +139,7 @@ To achieve optimum real-time performance on a target system, specific runtime co
 :::{tab-item} **Ubuntu 24.04**
 :sync: jazzy
 
-![PTL RT setup diagram](../../ai_resources/developer_tools/assets/images/ptl_rt_setup.png)
+![Intel® Core™ Ultra Series 3 RT setup diagram](../../ai_resources/developer_tools/assets/images/ptl_rt_setup.png)
 
 :::
 :::{tab-item} **Ubuntu 22.04**
