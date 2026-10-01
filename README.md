@@ -114,3 +114,35 @@ The per-collection reference application architectures — which zoom into a rep
 | [Feature Tracking Model: LightGlue](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/ai_resources/openvino/models/model_lightglue.html) | A model designed for efficient and accurate feature matching in computer vision tasks |
 | [Bird’s Eye View Perception: Fast-BEV](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/ai_resources/openvino/models/model_fastbev.html) | Obtaining a Bird's Eye View (BEV) perception is to gain a comprehensive understanding of the spatial layout and relationships between objects in a scene |
 | [Monocular Depth Estimation: Depth Anything V2](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/ai_resources/openvino/models/model_depthanythingv2.html) | A powerful tool that leverages deep learning to infer 3D information from 2D images |
+
+## Contribute
+
+Read the [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on submitting issues and pull requests.
+
+## Community and Support
+
+For support, submit your bug report and feature request to [Github Issues](https://github.com/open-edge-platform/robotics-ai-suite/issues).
+
+## License
+
+The **Robotics AI Suite** project is licensed under the [APACHE 2.0](LICENSE).  
+
+## Third-Party
+
+Applications in this repository which are based on third-party content are:
+
+| Sample Application                                              | Third-Party Application                                  |
+|:----------------------------------------------------------------|:---------------------------------------------------------|
+|[ACT Sample](pipelines/act-sample)             | [ACT](https://github.com/tonyzhaozh/act)                 |
+|[ORB-SLAM3 Sample](pipelines/orb-slam3-sample) | [ORB-SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3.git) |
+
+## Intended Use
+
+Applications developed in this repository, unless stated otherwise, are intended for reference
+and demonstration purposes, not for production environments.
+Certain features, such as authentication, TLS termination, and external access controls are
+assumed to be covered at the infrastructure level.
+
+For more information, refer to the
+[Notes on Usage](https://docs.openedgeplatform.intel.com/dev/OEP-articles/notes-on-usage.html)
+document.
