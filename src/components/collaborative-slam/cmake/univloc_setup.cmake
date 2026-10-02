@@ -36,11 +36,18 @@ if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
   add_compile_options(-Wno-aggressive-loop-optimizations)
 endif()
 
+# GPU Level Zero acceleration option
+option(USE_GPU_LEVEL_ZERO "Enable Level Zero GPU acceleration for ORB extraction" OFF)
+if(USE_GPU_CM)
+  set(USE_GPU_LEVEL_ZERO ON)
+endif()
+if(USE_GPU_LEVEL_ZERO)
+  set(USE_GPU_CM ON)
+endif()
+
 # Set USE_PREBUILT_DEPS based on ROS distribution
-if(ROS_DISTRO STREQUAL "humble")
+if(ROS_DISTRO STREQUAL "humble" OR ROS_DISTRO STREQUAL "jazzy")
   option(USE_PREBUILT_DEPS "Use prebuilt 3rd party dependencies" ON)
-elseif(ROS_DISTRO STREQUAL "jazzy")
-  option(USE_PREBUILT_DEPS "Use prebuilt 3rd party dependencies" OFF)
 else()
   message(FATAL_ERROR "Unknown ROS distribution: ${ROS_DISTRO}. Only 'humble' and 'jazzy' are supported.")
 endif()

@@ -10,6 +10,7 @@ SPDX-License-Identifier: Apache-2.0
 ## Local Build Script Usage (uni-build.sh)
 
 This README describes how to use the build script locally using Docker containers for both ROS Humble and ROS Jazzy distributions.
+The script uses the repository Makefile targets (`debian-build-deps-install` and `package`) and CPACK packaging.
 
 ## Prerequisites
 
@@ -86,3 +87,5 @@ This README describes how to use the build script locally using Docker container
 Build packages will be available in:
 - `/tmp/humble_simulations_deb_packages/` for ROS Humble
 - `/tmp/jazzy_simulations_deb_packages/` for ROS Jazzy
+
+Intermediate CPACK artifacts are generated under `build/debian-packages/packages/`.

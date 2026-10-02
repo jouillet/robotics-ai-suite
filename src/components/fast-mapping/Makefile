@@ -33,63 +33,129 @@ else
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: build clean help license-check lint lint-all package test source-package
+.PHONY: build clean help license-check lint lint-all package test test-e2e test-results source-package debian-build-deps install-debian-build-deps container-package container-test container-debian-build-deps
+
+PROJECT_DEFINITION ?= $(ROOT_DIR)/robotics-project.json
+PACKAGE_VERSION_SUFFIX ?=
+TEST_SUMMARY ?= $(ROOT_DIR)/testout/test-summary.md
+PACKAGE_COMPONENTS := $(shell PROJECT_DEFINITION="$(PROJECT_DEFINITION)" ROOT_DIR="$(ROOT_DIR)" python3 -c 'import json, os, pathlib, re; project = json.loads(pathlib.Path(os.environ["PROJECT_DEFINITION"]).read_text(encoding="utf-8")); components = project.get("ci", {}).get("package_components", []); root = pathlib.Path(os.environ["ROOT_DIR"]) / "src"; valid = project.get("format_version") == 1 and isinstance(components, list) and components and all(isinstance(component, dict) and isinstance(component.get("path"), str) and re.fullmatch(r"[a-z0-9][a-z0-9_-]*", component["path"]) and (root / component["path"]).is_dir() and ("ros_package" not in component or isinstance(component["ros_package"], str) and re.fullmatch(r"[a-z0-9][a-z0-9_]*", component["ros_package"])) for component in components); (_ for _ in ()).throw(SystemExit("Invalid package components in project definition")) if not valid else None; print(",".join(component["path"] for component in components))')
+ROS_PACKAGES := $(shell PROJECT_DEFINITION="$(PROJECT_DEFINITION)" python3 -c 'import json, os, pathlib, re; project = json.loads(pathlib.Path(os.environ["PROJECT_DEFINITION"]).read_text(encoding="utf-8")); components = project.get("ci", {}).get("package_components", []); ros_components = [component for component in components if "ros_package" in component]; valid = project.get("format_version") == 1 and isinstance(components, list) and ros_components and all(isinstance(component, dict) and isinstance(component.get("ros_package"), str) and re.fullmatch(r"[a-z0-9][a-z0-9_]*", component["ros_package"]) for component in ros_components); (_ for _ in ()).throw(SystemExit("Invalid ROS packages in project definition")) if not valid else None; print(" ".join(component["ros_package"] for component in ros_components))')
+PACKAGE_OUTPUT_DIR = $(ROOT_DIR)/build/debian-packages/packages
+BUILD_DEPENDS_OUTPUT_DIR = $(ROOT_DIR)/build/debian-build-deps
+MISSING_BUILD_DEPENDENCIES_FILE = $(BUILD_DEPENDS_OUTPUT_DIR)/missing-dependencies.txt
+CONTAINER_IMAGE ?= amd64/ros:$(ROS_DISTRO)-ros-base
 
 license-check:
 	@# Help: Perform a REUSE license check using docker container https://hub.docker.com/r/fsfe/reuse
 	docker run --rm --volume ${ROOT_DIR}:/data fsfe/reuse:5.0.2 lint
 
 package:
-	@# Help: Build Debian package
-	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
-		-e DEBIAN_FRONTEND=noninteractive \
-		-e MK_BUILD_DEPS_AUTO=yes \
-		amd64/ros:${ROS_DISTRO}-ros-base \
-		bash -c "export DEBIAN_FRONTEND=noninteractive && apt-get -qq update && apt-get -qq install -y equivs devscripts && cd /src && \
-		rm -rf debian && cp -r "$(ROS_DISTRO)/debian" ./debian && \
-		mk-build-deps -i --host-arch amd64 --build-arch amd64 \
-		  -t 'apt-get -y -q -o Debug::pkgProblemResolver=yes --no-install-recommends --allow-downgrades' debian/control && \
-		DEB_BUILD_OPTIONS='nocheck parallel=$(MAKE_JOBS)' dpkg-buildpackage -us -uc && \
-		mv ../*.deb ./ 2>/dev/null || true"
+	@# Help: Build Debian packages
+	command -v ninja >/dev/null || { echo "Error: Ninja is required. Install ninja-build." >&2; exit 1; }
+	rm -rf $(ROOT_DIR)/build/debian-packages
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	cmake -G Ninja -S $(ROOT_DIR) -B $(ROOT_DIR)/build/debian-packages \
+		-DROS_DISTRO=$(ROS_DISTRO) \
+		-DFASTMAPPING_PACKAGE_OUTPUT_DIR=$(PACKAGE_OUTPUT_DIR) \
+		-DFASTMAPPING_PACKAGE_COMPONENTS="$(PACKAGE_COMPONENTS)" \
+		-DFASTMAPPING_PACKAGE_VERSION_SUFFIX=$(PACKAGE_VERSION_SUFFIX) && \
+	cmake --build $(ROOT_DIR)/build/debian-packages --target package
+
+debian-build-deps:
+	@# Help: Generate Debian Build-Depends control files without configuring components
+	rm -rf $(BUILD_DEPENDS_OUTPUT_DIR) $(ROOT_DIR)/build/debian-build-deps-config
+	cmake -S $(ROOT_DIR) -B $(ROOT_DIR)/build/debian-build-deps-config \
+		-DROS_DISTRO=$(ROS_DISTRO) \
+		-DFASTMAPPING_PACKAGE_COMPONENTS="$(PACKAGE_COMPONENTS)" \
+		-DFASTMAPPING_BUILD_DEPENDS_OUTPUT_DIR=$(BUILD_DEPENDS_OUTPUT_DIR) && \
+	cmake --build $(ROOT_DIR)/build/debian-build-deps-config --target debian-build-deps
+
+install-debian-build-deps: debian-build-deps
+	@# Help: Install generated Debian Build-Depends with APT
+	@command -v mk-build-deps >/dev/null && command -v equivs-build >/dev/null && command -v dpkg-checkbuilddeps >/dev/null || { echo "Error: mk-build-deps, equivs-build, and dpkg-checkbuilddeps are required. Install devscripts, equivs, and dpkg-dev." >&2; exit 1; }
+	@apt-get update; \
+	install_status=0; \
+	for control_file in $(BUILD_DEPENDS_OUTPUT_DIR)/*/debian/control; do \
+		mk-build-deps --install --remove \
+			--tool 'apt-get --no-install-recommends --no-remove --yes' \
+			"$$control_file" || install_status=1; \
+	done; \
+	: > $(MISSING_BUILD_DEPENDENCIES_FILE); \
+	for control_file in $(BUILD_DEPENDS_OUTPUT_DIR)/*/debian/control; do \
+		if missing_dependencies="$$(dpkg-checkbuilddeps "$$control_file" 2>&1)"; then \
+			continue; \
+		fi; \
+		printf '%s\n%s\n\n' "$$control_file" "$$missing_dependencies" >> $(MISSING_BUILD_DEPENDENCIES_FILE); \
+	done; \
+	exit "$$install_status"
+
+build:
+	@# Help: Build selected ROS packages with Colcon for local development
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --executor sequential --event-handlers console_direct+
+
+test:
+	@# Help: Build & test with Colcon
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --cmake-clean-cache \
+		--cmake-args -DBUILD_TESTING=ON --executor sequential --event-handlers console_direct+ && \
+	set +u && source $(ROOT_DIR)/install/setup.bash && set -u && \
+	colcon test --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --return-code-on-test-failure --executor sequential --event-handlers console_direct+
+
+test-results:
+	@# Help: Summarize Colcon test results
+	@mkdir -p "$(dir $(TEST_SUMMARY))"
+	python3 .github/scripts/summarize_test_results.py \
+		--results-glob 'build/*/test_results/**/*.xml' \
+		--ros-distro $(ROS_DISTRO) \
+		--summary-file "$(TEST_SUMMARY)"
 
 test-e2e:
 	@# Help: Run E2E functional tests
-	@if ! ls ros-$(ROS_DISTRO)-fast-mapping*.deb 2>/dev/null | grep -v 'ros-$(ROS_DISTRO)-fast-mapping-build-deps_.*_amd64.deb' | grep -q .; then \
-		echo "Error: ros-$(ROS_DISTRO)-fast-mapping*.deb not found. Run 'make package' first"; \
-		exit 1; \
-	fi
+	@command -v Xvfb >/dev/null && command -v gm >/dev/null && python3 -c 'import PIL' >/dev/null 2>&1 || { \
+		if command -v apt-get >/dev/null && [ "$$(id -u)" -eq 0 ]; then \
+			echo "Installing E2E test dependencies (xvfb, graphicsmagick, python3-pil, python3-pytest)..."; \
+			apt-get update -qq && apt-get install -y --no-install-recommends xvfb graphicsmagick python3-pil python3-pytest; \
+		fi; \
+	}
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	python3 -m pytest src/fast_mapping/tests/ -v
+
+container-debian-build-deps:
+	@# Help: Generate Debian Build-Depends in container
 	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
+		-v $(ROOT_DIR):/workspace \
+		-w /workspace \
+		-e ROS_DISTRO=$(ROS_DISTRO) \
+		$(CONTAINER_IMAGE) \
+		bash -c "source /opt/ros/$(ROS_DISTRO)/setup.bash && make debian-build-deps ROS_DISTRO=$(ROS_DISTRO)"
+
+container-package:
+	@# Help: Build Debian package inside ROS container on host
+	docker run --rm -t --platform linux/amd64 \
+		-v $(ROOT_DIR):/workspace \
+		-w /workspace \
+		-e ROS_DISTRO=$(ROS_DISTRO) \
+		-e PACKAGE_VERSION_SUFFIX=$(PACKAGE_VERSION_SUFFIX) \
 		-e DEBIAN_FRONTEND=noninteractive \
-		amd64/ros:${ROS_DISTRO}-ros-base \
-		bash -c "curl https://eci.intel.com/repos/gpg-keys/GPG-PUB-KEY-INTEL-ECI.gpg -o /usr/share/keyrings/eci-archive-keyring.gpg > /dev/null && \
-		echo \"deb [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://eci.intel.com/repos/${UBUNTU_CODENAME} isar main\" | sudo tee /etc/apt/sources.list.d/eci.list > /dev/null && \
-		echo \"deb-src [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://eci.intel.com/repos/${UBUNTU_CODENAME} isar main\" | sudo tee -a /etc/apt/sources.list.d/eci.list > /dev/null && \
-		echo \"deb [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://amrdocs.intel.com/repos/${UBUNTU_CODENAME} amr main\" | sudo tee /etc/apt/sources.list.d/amr.list > /dev/null && \
-		echo \"deb-src [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://amrdocs.intel.com/repos/${UBUNTU_CODENAME} amr main\" | sudo tee -a /etc/apt/sources.list.d/amr.list > /dev/null && \
-		apt-get -qq update && apt-get -q install -y wget python3 python3-pip xvfb graphicsmagick && cd /src && \
-		$(if $(filter humble,$(ROS_DISTRO)),python3 -m pip install --upgrade pip &&) \
-		pip3 install $(if $(filter humble,$(ROS_DISTRO)),'pytest<8',pytest) Pillow $(if $(filter humble,$(ROS_DISTRO)),-U,--break-system-packages) && \
-		find . -name '*.deb' -not -name '*-build-deps_*' -not -name '*-dbgsym_*' -exec apt-get -q install -y {} \; && \
-		source /opt/ros/$(ROS_DISTRO)/setup.bash && \
-		pytest tests/ -v"
+		$(CONTAINER_IMAGE) \
+		bash -c "apt-get update -qq && apt-get install -y --no-install-recommends cmake ninja-build build-essential devscripts equivs dpkg-dev python3-colcon-common-extensions && \
+			source /opt/ros/$(ROS_DISTRO)/setup.bash && \
+			make install-debian-build-deps ROS_DISTRO=$(ROS_DISTRO) && \
+			make package ROS_DISTRO=$(ROS_DISTRO) PACKAGE_VERSION_SUFFIX=$(PACKAGE_VERSION_SUFFIX)"
 
-build:
-	@# Help: Build code using colcon
+container-test:
+	@# Help: Build & test with Colcon inside ROS container on host
 	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
-		amd64/ros:${ROS_DISTRO}-ros-base \
-		bash -c "apt -qq update && DEBIAN_FRONTEND=noninteractive apt -o=Dpkg::Use-Pty=0 -qq install -y ros-$(ROS_DISTRO)-cv-bridge libboost-dev && cd /src && . /opt/ros/$(ROS_DISTRO)/setup.sh && \
-		colcon build --executor sequential --event-handlers console_direct- compile_commands- console_cohesion- console_package_list- console_start_end+ console_stderr+ desktop_notification- event_log- log- log_command- status- store_result- summary+ terminal_title-"
-
-test:
-	@# Help: Test code using colcon
-	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
-		amd64/ros:${ROS_DISTRO}-ros-base \
-		bash -c "apt -qq update && DEBIAN_FRONTEND=noninteractive apt -qq install -y ros-$(ROS_DISTRO)-cv-bridge libboost-dev && cd /src && . /opt/ros/$(ROS_DISTRO)/setup.sh && \
-		colcon test --return-code-on-test-failure --executor sequential --event-handlers console_direct- compile_commands- console_cohesion- console_package_list- console_start_end+ console_stderr+ desktop_notification- event_log- log- log_command- status- store_result- summary+ terminal_title-"
+		-v $(ROOT_DIR):/workspace \
+		-w /workspace \
+		-e ROS_DISTRO=$(ROS_DISTRO) \
+		-e DEBIAN_FRONTEND=noninteractive \
+		$(CONTAINER_IMAGE) \
+		bash -c "apt-get update -qq && apt-get install -y --no-install-recommends cmake ninja-build build-essential devscripts equivs dpkg-dev python3-colcon-common-extensions && \
+			source /opt/ros/$(ROS_DISTRO)/setup.bash && \
+			make install-debian-build-deps ROS_DISTRO=$(ROS_DISTRO) && \
+			make test ROS_DISTRO=$(ROS_DISTRO)"
 
 lint:
 	@# Help: Run all sub-linters using super-linter (using linters defined for this repo only)
@@ -150,17 +216,10 @@ lint-json:
 	@# Help: Run JSON linter using super-linter
 	VALIDATE_JSON=true make lint-all
 
-clean-colcon:
-	@# Help: Clean up Colcon build and test artifacts
-	rm -rf build/ install/ log/
-
-clean-debian:
-	@# Help: Clean up Debian packaging artifacts
-	rm -rf debian
-	rm -f *.deb *.build *.changes *.dsc *.tar.gz *.buildinfo
-
-clean: clean-debian clean-colcon
-	@# Help: Clean up all build artifacts
+clean:
+	@# Help: Remove local build, install, log, test, and package artifacts
+	rm -rf $(ROOT_DIR)/build $(ROOT_DIR)/install $(ROOT_DIR)/log $(ROOT_DIR)/testout *.deb *.buildinfo *.changes 2>/dev/null || \
+	docker run --rm -v $(ROOT_DIR):/workspace amd64/ros:$(ROS_DISTRO)-ros-base rm -rf /workspace/build /workspace/install /workspace/log /workspace/testout
 
 source-package:
 	@# Help: Create source package tarball

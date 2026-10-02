@@ -1,0 +1,18 @@
+# Copyright (C) 2026 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+
+line-length = 99
+extend-exclude = [
+    "build",
+    "install",
+    "log",
+    "3rd",
+    "benchmark",
+    "src/univloc_tracker/tools",
+]
+force-exclude = true
+
+[lint]
+ignore = ["E203", "E501"]
+select = ["E", "F", "W"]

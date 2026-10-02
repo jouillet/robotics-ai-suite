@@ -1,62 +1,103 @@
 <!--
-Copyright (C) 2025 Intel Corporation
+Copyright (C) 2026 Intel Corporation
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Wandering Application in a Waffle Gazebo\* Simulation
+# `wandering` application in Gazebo simulation
 
----
+This tutorial walks through running the `wandering` mobile robot application
+inside Gazebo simulation using the composed TurtleBot3 Waffle RGB-D model.
+The simulation demonstrates complete autonomous frontier exploration integrated
+with Nav2 navigation, SLAM (RTAB-Map or SLAM Toolbox), and ADBSCAN 3D
+obstacle perception.
 
-This tutorial shows a TurtleBot3 Waffle performing autonomous mapping of
-a TurtleBot3 world in Gazebo simulation. For more information about
-TurtleBot3 Waffle, see
-[this](https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/#gazebo-simulation).
+For background information on the TurtleBot3 platform, see the
+[ROBOTIS TurtleBot3 e-Manual](https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/#gazebo-simulation).
 
 ## Prerequisites
 
-- [Prepare the target system](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html)
-- [Setup the Robotics AI Dev Kit APT Repositories](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#3-set-up-robotics-ai-suite-oneapi-and-graphics-apt-repositories)
-- [Install OpenVINO™ Packages](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#4-install-openvino-packages)
-- [Install Robotics AI Dev Kit Deb packages](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#6-install-robotics-ai-suite-deb-packages)
-- [Install the Intel® NPU Driver on Intel® Core™ Ultra Processors (if applicable)](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#7-install-the-intel-npu-driver-on-intel-core-ultra-processors)
+* [Prepare the target system](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/)
+* [Set up the Robotics AI Dev Kit APT repositories](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#3-set-up-robotics-ai-suite-oneapi-and-graphics-apt-repositories)
+* [Install OpenVINO™ packages](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#4-install-openvino-packages)
+* [Install Robotics AI Dev Kit Debian packages](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#6-install-robotics-ai-suite-deb-packages)
+* [Install the Intel® NPU driver on Intel® Core™ Ultra processors (if applicable)](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#7-install-the-intel-npu-driver-on-intel-core-ultra-processors)
 
-## Run the Sample Application
+## Installation
 
-1. If your system has an Intel® GPU, follow the steps in the
-    [Getting Started Guide](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html) to enable
-    the GPU for simulation. This step improves Gazebo\* simulation
-    performance.
+Install the `wandering` metapackage for your installed ROS 2 distribution:
 
-2. Install the Wandering Gazebo tutorial:
+```bash
+# For Jazzy (Ubuntu 24.04):
+sudo apt update
+sudo apt install ros-jazzy-wandering
 
-    ``` bash
-    sudo apt-get install ros-humble-wandering-gazebo-tutorial
-    ```
+# For Humble (Ubuntu 22.04):
+sudo apt update
+sudo apt install ros-humble-wandering
+```
 
-3. Execute the command below to start the tutorial:
+Or build the workspace from source and source the installation:
 
-    ``` bash
-    ros2 launch wandering_gazebo_tutorial wandering_gazebo.launch.py
-    ```
+```bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
+colcon build --symlink-install
+source install/setup.bash
+```
 
-    **Expected output:**
+## Running the simulation
 
-    Gazebo\* client, rviz2 and RTAB-Map applications start and the robot
-    starts wandering inside the simulation. See the simulation snapshot:
+### Primary RGB-D simulation
 
-    ![image](images/gazebo_waffle.png)
+Launch the complete autonomous simulation pipeline:
 
-    Rviz2 shows the mapped area and the position of the robot:
+```bash
+ros2 launch wandering_bringup wandering_sim.launch.py gui:=true
+```
 
-    ![image](images/wandering-gazebo-rviz2.png)
+**What this starts:**
 
-    To enhance performance, set the real-time update to 0 by following
-    the steps below:
+1. **Gazebo Sim with composed RGB-D Waffle:** Starts the Gazebo simulation
+   world with an integrated RGB-D camera payload (`gui:=true` opens the
+   graphical Gazebo window).
+2. **RGB-D sensor bridge:** Bridges camera color, depth, camera info, and
+   depth point-cloud streams to ROS 2 topics.
+3. **SLAM & Nav2:** Starts RTAB-Map SLAM (or SLAM Toolbox) alongside the Nav2
+   navigation stack with the `ADBScanLayer` plugin enabled in both local and
+   global costmaps.
+4. **ADBSCAN perception:** Clusters 3D obstacle points from the depth camera
+   and publishes detections to `/obstacle_array`.
+5. **Autonomous exploration (`wandering_app`):** Evaluates costmap frontiers
+   and sends `NavigateToPose` goals to Nav2.
+6. **Visualization:**
+   * Global map RViz window with the **Wandering Control** panel.
+   * Local costmap RViz window displaying real-time obstacle layers.
+   * `rqt_image_view` window displaying the camera color feed.
 
-    a.  In Gazebo\*\'s left panel, go to the **World** Tab, and click
-        **Physics**.
-    b.  Change the real time update rate to 0.
+### Selecting a SLAM backend
 
-4. To conclude, use `Ctrl-c` in the terminal where you are executing
-    the command.
+By default, the simulation uses RTAB-Map for visual RGB-D SLAM. To use
+`slam_toolbox` (2D LiDAR SLAM) instead:
+
+```bash
+ros2 launch wandering_bringup wandering_sim.launch.py \
+  slam_backend:=slam_toolbox gui:=true
+```
+
+### Headless execution
+
+To run the simulation in headless mode (e.g., on remote servers or automated
+benchmarks without opening the Gazebo GUI client):
+
+```bash
+ros2 launch wandering_bringup wandering_sim.launch.py gui:=false
+```
+
+### Stopping the simulation
+
+To stop all nodes and the simulator, press `Ctrl-C` in the launch terminal.
+
+## Advanced simulation options
+
+For details on custom robot models, scan-only fallback testing, and deep-dive
+parameter tuning, see the [Bringup Guide](../src/wandering_bringup/README.md).

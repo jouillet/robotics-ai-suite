@@ -15,15 +15,15 @@ TurtleBot3 Waffle, see
 
 ## Prerequisites
 
-- [Prepare the target system](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html)
-- [Setup the Robotics AI Dev Kit APT Repositories](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#3-set-up-robotics-ai-suite-oneapi-and-graphics-apt-repositories)
-- [Install OpenVINO™ Packages](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#4-install-openvino-packages)
-- [Install Robotics AI Dev Kit Deb packages](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#6-install-robotics-ai-suite-deb-packages)
-- [Install the Intel® NPU Driver on Intel® Core™ Ultra Processors (if applicable)](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#7-install-the-intel-npu-driver-on-intel-core-ultra-processors)
+- [Prepare the target system](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/)
+- [Setup the Robotics AI Dev Kit APT Repositories](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#3-set-up-robotics-ai-suite-oneapi-and-graphics-apt-repositories)
+- [Install OpenVINO™ Packages](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#4-install-openvino-packages)
+- [Install Robotics AI Dev Kit Deb packages](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#6-install-robotics-ai-suite-deb-packages)
+- [Install the Intel® NPU Driver on Intel® Core™ Ultra Processors (if applicable)](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#7-install-the-intel-npu-driver-on-intel-core-ultra-processors)
 
 ## Run the Sample Application
 
-1. If your system has an Intel® GPU, follow the steps in the [Getting Started Guide](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html)
+1. If your system has an Intel® GPU, follow the steps in the [Getting Started Guide](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/)
     to enable the GPU for simulation.
     This step improves Gazebo\* simulation performance.
 
@@ -62,4 +62,4 @@ TurtleBot3 Waffle, see
 
 ## Troubleshooting
 
-For general robot issues, go to: [Troubleshooting for Robotics AI Dev Kit Tutorials](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/resources/troubleshooting.html)
+For general robot issues, go to: [Troubleshooting for Robotics AI Dev Kit Tutorials](https://developer.robotics.intel.com/development-stack/resources/troubleshooting/)

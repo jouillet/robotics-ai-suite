@@ -1,0 +1,24 @@
+# Copyright (C) 2026 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+---
+adbscan_pointcloud_fusion:
+  ros__parameters:
+    target_frame: base_link
+    scan_topic: /scan
+    cloud_topic: /camera/depth/color/points
+    output_topic: /adbscan/points
+    scan_range_cutoff: -1.0
+    # Keep the local obstacle band; plane fitting removes the retained floor returns.
+    min_z: -0.35
+    max_z: 1.50
+    remove_ground: true
+    ground_distance_threshold: 0.06
+    use_voxel_filter: true
+    voxel_leaf_size: 0.05
+    sync_queue_size: 20
+    transform_timeout: 0.1
+    # Nav2 continues to consume /scan. Use the continuous RGB-D cloud directly
+    # so ADBSCAN does not wait for scan-to-camera synchronization.
+    fuse_scan: false
+    fuse_cloud: true

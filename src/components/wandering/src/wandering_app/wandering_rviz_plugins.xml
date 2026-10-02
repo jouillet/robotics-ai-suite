@@ -1,0 +1,12 @@
+<!--
+Copyright (C) 2026 Intel Corporation
+SPDX-License-Identifier: Apache-2.0
+-->
+<library path="wandering_rviz_panel">
+  <class
+    name="wandering_app/Wandering Control"
+    type="wandering_app::WanderingControlPanel"
+    base_class_type="rviz_common::Panel">
+    <description>Controls whether Wandering autonomously selects Nav2 goals.</description>
+  </class>
+</library>

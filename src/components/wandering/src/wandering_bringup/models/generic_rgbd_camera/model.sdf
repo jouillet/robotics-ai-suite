@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!--
+Copyright (C) 2026 Intel Corporation
+SPDX-License-Identifier: Apache-2.0
+-->
+<sdf version="1.9">
+  <model name="generic_rgbd_camera">
+    <link name="rgbd_camera_link">
+      <inertial>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <iyy>0.0001</iyy>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+      <visual name="camera_visual">
+        <geometry>
+          <box>
+            <size>0.04 0.09 0.03</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.12 0.12 0.12 1</ambient>
+          <diffuse>0.18 0.18 0.18 1</diffuse>
+        </material>
+      </visual>
+      <sensor name="rgbd" type="rgbd_camera">
+        <always_on>true</always_on>
+        <update_rate>15</update_rate>
+        <visualize>false</visualize>
+        <topic>/rgbd_camera</topic>
+        <gz_frame_id>rgbd_camera_link</gz_frame_id>
+        <camera>
+          <optical_frame_id>camera_rgb_optical_frame</optical_frame_id>
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>320</width>
+            <height>240</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>10.0</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.002</stddev>
+          </noise>
+        </camera>
+      </sensor>
+    </link>
+  </model>
+</sdf>

@@ -1,10 +1,10 @@
 <!--
-Copyright (C) 2025 Intel Corporation
+Copyright (C) 2026 Intel Corporation
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# ADBSCAN Algorithm
+# ADBSCAN Documentation
 
 ---
 
@@ -23,23 +23,26 @@ Intel® RealSense™ based object tracking, multi-modal object
 classification (Camera + Lidar), surface segmentation, Lidar-based
 object classification, occupancy grid generation etc.
 
-## Source Code
+## Documentation Index
 
-The source code of this component can be found here:
-[ADBScan](https://github.com/open-edge-platform/edge-ai-suites/tree/main/robotics-ai-suite/components/adbscan)
+### Core Package & Algorithm Documentation
 
-## ADBSCAN Tutorials
+- [ADBSCAN ROS 2 Node Guide](../src/adbscan_ros2/Readme.md) - Configuration parameters, topic schemas, and RViz visualization.
+- [Intel Architecture Optimized ADBSCAN](IA-optimized-adbscan-algorithm.md) - oneAPI GPU/CPU acceleration, parallel search benchmarks, and parameters.
 
-- [ADBSCAN AAEON Robot](adbscan_aaeon_robot.md)
-- [ADBSCAN RealSense](adbscan-realsense.md)
-- [ADBSCAN RPLidar](adbscan-rplidar.md)
+### Follow-Me Application & Simulation
 
-## ADBSCAN Optimization
+- [Follow-Me Application Guide](follow_me_readme.md) - Comprehensive application guide covering all 4 demo modes (LiDAR, RealSense, Gesture, Audio).
+- [Follow-Me Requirements](follow_me_requirements.md) - System packages and Python dependencies for Humble and Jazzy.
+- [Follow-Me TurtleBot3 Gazebo Simulation](followme_turtlebot3_gazebo_readme.md) - Simulation world configurations, guide robot model, and launch sequences.
 
-- [IA Optimized ADBSCAN Algorithm](IA-optimized-adbscan-algorithm.md)
+### Sensor & Platform Tutorials
+
+- [ADBSCAN AAEON Robot Tutorial](adbscan_aaeon_robot.md) - Running ADBSCAN on a physical AAEON AMR platform.
+- [ADBSCAN RealSense Demo](adbscan-realsense.md) - Running ADBSCAN from Intel® RealSense™ depth camera bag data.
+- [ADBSCAN RPLidar Demo](adbscan-rplidar.md) - Running ADBSCAN from 2D RPLidar bag data.
 
 ## Troubleshooting
 
-- Failed to install Deb package: Please make sure to run
-  `sudo apt update` before installing the necessary Deb packages.
-- You can stop the demo anytime by pressing `ctrl-C`.
+- Failed to install Deb package: Please make sure to run `sudo apt update` before installing Debian packages.
+- You can stop running nodes or simulations anytime by pressing `Ctrl-C`.

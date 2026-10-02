@@ -8,7 +8,7 @@ SPDX-License-Identifier: Apache-2.0
 
 ## Documentation
 
-Comprehensive documentation on this component is available here: [dev guide](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/components/ai_resources/openvino/reference_applications/openvino_multicam_demo.html).
+Comprehensive documentation on this component is available here: [dev guide](https://developer.robotics.intel.com/development-stack/ai_resources/openvino/reference_applications/openvino_multicam_demo/).
 
 ## Overview
 
@@ -18,18 +18,18 @@ The multicamera usecase is demonstrated using an Axiomtek Robox500 Industrial PC
 
 The setup looks like as described in the table below.
 <!-- markdownlint-disable MD033 -->
-|Camera  |AI Model          |AI Workload                     |Device|
-|--------|------------------|--------------------------------|------|
+|Camera  |AI Model          |AI Workload                                  |Device|
+|--------|------------------|---------------------------------------------|------|
 |Camera-1|YOLOv8n-seg:FP16  |<ul><li>Object detection</li><li>Segmentation|GPU   |
 |Camera-2|YOLOv8n-seg:FP16  |<ul><li>Object detection</li><li>Segmentation|CPU   |
-|Camera-3|YOLOv8n:FP16      |Object detection                |GPU   |
-|Camera-4|mobilenet-ssd:FP16|Object detection                |GPU   |
+|Camera-3|YOLOv8n:FP16      |Object detection                             |GPU   |
+|Camera-4|mobilenet-ssd:FP16|Object detection                             |GPU   |
 
 ## Get Started
 
 ### System Requirements
 
-Prepare the target system following the [official documentation](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html).
+Prepare the target system following the [official documentation](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/).
 
 ### Build
 
@@ -192,11 +192,11 @@ Press "Del" or "Esc" button at boot to go into the BIOS. Once in the BIOS, set t
 
 ##### Prerequisites
 
-* [Prepare the target system](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html)
-* [Setup the Robotics AI Dev Kit APT Repositories](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#3-set-up-robotics-ai-suite-oneapi-and-graphics-apt-repositories)
-* [Install OpenVINO™ Packages](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#4-install-openvino-packages)
-* [Install Robotics AI Dev Kit Deb packages](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#6-install-robotics-ai-suite-deb-packages)
-* [Install the Intel® NPU Driver on Intel® Core™ Ultra Processors (if applicable)](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#7-install-the-intel-npu-driver-on-intel-core-ultra-processors)
+* [Prepare the target system](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/)
+* [Setup the Robotics AI Dev Kit APT Repositories](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#3-set-up-robotics-ai-suite-oneapi-and-graphics-apt-repositories)
+* [Install OpenVINO™ Packages](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#4-install-openvino-packages)
+* [Install Robotics AI Dev Kit Deb packages](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#6-install-robotics-ai-suite-deb-packages)
+* [Install the Intel® NPU Driver on Intel® Core™ Ultra Processors (if applicable)](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#7-install-the-intel-npu-driver-on-intel-core-ultra-processors)
 
 ##### Install iGPU drivers on 12th Gen Intel® Core™ i7 processor
 

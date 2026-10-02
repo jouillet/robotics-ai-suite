@@ -1,0 +1,79 @@
+# Copyright (C) 2026 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Global Options:
+    Fixed Frame: odom
+    Frame Rate: 30
+    Background Color: 48; 48; 48
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: false
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: true
+      Show Names: false
+    - Class: rviz_default_plugins/RobotModel
+      Name: Simulated Robot
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot_description
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+      Visual Enabled: true
+      Collision Enabled: false
+    - Class: rviz_default_plugins/LaserScan
+      Name: Navigation Scan
+      Enabled: true
+      Size (m): 0.03
+      Color: 255; 255; 0
+      Topic:
+        Value: /scan
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/PointCloud2
+      Name: ADBScan Input (Fused Cloud)
+      Enabled: true
+      Size (m): 0.03
+      Style: Points
+      Color: 0; 200; 255
+      Topic:
+        Value: /adbscan/points
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/MarkerArray
+      Name: ADBScan Obstacles
+      Enabled: true
+      Topic:
+        Value: /adbscan/obstacle_markers
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/Map
+      Name: LocalCostmap
+      Enabled: true
+      Alpha: 0.5
+      Color Scheme: costmap
+      Topic:
+        Value: /local_costmap/costmap
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 4
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Name: Current View
+      Pitch: 1.57
+      Target Frame: base_link
+      Yaw: 3.14
+Window Geometry:
+  Height: 900
+  Width: 700
+  X: 700
+  Y: 0

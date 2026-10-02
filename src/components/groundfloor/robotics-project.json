@@ -1,0 +1,15 @@
+{
+  "format_version": 1,
+  "ci": {
+    "manifest_namespace": "groundfloor",
+    "changelog_components": [
+      "pointcloud_groundfloor_segmentation"
+    ],
+    "package_components": [
+      {
+        "path": "pointcloud_groundfloor_segmentation",
+        "ros_package": "pointcloud_groundfloor_segmentation"
+      }
+    ]
+  }
+}

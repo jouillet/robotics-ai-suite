@@ -1,0 +1,32 @@
+# Copyright (C) 2026 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- ros_topic_name: /camera/color/image_raw
+  gz_topic_name: /rgbd_camera/image
+  ros_type_name: sensor_msgs/msg/Image
+  gz_type_name: gz.msgs.Image
+  lazy: true
+  direction: GZ_TO_ROS
+
+- ros_topic_name: /camera/color/camera_info
+  gz_topic_name: /rgbd_camera/camera_info
+  ros_type_name: sensor_msgs/msg/CameraInfo
+  gz_type_name: gz.msgs.CameraInfo
+  lazy: true
+  direction: GZ_TO_ROS
+
+- ros_topic_name: /camera/aligned_depth_to_color/image_raw
+  gz_topic_name: /rgbd_camera/depth_image
+  ros_type_name: sensor_msgs/msg/Image
+  gz_type_name: gz.msgs.Image
+  lazy: true
+  direction: GZ_TO_ROS
+
+# point_cloud_xyz_node pairs image_rect with camera_info in the same namespace.
+- ros_topic_name: /camera/aligned_depth_to_color/camera_info
+  gz_topic_name: /rgbd_camera/camera_info
+  ros_type_name: sensor_msgs/msg/CameraInfo
+  gz_type_name: gz.msgs.CameraInfo
+  lazy: true
+  direction: GZ_TO_ROS

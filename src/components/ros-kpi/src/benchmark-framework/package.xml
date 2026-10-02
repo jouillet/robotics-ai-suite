@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+Copyright (C) 2026 Intel Corporation
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<package format="3">
+    <name>benchmark_framework</name>
+    <version>0.2.6</version>
+    <description>
+
+        ROS 2 KPI monitoring stack for benchmark analysis and visualization.
+
+    </description>
+    <maintainer email="eci.maintainer@intel.com">ECI Maintainer</maintainer>
+    <license>Apache-2.0</license>
+
+    <buildtool_depend>cmake</buildtool_depend>
+
+    <exec_depend>python3</exec_depend>
+    <exec_depend>python3-matplotlib</exec_depend>
+    <exec_depend>python3-numpy</exec_depend>
+    <exec_depend>python3-prometheus-client</exec_depend>
+    <exec_depend>python3-psutil</exec_depend>
+    <exec_depend>python3-tk</exec_depend>
+    <exec_depend>python3-yaml</exec_depend>
+
+    <export>
+        <build_type>cmake</build_type>
+    </export>
+</package>

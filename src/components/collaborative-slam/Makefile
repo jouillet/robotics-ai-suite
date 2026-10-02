@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Intel Corporation
+# Copyright (C) 2026 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -6,14 +6,17 @@ SHELL := bash -eu -o pipefail
 
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
--include internal.mk
-
 # Version info for packaging
 COMMIT := $(shell git rev-parse --short HEAD)
 DATE := $(shell git log -1 --format=%cd --date=format:"%Y%m%d")
 VERSION := $(COMMIT)-$(DATE)
 
 ROS_DISTRO ?= humble
+PACKAGE_VERSION_SUFFIX ?=
+PROJECT_DEFINITION ?= $(ROOT_DIR)/robotics-project.json
+TEST_SUMMARY ?= $(ROOT_DIR)/testout/test-summary.md
+
+# Map ROS_DISTRO to Ubuntu codename
 ifeq ($(ROS_DISTRO),humble)
 	UBUNTU_CODENAME := jammy
 else
@@ -21,126 +24,175 @@ else
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help clean clean-colcon clean-debian license-check lint lint-all lint-clang lint-python lint-yaml lint-githubactions lint-bash lint-markdown lint-json package safe-package source-package
+.PHONY: build check check-ci changelog-check clean coverage debian-build-deps format install-debian-build-deps license-check package test test-e2e test-results tools-check lint lint-all lint-all-codebase lint-clang lint-python lint-yaml lint-githubactions lint-bash lint-markdown lint-json lint-actionlint lint-clang-format lint-ruff source-package help
+
+PACKAGE_COMPONENTS := $(shell PROJECT_DEFINITION="$(PROJECT_DEFINITION)" ROOT_DIR="$(ROOT_DIR)" python3 -c 'import json, os, pathlib, re; project = json.loads(pathlib.Path(os.environ["PROJECT_DEFINITION"]).read_text(encoding="utf-8")); components = project.get("ci", {}).get("package_components", []); root = pathlib.Path(os.environ["ROOT_DIR"]) / "src"; valid = project.get("format_version") == 1 and isinstance(components, list) and components and all(isinstance(component, dict) and isinstance(component.get("path"), str) and re.fullmatch(r"[a-z0-9][a-z0-9_-]*", component["path"]) and (root / component["path"]).is_dir() and ("ros_package" not in component or isinstance(component["ros_package"], str) and re.fullmatch(r"[a-z0-9][a-z0-9_]*", component["ros_package"])) for component in components); (_ for _ in ()).throw(SystemExit("Invalid package components in project definition")) if not valid else None; print(",".join(component["path"] for component in components))')
+ROS_PACKAGES := $(shell PROJECT_DEFINITION="$(PROJECT_DEFINITION)" python3 -c 'import json, os, pathlib, re; project = json.loads(pathlib.Path(os.environ["PROJECT_DEFINITION"]).read_text(encoding="utf-8")); components = project.get("ci", {}).get("package_components", []); ros_components = [component for component in components if "ros_package" in component]; valid = project.get("format_version") == 1 and isinstance(components, list) and ros_components and all(isinstance(component, dict) and isinstance(component.get("ros_package"), str) and re.fullmatch(r"[a-z0-9][a-z0-9_]*", component["ros_package"]) for component in ros_components); (_ for _ in ()).throw(SystemExit("Invalid ROS packages in project definition")) if not valid else None; print(" ".join(component["ros_package"] for component in ros_components))')
+PACKAGE_OUTPUT_DIR = $(ROOT_DIR)/build/debian-packages/packages
+BUILD_DEPENDS_OUTPUT_DIR = $(ROOT_DIR)/build/debian-build-deps
+MISSING_BUILD_DEPENDENCIES_FILE = $(BUILD_DEPENDS_OUTPUT_DIR)/missing-dependencies.txt
+UV ?= uv
 
 license-check:
 	@# Help: Perform a REUSE license check using docker container https://hub.docker.com/r/fsfe/reuse
 	docker run --rm --volume ${ROOT_DIR}:/data fsfe/reuse:5.0.2 lint
 
-safe-package:
-	@# Help: Build Debian package with memory-safe parallel job limits (recommended for systems with <32GB RAM)
-	@echo "Building with memory-safe limits to prevent system crashes..."
-	@bash scripts/safe-build.sh $(ROS_DISTRO) $(PARALLEL_JOBS)
-
 package:
-	@# Help: Build Debian package
-	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
-		-e DEBIAN_FRONTEND=noninteractive \
-		-e MK_BUILD_DEPS_AUTO=yes \
-		$(if $(http_proxy),-e http_proxy=$(http_proxy)) \
-		$(if $(https_proxy),-e https_proxy=$(https_proxy)) \
-		$(if $(HTTP_PROXY),-e HTTP_PROXY=$(HTTP_PROXY)) \
-		$(if $(HTTPS_PROXY),-e HTTPS_PROXY=$(HTTPS_PROXY)) \
-		$(if $(no_proxy),-e no_proxy=$(no_proxy)) \
-		$(if $(NO_PROXY),-e NO_PROXY=$(NO_PROXY)) \
-		amd64/ros:$(ROS_DISTRO)-ros-base \
-		bash -c "cd /src/ && \
-			curl https://eci.intel.com/repos/gpg-keys/GPG-PUB-KEY-INTEL-ECI.gpg -o /usr/share/keyrings/eci-archive-keyring.gpg > /dev/null && \
-			echo \"deb [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://eci.intel.com/repos/${UBUNTU_CODENAME} isar main\" | sudo tee /etc/apt/sources.list.d/eci.list > /dev/null && \
-			echo \"deb-src [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://eci.intel.com/repos/${UBUNTU_CODENAME} isar main\" | sudo tee -a /etc/apt/sources.list.d/eci.list > /dev/null && \
-			echo \"deb [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://amrdocs.intel.com/repos/${UBUNTU_CODENAME} amr main\" | sudo tee /etc/apt/sources.list.d/amr.list > /dev/null && \
-			echo \"deb-src [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://amrdocs.intel.com/repos/${UBUNTU_CODENAME} amr main\" | sudo tee -a /etc/apt/sources.list.d/amr.list > /dev/null && \
-			echo \"deb [trusted=yes] http://wheeljack.ch.intel.com/apt-repos/AMR/${UBUNTU_CODENAME} amr main\" | sudo tee -a /etc/apt/sources.list.d/amr.list > /dev/null && \
-			echo \"deb-src [trusted=yes] http://wheeljack.ch.intel.com/apt-repos/AMR/${UBUNTU_CODENAME} amr main\" | sudo tee -a /etc/apt/sources.list.d/amr.list > /dev/null && \
-			curl https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | \
-				gpg --yes --dearmor --output /usr/share/keyrings/oneapi-archive-keyring.gpg && \
-			echo \"deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main\" > /etc/apt/sources.list.d/oneAPI.list && \
-			echo -e \"Package: intel-oneapi-runtime-*\nPin: version 2025.3.*\nPin-Priority: 1001\n\" > /etc/apt/preferences.d/oneapi && \
-			echo -e \"Package: intel-oneapi-compiler-*\nPin: version 2025.3.*\nPin-Priority: 1001\n\" >> /etc/apt/preferences.d/oneapi && \
-			echo -e \"Package: intel-oneapi-mkl-*\nPin: version 2025.3.*\nPin-Priority: 1001\n\" >> /etc/apt/preferences.d/oneapi && \
-			apt update && \
-			apt install -y quilt equivs devscripts && \
-			scripts/uni-build.sh $(ROS_DISTRO) && cp -r /tmp/$(ROS_DISTRO)_cslam_deb_packages/ /src/$(ROS_DISTRO)_cslam_deb_packages"
+	@# Help: Build Debian packages
+	command -v ninja >/dev/null || { echo "Error: Ninja is required. Install ninja-build." >&2; exit 1; }
+	rm -rf $(ROOT_DIR)/build/debian-packages
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	cmake -G Ninja -S $(ROOT_DIR) -B $(ROOT_DIR)/build/debian-packages \
+		-DROS_DISTRO=$(ROS_DISTRO) \
+		-DCOLLAB_SLAM_PACKAGE_OUTPUT_DIR=$(PACKAGE_OUTPUT_DIR) \
+		-DCOLLAB_SLAM_PACKAGE_COMPONENTS="$(PACKAGE_COMPONENTS)" \
+		-DCOLLAB_SLAM_PACKAGE_VERSION_SUFFIX=$(PACKAGE_VERSION_SUFFIX) && \
+	cmake --build $(ROOT_DIR)/build/debian-packages --target package
 
-lint:
-	@# Help: Run all sub-linters using super-linter (using linters defined for this repo only)
-	VALIDATE_GITHUB_ACTIONS=true \
-	VALIDATE_YAML=true \
-	VALIDATE_JSON=true \
-	VALIDATE_PYTHON_PYLINT=true \
-	VALIDATE_PYTHON_FLAKE8=true \
-	VALIDATE_BASH=true \
-	VALIDATE_MARKDOWN=true \
-	VALIDATE_CLANG_FORMAT=true \
-		make lint-all
+debian-build-deps:
+	@# Help: Generate Debian Build-Depends control files without configuring components
+	rm -rf $(BUILD_DEPENDS_OUTPUT_DIR) $(ROOT_DIR)/build/debian-build-deps-config
+	cmake -S $(ROOT_DIR) -B $(ROOT_DIR)/build/debian-build-deps-config \
+		-DROS_DISTRO=$(ROS_DISTRO) \
+		-DCOLLAB_SLAM_PACKAGE_COMPONENTS="$(PACKAGE_COMPONENTS)" \
+		-DCOLLAB_SLAM_BUILD_DEPENDS_OUTPUT_DIR=$(BUILD_DEPENDS_OUTPUT_DIR) && \
+	cmake --build $(ROOT_DIR)/build/debian-build-deps-config --target debian-build-deps
 
-lint-all:
-	@# Help: Run super-linter over entire repository (auto-detects code to lint)
-	docker run --rm --platform linux/amd64 \
-		-e SHELL=/bin/bash \
-		-e RUN_LOCAL=true \
-		--env-file ".github/linters/super-linter.env" \
-		$(if $(VALIDATE_GITHUB_ACTIONS),-e VALIDATE_GITHUB_ACTIONS=$(VALIDATE_GITHUB_ACTIONS)) \
-		$(if $(VALIDATE_YAML),-e VALIDATE_YAML=$(VALIDATE_YAML)) \
-		$(if $(VALIDATE_JSON),-e VALIDATE_JSON=$(VALIDATE_JSON)) \
-		$(if $(VALIDATE_PYTHON_PYLINT),-e VALIDATE_PYTHON_PYLINT=$(VALIDATE_PYTHON_PYLINT)) \
-		$(if $(VALIDATE_PYTHON_FLAKE8),-e VALIDATE_PYTHON_FLAKE8=$(VALIDATE_PYTHON_FLAKE8)) \
-		$(if $(VALIDATE_BASH),-e VALIDATE_BASH=$(VALIDATE_BASH)) \
-		$(if $(VALIDATE_MARKDOWN),-e VALIDATE_MARKDOWN=$(VALIDATE_MARKDOWN)) \
-		$(if $(VALIDATE_CLANG_FORMAT),-e VALIDATE_CLANG_FORMAT=$(VALIDATE_CLANG_FORMAT)) \
-		-v $(ROOT_DIR):/tmp/lint \
-			ghcr.io/super-linter/super-linter:slim-v8.1.0
+install-debian-build-deps: debian-build-deps
+	@# Help: Install generated Debian Build-Depends with APT
+	@command -v mk-build-deps >/dev/null && command -v equivs-build >/dev/null && command -v dpkg-checkbuilddeps >/dev/null || { echo "Error: mk-build-deps, equivs-build, and dpkg-checkbuilddeps are required. Install devscripts, equivs, and dpkg-dev." >&2; exit 1; }
+	@apt-get update; \
+	install_status=0; \
+	for control_file in $(BUILD_DEPENDS_OUTPUT_DIR)/*/debian/control; do \
+		mk-build-deps --install --remove \
+			--tool 'apt-get --no-install-recommends --no-remove --yes' \
+			"$$control_file" || install_status=1; \
+	done; \
+	: > $(MISSING_BUILD_DEPENDENCIES_FILE); \
+	for control_file in $(BUILD_DEPENDS_OUTPUT_DIR)/*/debian/control; do \
+		if missing_dependencies="$$(dpkg-checkbuilddeps "$$control_file" 2>&1)"; then \
+			continue; \
+		fi; \
+		printf '%s\n%s\n\n' "$$control_file" "$$missing_dependencies" >> $(MISSING_BUILD_DEPENDENCIES_FILE); \
+	done; \
+	exit "$$install_status"
 
-lint-clang:
-	@# Help: Run clang linter using super-linter
-	VALIDATE_CLANG_FORMAT=true make lint-all
+build:
+	@# Help: Build selected ROS packages with Colcon for local development
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --executor sequential --event-handlers console_direct+
 
-lint-python:
-	@# Help: Run Python linter using super-linter
-	VALIDATE_PYTHON_PYLINT=true VALIDATE_PYTHON_FLAKE8=true make lint-all
+test:
+	@# Help: Build & test with Colcon
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --cmake-clean-cache \
+		--cmake-args -DBUILD_TESTING=ON --executor sequential --event-handlers console_direct+ && \
+	set +u && source $(ROOT_DIR)/install/setup.bash && set -u && \
+	colcon test --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --return-code-on-test-failure --executor sequential --event-handlers console_direct+
+
+coverage:
+	@# Help: Generate non-gating C++ line and branch coverage reports
+	@command -v "$(UV)" >/dev/null || { echo "Error: uv is required. Install it from https://docs.astral.sh/uv/." >&2; exit 1; }
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --cmake-clean-cache \
+		--cmake-args -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage -DCMAKE_EXE_LINKER_FLAGS=--coverage -DCMAKE_SHARED_LINKER_FLAGS=--coverage \
+		--executor sequential --event-handlers console_direct+ && \
+	set +u && source $(ROOT_DIR)/install/setup.bash && set -u && \
+	colcon test --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --return-code-on-test-failure --executor sequential --event-handlers console_direct+
+	mkdir -p $(ROOT_DIR)/testout/coverage
+	$(UV) tool run --from gcovr gcovr --root $(ROOT_DIR) --filter $(ROOT_DIR)/src --exclude '.*/(test|tests)/.*' --exclude '.*/build/.*' \
+		--print-summary --txt-metric branch --html-details $(ROOT_DIR)/testout/coverage/index.html \
+		--xml-pretty --output $(ROOT_DIR)/testout/coverage/coverage.xml
+
+test-e2e:
+	@# Help: Run headless pytest E2E smoke tests from the active ROS prefix
+	@set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	prefix="$$(ros2 pkg prefix univloc_tracker 2>/dev/null)" || { \
+		echo "Error: univloc_tracker is unavailable. Install its package or build and source install/setup.bash first." >&2; \
+		exit 1; \
+	}; \
+	mkdir -p testout && \
+	python3 -m pytest tests/smoke_test.py -v --junit-xml=testout/smoke_test.xml
+
+test-results:
+	@# Help: Summarize Colcon test results
+	@mkdir -p "$(dir $(TEST_SUMMARY))"
+	python3 .github/scripts/summarize_test_results.py \
+		--results-glob 'build/*/test_results/**/*.xml' \
+		--ros-distro $(ROS_DISTRO) \
+		--summary-file "$(TEST_SUMMARY)"
+
+check: lint license-check
+	@# Help: Run locally reproducible pre-push checks
+
+check-ci:
+	@# Help: Run package and Colcon validation for Humble and Jazzy
+	$(MAKE) ROS_DISTRO=humble package test
+	$(MAKE) ROS_DISTRO=jazzy package test
+
+tools-check:
+	@# Help: Verify locally installed developer tools
+	@missing=0; \
+	for tool in actionlint yamllint ruff shellcheck markdownlint-cli2 clang-format ninja colcon docker python3; do \
+		if ! command -v "$$tool" >/dev/null; then \
+			echo "Missing required tool: $$tool" >&2; \
+			missing=1; \
+		fi; \
+	done; \
+	exit "$$missing"
+
+format:
+	@# Help: Apply local source formatting
+	git ls-files -z -- '*.c' '*.cc' '*.cpp' '*.cxx' '*.h' '*.hh' '*.hpp' '*.hxx' | xargs -0 -r -n1 sh -c 'test ! -e "$$1" || clang-format -i "$$1"' sh
+	git ls-files -z -- '*.py' | xargs -0 -r -n1 sh -c 'test ! -e "$$1" || ruff check --fix "$$1"' sh
+	git ls-files -z -- '*.py' | xargs -0 -r -n1 sh -c 'test ! -e "$$1" || ruff format "$$1"' sh
+	git ls-files -z -- '*.md' | xargs -0 -r markdownlint-cli2 --config .github/linters/.markdown-lint.yml --fix
+
+clean:
+	@# Help: Remove local build, install, log, test, and package artifacts
+	rm -rf $(ROOT_DIR)/build $(ROOT_DIR)/install $(ROOT_DIR)/log $(ROOT_DIR)/testout
+
+lint: lint-actionlint lint-yaml lint-json lint-ruff lint-bash lint-markdown lint-clang-format
+	@# Help: Run all local linters on tracked files
+
+lint-all lint-all-codebase: lint
+	@# Help: Run all local linters on tracked files
+
+lint-actionlint lint-githubactions:
+	@# Help: Run GitHub Actions workflow linting
+	actionlint -config-file .github/linters/actionlint.yml -ignore 'SC2016' $$(git ls-files -- '.github/workflows/*.yml' '.github/workflows/*.yaml')
 
 lint-yaml:
-	@# Help: Run YAML linter using super-linter
-	VALIDATE_YAML=true make lint-all
-
-lint-githubactions:
-	@# Help: Run Github Actions linter using super-linter
-	VALIDATE_GITHUB_ACTIONS=true make lint-all
-
-lint-bash:
-	@# Help: Run Bash linter using super-linter
-	VALIDATE_BASH=true make lint-all
-
-lint-markdown:
-	@# Help: Run Markdown linter using super-linter
-	VALIDATE_MARKDOWN=true make lint-all
+	@# Help: Run YAML linting
+	git ls-files -z -- '*.yaml' '*.yml' | xargs -0 -r -n1 sh -c 'test ! -e "$$1" || yamllint -c .github/linters/.yaml-lint.yml "$$1"' sh
 
 lint-json:
-	@# Help: Run JSON linter using super-linter
-	VALIDATE_JSON=true make lint-all
+	@# Help: Run JSON linting
+	git ls-files -z -- '*.json' | xargs -0 -r -n1 python3 -m json.tool >/dev/null
 
-clean-colcon:
-	@# Help: Clean up Colcon build and test artifacts
-	rm -rf build/ install/ log/
+lint-ruff lint-python:
+	@# Help: Run Python linting
+	ruff check .
 
-clean-debian:
-	@# Help: Clean up Debian packaging artifacts
-	rm -rf debian
-	rm -f *.deb *.ddeb *.build *.changes *.dsc *.tar.gz *.buildinfo
+lint-bash:
+	@# Help: Run Bash linting
+	git ls-files -z -- '*.sh' | xargs -0 -r shellcheck --severity=error
 
-clean: clean-debian clean-colcon
-	@# Help: Clean up all build artifacts
+lint-markdown:
+	@# Help: Run Markdown linting
+	git ls-files -z -- '*.md' | xargs -0 -r markdownlint-cli2 --config .github/linters/.markdown-lint.yml
+
+lint-clang-format lint-clang:
+	@# Help: Run Clang-Format linting
+	git ls-files -z -- '*.c' '*.cc' '*.cpp' '*.cxx' '*.h' '*.hh' '*.hpp' '*.hxx' | xargs -0 -r -n1 sh -c 'test ! -e "$$1" || clang-format --dry-run -Werror "$$1"' sh
 
 source-package:
 	@# Help: Create source package tarball
-	git archive --format=zip -o collaborative-slam-$(VERSION).zip HEAD \
-		.gitattributes .gitignore Makefile README.md REUSE.toml \
-		.github/linters 3rd benchmark cmake docs include LICENSES msgs package scripts server slam tracker
+	git archive --format=zip -o collaborative-slam-$(VERSION).zip HEAD
 
 help:
-	@printf "%-20s %s\n" "Target" "Description"
-	@printf "%-20s %s\n" "------" "-----------"
+	@printf "%-25s %s\n" "Target" "Description"
+	@printf "%-25s %s\n" "------" "-----------"
 	@grep -E '^[a-zA-Z0-9_%-]+:|^[[:space:]]+@# Help:' Makefile | \
 	awk '\
 		/^[a-zA-Z0-9_%-]+:/ { \
@@ -151,7 +203,7 @@ help:
 			if (target != "") { \
 				help_line = $$0; \
 				sub("^[[:space:]]+@# Help: ", "", help_line); \
-				printf "%-20s %s\n", target, help_line; \
+				printf "%-25s %s\n", target, help_line; \
 				target = ""; \
 			} \
 		}' | sort -k1,1

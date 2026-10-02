@@ -8,7 +8,7 @@ SPDX-License-Identifier: Apache-2.0
 
 ## Documentation
 
-Comprehensive documentation on this component is available here: [dev guide](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/components/optimized_solutions/its-path-planner-plugin.html).
+Comprehensive documentation on this component is available here: [dev guide](https://developer.robotics.intel.com/development-stack/components/navigation/its-path-planner-plugin/).
 
 ## Overview
 
@@ -30,7 +30,7 @@ Currently, the ITS plugin does not support continuous replanning. To use this pl
 
 ### System Requirements
 
-Prepare the target system following the [official documentation](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html).
+Prepare the target system following the [official documentation](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/).
 
 ### Build
 

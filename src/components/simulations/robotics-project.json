@@ -1,0 +1,46 @@
+{
+  "format_version": 1,
+  "ci": {
+    "manifest_namespace": "simulations",
+    "changelog_components": [
+      "realsense2_tutorial",
+      "turtlesim_tutorial",
+      "picknplace",
+      "robot_config_plugins",
+      "robot_config",
+      "rvc"
+    ],
+    "package_components": [
+      {
+        "path": "realsense2_tutorial",
+        "ros_package": "realsense2_tutorial"
+      },
+      {
+        "path": "turtlesim_tutorial",
+        "ros_package": "turtlesim_tutorial"
+      },
+      {
+        "path": "picknplace",
+        "ros_package": "picknplace"
+      },
+      {
+        "path": "gazebo_plugins",
+        "ros_package": "robot_config_plugins"
+      },
+      {
+        "path": "robot_config",
+        "ros_package": "robot_config"
+      },
+      {
+        "path": "rvc",
+        "ros_package": "rvc"
+      },
+      {
+        "path": "picknplace_simulation"
+      },
+      {
+        "path": "rvc_simulation"
+      }
+    ]
+  }
+}

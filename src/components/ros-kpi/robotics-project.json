@@ -1,0 +1,14 @@
+{
+  "format_version": 1,
+  "ci": {
+    "manifest_namespace": "benchmark-framework",
+    "changelog_components": [
+      "benchmark-framework"
+    ],
+    "package_components": [
+      {
+        "path": "benchmark-framework"
+      }
+    ]
+  }
+}

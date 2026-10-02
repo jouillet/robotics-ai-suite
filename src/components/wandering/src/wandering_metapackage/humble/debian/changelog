@@ -1,0 +1,5 @@
+ros-humble-wandering (2.4.0-1) UNRELEASED; urgency=low
+
+  * Add the top-level Wandering metapackage.
+
+ -- ECI Maintainer <eci-maintainer@intel.com>  Mon, 31 Aug 2026 00:00:00 +0000

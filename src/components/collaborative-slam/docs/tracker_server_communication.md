@@ -8,9 +8,9 @@ SPDX-License-Identifier: Apache-2.0
 
 ## Background
 
-This document is used to introduce the communication mechanism between tracker and server nodes. The original implementation is based on the TCP socket and now we move it to [ROS Service](https://docs.ros.org/en/foxy/Tutorials/Services/Understanding-ROS2-Services.html).
+This document is used to introduce the communication mechanism between tracker and server nodes. The original implementation is based on the TCP socket and now we move it to [ROS Service](https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Services/Understanding-ROS2-Services.html).
 Once a service client and a service server have established a connection, the communication between these two sides is safe and reliable, just like the TCP socket does.
-In addition, the requests and responses of a ROS service cannot be captured, which is why we decided not to use [ROS Topic](https://docs.ros.org/en/foxy/Tutorials/Topics/Understanding-ROS2-Topics.html).
+In addition, the requests and responses of a ROS service cannot be captured, which is why we decided not to use [ROS Topic](https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Topics/Understanding-ROS2-Topics.html).
 
 ---
 
@@ -43,9 +43,9 @@ After the wait is done, the server node will then send the connecting request ba
 
 ### Message Format
 
-The message format we use for the communication between service client and service server is like below. The service client will send a [Map.msg](../msgs/msg/Map.msg) request and the service server will acknowledge it with a bool (true/false) response.
+The message format we use for the communication between service client and service server is like below. The service client will send a [Map.msg](../src/univloc_msgs/msg/Map.msg) request and the service server will acknowledge it with a bool (true/false) response.
 
-```bash
+```text
 Map req_map
 ---
 bool resp_status

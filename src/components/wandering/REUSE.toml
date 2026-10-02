@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Intel Corporation
+# Copyright (C) 2026 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -16,6 +16,7 @@ path = [
     "**/tests/**/*.log",
     "**/tests/**/*.db3*",
     "**/tests/**/metadata.yaml",
+    "run.txt",
 ]
-SPDX-FileCopyrightText = "2025 Intel Corporation"
+SPDX-FileCopyrightText = "2026 Intel Corporation"
 SPDX-License-Identifier = "Apache-2.0"

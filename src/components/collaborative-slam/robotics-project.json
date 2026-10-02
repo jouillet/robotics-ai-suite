@@ -1,0 +1,70 @@
+{
+  "format_version": 1,
+  "ci": {
+    "manifest_namespace": "collab-slam",
+    "changelog_components": [
+      "collab_slam",
+      "cslam_tutorial_2d_lidar",
+      "cslam_tutorial_all",
+      "cslam_tutorial_common",
+      "cslam_tutorial_fastmapping",
+      "cslam_tutorial_multi_camera",
+      "cslam_tutorial_region_remap",
+      "cslam_tutorial_two_robot",
+      "univloc_msgs",
+      "univloc_server",
+      "univloc_slam",
+      "univloc_tracker"
+    ],
+    "package_components": [
+      {
+        "path": "univloc_msgs",
+        "ros_package": "univloc_msgs"
+      },
+      {
+        "path": "univloc_slam",
+        "ros_package": "univloc_slam"
+      },
+      {
+        "path": "univloc_tracker",
+        "ros_package": "univloc_tracker"
+      },
+      {
+        "path": "univloc_server",
+        "ros_package": "univloc_server"
+      },
+      {
+        "path": "collab_slam",
+        "ros_package": "collab_slam"
+      },
+      {
+        "path": "cslam_tutorial_common",
+        "ros_package": "cslam_tutorial_common"
+      },
+      {
+        "path": "cslam_tutorial_2d_lidar",
+        "ros_package": "cslam_tutorial_2d_lidar"
+      },
+      {
+        "path": "cslam_tutorial_fastmapping",
+        "ros_package": "cslam_tutorial_fastmapping"
+      },
+      {
+        "path": "cslam_tutorial_multi_camera",
+        "ros_package": "cslam_tutorial_multi_camera"
+      },
+      {
+        "path": "cslam_tutorial_region_remap",
+        "ros_package": "cslam_tutorial_region_remap"
+      },
+      {
+        "path": "cslam_tutorial_two_robot",
+        "ros_package": "cslam_tutorial_two_robot"
+      },
+      {
+        "path": "cslam_tutorial_all",
+        "ros_package": "cslam_tutorial_all"
+      }
+    ]
+  }
+}

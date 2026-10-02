@@ -8,7 +8,7 @@ SPDX-License-Identifier: Apache-2.0
 
 ## Documentation
 
-Comprehensive documentation on this component is available here: [dev guide](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/components/sensors/reference_applications/pointcloud-groundfloor-segmentation.html).
+Comprehensive documentation on this component is available here: [dev guide](https://developer.robotics.intel.com/development-stack/components/sensors/reference_applications/pointcloud-groundfloor-segmentation/).
 
 ## Overview
 
@@ -35,7 +35,7 @@ This application supports the following ROS2 distributions:
 
 ### System Requirements
 
-Prepare the target system following the [official documentation](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html).
+Prepare the target system following the [official documentation](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/).
 
 ### Build
 
@@ -142,6 +142,7 @@ The node operates on a parameter file, that can be provided as launch argument (
 The algorithm addresses situations like non-flat floors, ramps, inclines, declines, overhanging loads and other challenging conditions. Its capabilities extend beyond standard segmentation approaches, making it suited for diverse scenarios.
 
 The application generates two output topics:
+
 - `segmentation/labeled_points` - assigns labels (ground, elevated, obstacle or above the roof) to points within the sensor's 3D pointcloud
 - `segmentation/obstacle_points` - provides a reduced pointcloud containing only points labeled as obstacles
 
@@ -230,6 +231,7 @@ This use case integrates the groundfloor segmentation with the Aaeon robot's nav
 **Background - Distribution Differences:**
 
 Different ROS2 distributions handle teleop keyboard differently:
+
 - **Humble** uses `Twist` messages
 - **Jazzy** uses `TwistStamped` messages
 

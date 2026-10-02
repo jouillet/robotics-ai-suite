@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+Copyright (C) 2026 Intel Corporation
+SPDX-License-Identifier: Apache-2.0
+-->
+<package format="3">
+  <name>cslam_tutorial_fastmapping</name>
+  <version>2.3.2</version>
+  <description>Intel Collaborative SLAM tutorial for Fastmapping</description>
+  <maintainer email="eci-maintainer@intel.com">ECI Maintainer</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>cslam_tutorial_common</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

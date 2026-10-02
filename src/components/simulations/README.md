@@ -8,7 +8,7 @@ SPDX-License-Identifier: Apache-2.0
 
 ## Documentation
 
-Comprehensive documentation on this component is available here: [dev guide](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/software_references/amr/simulation/index.html).
+Comprehensive documentation on this component is available here: [dev guide](https://developer.robotics.intel.com/development-stack/software_references/amr/simulation/).
 
 ## Overview
 
@@ -18,31 +18,33 @@ A collection of ROS 2 simulation packages and tutorials for robotics application
 
 ### System Requirements
 
-Prepare the target system following the [official documentation](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html).
+Prepare the target system following the [official documentation](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/).
 
 ### Build
 
-To build debian packages, export `ROS_DISTRO` env variable to desired platform and run `make package` command. After build process successfully finishes, built packages will be available in the `output/` directory. The following command is an example for `Jazzy` distribution.
+To build ROS packages natively for local development, export `ROS_DISTRO` and run `make build`.
+
+To build Debian packages natively with CPACK:
+1. Install generated build dependencies.
+2. Build packages with `make package`.
+
+After packaging finishes, Debian packages are available in `build/debian-packages/packages/`. The following commands are an example for Jazzy.
 
 ```bash
+ROS_DISTRO=jazzy make build
+ROS_DISTRO=jazzy make install-debian-build-deps
 ROS_DISTRO=jazzy make package
 ```
 
 You can list all built packages:
 
 ```bash
-ls output/|grep -i .deb
+ls build/debian-packages/packages/*.deb
 ```
 
-```text
-ros-jazzy-gazebo-plugins_2.3-1_amd64.deb
-ros-jazzy-picknplace_2.3-1_amd64.deb
-ros-jazzy-realsense2-tutorial_2.3-1_amd64.deb
-ros-jazzy-robot-config_2.3-1_amd64.deb
-ros-jazzy-turtlesim-tutorial_2.3-1_amd64.deb
-```
-
-`*build-deps*.deb` packages are generated during build process and installation of such packages can be skipped on target platform.
+Notes:
+- Package names and versions come from package CMake metadata and distro-specific `src/<package>/<distro>/debian/changelog` files.
+- `*build-deps*.deb` packages are generated only to satisfy build dependencies and are not runtime deliverables.
 
 To clean all build artifacts:
 
@@ -68,7 +70,7 @@ Finally, install the Debian packages that were built via ``make package``:
 
 ```bash
 sudo apt update
-cd output/
+cd build/debian-packages/packages/
 sudo apt install ./*.deb
 ```
 
@@ -114,24 +116,19 @@ To see a full list of available Makefile targets:
 make help
 ```
 
+Commonly used targets:
+
 ```text
-Target               Description
-------               -----------
-clean                Clean up generated Debian packages and artifacts
-help                 Help message
-license-check        Perform a REUSE license check using docker container https://hub.docker.com/r/fsfe/reuse
-lint                 Run all sub-linters using super-linter (using linters defined for this repo only)
-lint-all             Run super-linter over entire repository (auto-detects code to lint)
-lint-bash            Run Bash linter using super-linter
-lint-clang           Run clang linter using super-linter
-lint-githubactions   Run Github Actions linter using super-linter
-lint-json            Run JSON linter using super-linter
-lint-markdown        Run Markdown linter using super-linter
-lint-python          Run Python linter using super-linter
-lint-yaml            Run YAML linter using super-linter
-package              Build Debian packages
-source-package       Create source package tarball
-test                 Test with existing packages or build & test with Colcon
+build                        Build selected ROS packages with Colcon
+debian-build-deps            Generate Debian Build-Depends control files
+install-debian-build-deps    Install generated Debian Build-Depends
+package                      Build Debian packages with CPack
+test                         Build and run tests with Colcon
+test-results                 Summarize Colcon test results to testout/test-summary.md
+container-package            Build Debian packages in container
+container-test               Build and run tests in container
+clean                        Remove local build/install/log/test/package artifacts
+help                         Print all available targets
 ```
 
 ## Usage
@@ -157,4 +154,4 @@ These simulations can be launched individually or combined depending on your tes
 
 ## License
 
-``simulations`` is licensed under [Apache 2.0 License](./LICENSES/Apache-2.0.txt).
+simulations is licensed under [Apache 2.0 License](./LICENSES/Apache-2.0.txt).

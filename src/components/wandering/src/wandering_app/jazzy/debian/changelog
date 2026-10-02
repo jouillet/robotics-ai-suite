@@ -1,0 +1,11 @@
+ros-jazzy-wandering-app (2.4.0-1) UNRELEASED; urgency=low
+
+  * Rename the Debian package for the Wandering application component.
+
+ -- ECI Maintainer <eci-maintainer@intel.com>  Mon, 24 Aug 2026 00:00:00 +0000
+
+ros-jazzy-wandering (2.3-1) UNRELEASED; urgency=low
+
+  * Add support for ROS Jazzy
+
+ -- ECI Maintainer <eci-maintainer@intel.com>  Thu, 4 Sep 2025 00:00:00 +0000

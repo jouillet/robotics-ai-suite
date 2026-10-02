@@ -1,0 +1,34 @@
+# Copyright (C) 2026 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+#
+# ADBSCAN parameters tuned for the FUSED 2D-LiDAR + RealSense point cloud.
+# The fusion node publishes a PointCloud2 in the robot base frame, so ADBSCAN
+# runs in "3D" mode (dimension = 3). These adaptive coefficients differ from the
+# per-sensor presets because the fused cloud has mixed density; re-tune on the
+# target robot with a calibration capture (see JIRA ADBN-6).
+---
+adbscan_sub_node:
+  ros__parameters:
+    Lidar_type: "3D"
+    Lidar_topic: /adbscan/points
+    Verbose: false
+    enable_console_output: true
+    # The simulator cloud is voxel-downsampled before clustering.
+    subsample_ratio: 1.0
+    # Region of interest around the robot (metres, base_link frame).
+    x_filter_back: 4.0
+    y_filter_left: 3.0
+    y_filter_right: -3.0
+    # Keep points above the floor; ground is removed by Z threshold.
+    z_filter: -0.15
+    Z_based_ground_removal: 1.0
+    # Keep neighboring objects separate when a robot-width passage exists.
+    # The RGB-D cloud is already voxelized, so use the established tighter 3D
+    # neighborhood scale instead of merging across sparse depth returns.
+    base: 3.5
+    coeff_1: -0.05
+    coeff_2: 0.0002
+    scale_factor: 0.20
+    min_3d_epsilon: 0.15
+    oneapi_library: oneapi_kdtree
+    benchmark_number_of_frames: 1
