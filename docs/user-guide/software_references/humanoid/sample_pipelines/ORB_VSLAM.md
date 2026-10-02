@@ -1,12 +1,13 @@
+```{eval-rst}
+.. meta::
+   :description: Deploy and run the ORB-SLAM3 visual SLAM (VSLAM) pipeline for camera-based localization and mapping, enabling execution of VSLAM demonstrations with supported camera configurations and datasets.
+```
+
 # VSLAM: ORB-SLAM3
 
-SLAM(Simultaneous localization and mapping) is a major research problem in the robotics community, where a great deal of effort has been devoted to developing new methods to maximize their robustness and reliability.
+This section shows how to install and run the ORB-SLAM3 Visual Simultaneous Localization and Mapping (VSLAM) pipeline using monocular, stereo, RGB-D, and visual-inertial inputs, with example demonstrations using datasets and Intel® RealSense™ cameras.
 
-VSLAM (visual SLAM) utilizes camera(s) as the primary source of sensor input to sense the surrounding environment. This can be done either with a single camera, multiple cameras, and with or without an inertial measurement unit (IMU) that measure translational and rotational movements.
-
-Feature-based tracking algorithm is main-stream implementation for VSLAM, according to its real-time and simplified SLAM process.
-
-ORB-SLAM3 is one of popular real-time feature-based SLAM libraries able to perform Visual, Visual-Inertial and Multi-Map SLAM with monocular, stereo and RGB-D cameras, using pin-hole and fisheye lens models. In all sensor configurations, ORB-SLAM3 is as robust as the best systems available in the literature, and significantly more accurate.
+VSLAM uses one or more cameras, with optional IMU inputs, to sense the surrounding environment. ORB-SLAM3 is a real-time feature-based Simultaneous Localization and Mapping (SLAM) library that supports Visual, Visual-Inertial, and Multi-Map SLAM with monocular, stereo, and RGB-D cameras using pinhole and fisheye lens models.
 
 ![ORB-SLAM3 Architecture](assets/images/ORB-SLAM3-Architecture.png)
 
