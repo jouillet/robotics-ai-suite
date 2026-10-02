@@ -15,6 +15,11 @@ function stageSphinxHtml() {
   const dest = path.join(STAGING_DIR, ROUTE_SUBPATH);
   fs.rmSync(dest, { recursive: true, force: true });
   fs.mkdirSync(dest, { recursive: true });
+  fs.cpSync(
+    path.resolve(__dirname, "..", "..", "common-includes"),
+    path.join(STAGING_DIR, "common-includes"),
+    { recursive: true },
+  );
 
   const sphinxOutDir = fs.existsSync(SPHINX_DIRHTML_DIR)
     ? SPHINX_DIRHTML_DIR

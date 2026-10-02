@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+import { useLocation } from "@docusaurus/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient({
@@ -14,6 +15,24 @@ type RootProps = {
 };
 
 export default function Root({ children }: RootProps): React.JSX.Element {
+  const { pathname } = useLocation();
+  const previousPathname = useRef(pathname);
+
+  useEffect(() => {
+    if (previousPathname.current !== pathname) {
+      previousPathname.current = pathname;
+      const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+      if (!gtag) return;
+      const timer = window.setTimeout(() => {
+        gtag("event", "page_view", {
+          page_location: window.location.href,
+          page_title: document.title,
+        });
+      }, 100);
+      return () => window.clearTimeout(timer);
+    }
+  }, [pathname]);
+
   useEffect(() => {
     const updateLinks = () => {
       for (const link of document.querySelectorAll<HTMLAnchorElement>("a[href]")) {
