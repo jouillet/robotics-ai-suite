@@ -1,207 +1,106 @@
 <!--
-Copyright (C) 2025 Intel Corporation
+Copyright (C) 2026 Intel Corporation
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Execute the Wandering Application on the Jackal™ Robot
+# `wandering` application on Clearpath Jackal
 
----
-
-This tutorial details the steps to install and run the Wandering
-Application with Intel® RealSense™ camera input on a Clearpath Robotics
-Jackal™ robot. The Wandering Application will use the Nav2 navigation
-stack and the RTAB-Map SLAM application to let the Jackal™ robot move
-around and create a map of the environment.
+This tutorial details the steps to install and run the `wandering` mobile
+robot application on a Clearpath Robotics Jackal robot. The pipeline integrates
+Intel RealSense depth-camera sensing, RTAB-Map visual SLAM, Nav2 navigation,
+and ADBSCAN 3D obstacle perception to explore and map the environment
+autonomously.
 
 ## Prerequisites
 
-- [Prepare the target system](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html)
-- [Setup the Robotics AI Dev Kit APT Repositories](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#3-set-up-robotics-ai-suite-oneapi-and-graphics-apt-repositories)
-- [Install OpenVINO™ Packages](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#4-install-openvino-packages)
-- [Install Robotics AI Dev Kit Deb packages](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#6-install-robotics-ai-suite-deb-packages)
-- [Install the Intel® NPU Driver on Intel® Core™ Ultra Processors (if applicable)](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#7-install-the-intel-npu-driver-on-intel-core-ultra-processors)
+* [Prepare the target system](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/)
+* [Set up the Robotics AI Dev Kit APT repositories](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#3-set-up-robotics-ai-suite-oneapi-and-graphics-apt-repositories)
+* [Install OpenVINO™ packages](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#4-install-openvino-packages)
+* [Install Robotics AI Dev Kit Debian packages](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#6-install-robotics-ai-suite-deb-packages)
+* [Install the Intel® NPU driver on Intel® Core™ Ultra processors (if applicable)](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#7-install-the-intel-npu-driver-on-intel-core-ultra-processors)
 
-## Installation and Execution
+## Installation
 
-Make sure that you have set up your Jackal™ robot as described on the
-`./jackal-intel-robotics-sdk`{.interpreted-text role="doc"} page. In
-addition, you can run the steps on page
-`./jackal-keyboard-teleop`{.interpreted-text role="doc"} in order to
-verify that your ROS 2 installation can communicate with the Motor
-Control Unit (MCU).
+Ensure that your Clearpath Jackal robot is powered, configured, and operational
+according to the [official documentation](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/).
+Verify that the Clearpath base services, including the configured RealSense sensor,
+are running and publishing topics and the namespaced TF tree.
 
-To install the Deb package of the Wandering tutorial on Jackal™ robots,
-run the following command:
+To install the `wandering` metapackage on the robot:
 
-``` bash
+```bash
 sudo apt update
-sudo apt install ros-humble-wandering-jackal-tutorial
+sudo apt install ros-${ROS_DISTRO}-wandering
 ```
 
-Make sure that you are logged in as the `administrator` user. Run the
-following script, which will start the Wandering Application. After a
-few seconds, the Jackal™ robot will start moving and the RTAB-Map SLAM
-application will create the map.
+Or build and source the workspace directly:
 
-``` bash
-/opt/ros/humble/share/wandering_jackal_tutorial/scripts/wandering_jackal.sh
+```bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
+colcon build --symlink-install
+source install/setup.bash
 ```
 
-![Wandering Application running on the Jackal™ robot: the rviz2 tool shows the robot with the identified map and the image of the Intel® RealSense™ camera.](images/wandering-jackal-rviz2.png)
+## Running the application
 
-*Figure: Wandering Application running on the Jackal™ robot. The rviz2 tool shows the robot with the identified map and the image of the Intel® RealSense™ camera.*
+### Autonomous exploration mode
 
-## Jackal™-Specific Adaptations
+Launch the complete autonomous pipeline:
 
-The shell script and the launch file of the Wandering tutorial have been
-adapted to the ecosystem of the Jackal™ robot. In particular, they
-include several remapping definitions, which align the camera and IMU
-related topics with the topic names expected by the nodes of the
-Wandering tutorial.
-
-You don\'t have to read the following subsections if you just want to
-run the tutorial. But they might provide relevant background information
-if you want to adapt the tutorial to a robot with a different ecosystem.
-
-## Adaptation of the Camera Namespace
-
-As mentioned on the `./jackal-intel-robotics-sdk`{.interpreted-text
-role="doc"} page, the names of the camera-related topics depend on the
-version of the installed `ros-humble-realsense2-camera` package. The
-camera-related topics start with:
-
-- `/sensors/camera_0/camera/` if the `ros-humble-realsense2-camera`
-  package is version 4.55
-- `/sensors/camera_0/` if the `ros-humble-realsense2-camera` package is
-  version 4.54
-
-In order to support both versions of the `ros-humble-realsense2-camera`
-package, the shell script
-`/opt/ros/humble/share/wandering_jackal_tutorial/scripts/wandering_jackal.sh`
-checks the name of the camera-related topics and assigns the variable
-`${CAMERA_NAMESPACE}` according to the identified camera namespace.
-
-## Adaptation of the depthimage_to_laserscan Node
-
-This node converts the depth image of the Intel® RealSense™ camera into
-a 2D laser scan. The node expects that it can subscribe to the topics
-`depth` and `depth_camera_info`. This requirement is fulfilled by
-remapping the following topics, which are published by the `camera` node
-of the Jackal™ robot:
-
-- if `ros-humble-realsense2-camera` version is 4.55:
-
-| Topic name expected by the node | True topic name on the Jackal robot                          |
-|----------------------------------|--------------------------------------------------------------|
-| `depth`                          | `/sensors/camera_0/camera/depth/image_rect_raw`             |
-| `depth_camera_info`              | `/sensors/camera_0/camera/depth/camera_info`                |
-
-- if `ros-humble-realsense2-camera` version is 4.54:
-
-| Topic name expected by the node | True topic name on the Jackal robot                          |
-|----------------------------------|--------------------------------------------------------------|
-| `depth`                          | `/sensors/camera_0/depth/image_rect_raw`             |
-| `depth_camera_info`              | `/sensors/camera_0/depth/camera_info`                |
-
-The script
-`/opt/ros/humble/share/wandering_jackal_tutorial/scripts/wandering_jackal.sh`
-considers the necessary remapping of both topics when it starts the
-`depthimage_to_laserscan` node:
-
-``` bash
-ros2 run depthimage_to_laserscan depthimage_to_laserscan_node --ros-args \
-         --remap depth:=${CAMERA_NAMESPACE}/depth/image_rect_raw \
-         --remap depth_camera_info:=${CAMERA_NAMESPACE}/depth/camera_info \
-         -p scan_time:=0.033 -p range_min:=0.1 -p range_max:=2.5 \
-         -p output_frame:=camera_0_depth_frame &
+```bash
+export ROBOT_NAMESPACE=/j100_0812
+ros2 launch wandering_bringup wandering_jackal.launch.py
 ```
 
-The `depthimage_to_laserscan` node publishes the topic `/scan`, which is
-subscribed by several other nodes. The laser scan messages, which are
-broadcast via this topic, must include a frame id. This frame id, whose
-default value is `camera_depth_frame`, must be adapted to the actual
-link name on the robot. According to the TF2 tree of the Jackal™ robot,
-which is shown on the `./jackal-intel-robotics-sdk`{.interpreted-text
-role="doc"} page, the actual link name is `camera_0_depth_frame`.
+**What this starts:**
 
-The above `ros2 run` command specifies the appropriate output frame id
-when it starts the `depthimage_to_laserscan` node. This is achieved by
-means of the parameter `output_frame:=camera_0_depth_frame`.
+1. `depthimage_to_laserscan`: Derives a 2D `/scan` topic from the RealSense
+   depth image.
+2. `dep_rtabmap_jackal`: Runs RTAB-Map SLAM and RGB-D synchronization.
+3. `dep_navigation_jackal`: Starts the Jackal Nav2 navigation stack configured
+   with `ADBScanLayer` in both local and global costmaps.
+4. `dep_adbscan_perception`: Fuses the scan and RealSense point cloud,
+   performs 3D ADBSCAN obstacle clustering, and publishes `/obstacle_array`.
+5. `wandering_app`: Frontier-exploration node (`wandering_mapper`) that evaluates
+   unexplored free space on the costmap and sends `NavigateToPose` goals to Nav2.
+6. RViz visualization windows (when a display is available).
 
-## Adaptation of the imu_filter_madgwick Node
+### Interactive manual override mode
 
-This filter node fuses angular velocities and accelerations from the
-robot\'s IMU device into an orientation. The node expects that it can
-subscribe to the topic `/imu/data_raw`. The topic `/imu/data_raw` is a
-remapped representation of the topic `/sensors/imu_0/data_raw`, which is
-published by the `jackal_mcu` node of the Jackal™ robot:
+To retain autonomous SLAM and ADBSCAN costmap protection while allowing an operator
+to pause exploration and send manual navigation goals via RViz:
 
-| Topic name expected by the node | True topic name on the Jackal™ robot                          |
-|----------------------------------|--------------------------------------------------------------|
-| `/imu/data_raw`                          | `/sensors/imu_0/data_raw`             |
-
-The script
-`/opt/ros/humble/share/wandering_jackal_tutorial/scripts/wandering_jackal.sh`
-considers the necessary remapping when it starts the
-`imu_filter_madgwick` node:
-
-``` bash
-ros2 run imu_filter_madgwick imu_filter_madgwick_node --ros-args \
-         -p remove_gravity_vector:=true -p use_mag:=false -p publish_tf:=false \
-         --remap /imu/data_raw:=/sensors/imu_0/data_raw &
+```bash
+export ROBOT_NAMESPACE=/j100_0812
+ros2 launch wandering_bringup wandering_jackal_manual_nav.launch.py
 ```
 
-## Adaptation of the rgbd_sync Node
+* Click **Manual mode** in the **Wandering Control** panel to cancel the active
+  exploration goal.
+* Use Nav2's **Goal** tool in the RViz toolbar to click-drag custom waypoints on
+  the map.
+* Click **Autonomous mode** to resume autonomous frontier wandering.
 
-This node synchronizes RGB, depth and camera_info messages into a single
-message. The node expects that it can subscribe to the topics
-`rgb/image`, `rgb/camera_info`, and `depth/image`. This requirement is
-fulfilled by remapping the following topics, which are published by the
-`camera` node of the Jackal™ robot:
+### Standard 2D LiDAR Nav2 (without ADBSCAN)
 
-- if `ros-humble-realsense2-camera` version is 4.55:
+To run the standard 2D Nav2 pipeline without the ADBSCAN fusion and clustering
+nodes:
 
-    | Topic name expected by the node        |           True topic name on the Jackal™ robot |
-    |----------------------------------------|-------------------------------------------------------------|
-    |`rgb/image`                             |           `/sensors/camera_0/camera/color/image_raw` |
-    |`rgb/camera_info`                       |           `/sensors/camera_0/camera/color/camera_info` |
-    |`depth/image`                           |           `/sensors/camera_0/camera/aligned_depth_to_color/image_raw` |
+```bash
+ros2 launch wandering_bringup wandering_jackal.launch.py enable_adbscan:=false
+```
 
-- if `ros-humble-realsense2-camera` version is 4.54:
+## Advanced configuration
 
-    | Topic name expected by the node        |           True topic name on the Jackal™ robot |
-    |----------------------------------------|---------------------------------------|
-    |`rgb/image`                             |           `/sensors/camera_0/color/image_raw` |
-    |`rgb/camera_info`                       |           `/sensors/camera_0/color/camera_info` |
-    |`depth/image`                           |           `/sensors/camera_0/aligned_depth_to_color/image_raw` |
+* **Robot namespace:** Set `ROBOT_NAMESPACE` (e.g. `export ROBOT_NAMESPACE=/j100_0123`)
+  to match your physical robot's Clearpath base service namespace.
+* **Velodyne Puck 3D LiDAR profile:** To fuse a Velodyne Puck 3D cloud instead of
+  the RealSense depth cloud, pass `fusion_params_file` and `adbscan_params_file`
+  tuned for the Puck.
+* **Camera topic overrides:** Override `camera_namespace`, `depth_image_topic`,
+  `depth_camera_info_topic`, `rgb_image_topic`, `rgb_camera_info_topic`, or
+  `aligned_depth_topic` if your robot uses non-default topic names.
 
-The node publishes the topic `rgbd_image`, which is remapped to
-
-- `/sensors/camera_0/camera/rgbd_image` if the
-  `ros-humble-realsense2-camera` package is version 4.55,
-- `/sensors/camera_0/rgbd_image` if the `ros-humble-realsense2-camera`
-  package is version 4.54.
-
-The definition of the remapping can be found in the launch files
-`rtabmap_jackal.launch.py` and `rtabmap_jackal.rs454.launch.py`. Both
-launch files can be found in the folder
-`/opt/ros/humble/share/wandering_jackal_tutorial/launch/`.
-
-## Adaptation of the rtabmap Node
-
-This node implements the RTAB-Map SLAM approach. The node expects that
-it can subscribe to the topic `rgbd_image`. The topic `rgbd_image` is a
-remapped representation of the topic
-
-- `/sensors/camera_0/camera/rgbd_image` if the
-  `ros-humble-realsense2-camera` package is version 4.55,
-- `/sensors/camera_0/rgbd_image` if the `ros-humble-realsense2-camera`
-  package is version 4.54,
-
-which is published by the `rgbd_sync` node.
-
-The definition of the remapping can be found in the launch files
-`rtabmap_jackal.launch.py` and `rtabmap_jackal.rs454.launch.py`. Both
-launch files can be found in the folder
-`/opt/ros/humble/share/wandering_jackal_tutorial/launch/`.
+For complete parameter references and launch options, see the
+[Bringup Guide](../src/wandering_bringup/README.md).

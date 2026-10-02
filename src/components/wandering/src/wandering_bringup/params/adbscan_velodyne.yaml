@@ -1,0 +1,31 @@
+# Copyright (C) 2026 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+#
+# ADBSCAN parameters for the Jackal's Velodyne Puck cloud in base_link.
+# Restrict clustering to the immediate navigation area. The Puck's floor and
+# distant structure returns otherwise tend to form clusters that are not useful
+# for short-range obstacle avoidance.
+---
+adbscan_sub_node:
+  ros__parameters:
+    Lidar_type: "3D"
+    Lidar_topic: /adbscan/points
+    Verbose: false
+    # Preserve enough post-voxel points to detect a person at close range.
+    subsample_ratio: 2.0
+    x_filter_back: 2.5
+    y_filter_left: 1.75
+    y_filter_right: -1.75
+    z_filter: -0.15
+    Z_based_ground_removal: 1.0
+    # The packaged 3D scale merges returns around the Puck's circular ROI.
+    # Use a smaller neighbourhood to separate nearby objects from static
+    # structure after radial crop and plane removal.
+    base: 3.4694
+    coeff_1: -0.0335
+    coeff_2: 0.00015124
+    scale_factor: 0.20
+    min_3d_epsilon: 0.15
+    enable_console_output: false
+    oneapi_library: oneapi_kdtree
+    benchmark_number_of_frames: 1

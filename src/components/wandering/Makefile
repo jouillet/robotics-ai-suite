@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Intel Corporation
+# Copyright (C) 2026 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -12,6 +12,9 @@ DATE := $(shell git log -1 --format=%cd --date=format:"%Y%m%d")
 VERSION := $(COMMIT)-$(DATE)
 
 ROS_DISTRO ?= humble
+PACKAGE_VERSION_SUFFIX ?=
+PROJECT_DEFINITION ?= $(ROOT_DIR)/robotics-project.json
+TEST_SUMMARY ?= $(ROOT_DIR)/testout/test-summary.md
 
 # Map ROS_DISTRO to Ubuntu codename
 ifeq ($(ROS_DISTRO),humble)
@@ -21,9 +24,16 @@ else
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: license-check package test test-e2e lint lint-all lint-clang lint-python lint-yaml lint-githubactions lint-bash lint-markdown lint-json source-package help
+.PHONY: benchmark-build benchmark-check benchmark-run build check check-ci changelog-check clean coverage debian-build-deps format install-debian-build-deps license-check package test test-e2e test-bringup-e2e test-results tools-check lint lint-all lint-all-codebase lint-clang lint-python lint-yaml lint-githubactions lint-bash lint-markdown lint-json lint-actionlint lint-clang-format lint-ruff source-package help
 
-PACKAGES = wandering wandering_aaeon_tutorial wandering_irobot_tutorial wandering_jackal_tutorial wandering_gazebo_tutorial wandering_tutorials
+PACKAGE_COMPONENTS := $(shell PROJECT_DEFINITION="$(PROJECT_DEFINITION)" ROOT_DIR="$(ROOT_DIR)" python3 -c 'import json, os, pathlib, re; project = json.loads(pathlib.Path(os.environ["PROJECT_DEFINITION"]).read_text(encoding="utf-8")); components = project.get("ci", {}).get("package_components", []); root = pathlib.Path(os.environ["ROOT_DIR"]) / "src"; valid = project.get("format_version") == 1 and isinstance(components, list) and components and all(isinstance(component, dict) and isinstance(component.get("path"), str) and re.fullmatch(r"[a-z0-9][a-z0-9_-]*", component["path"]) and (root / component["path"]).is_dir() and ("ros_package" not in component or isinstance(component["ros_package"], str) and re.fullmatch(r"[a-z0-9][a-z0-9_]*", component["ros_package"])) for component in components); (_ for _ in ()).throw(SystemExit("Invalid package components in project definition")) if not valid else None; print(",".join(component["path"] for component in components))')
+ROS_PACKAGES := $(shell PROJECT_DEFINITION="$(PROJECT_DEFINITION)" python3 -c 'import json, os, pathlib, re; project = json.loads(pathlib.Path(os.environ["PROJECT_DEFINITION"]).read_text(encoding="utf-8")); components = project.get("ci", {}).get("package_components", []); ros_components = [component for component in components if "ros_package" in component]; valid = project.get("format_version") == 1 and isinstance(components, list) and ros_components and all(isinstance(component, dict) and isinstance(component.get("ros_package"), str) and re.fullmatch(r"[a-z0-9][a-z0-9_]*", component["ros_package"]) for component in ros_components); (_ for _ in ()).throw(SystemExit("Invalid ROS packages in project definition")) if not valid else None; print(" ".join(component["ros_package"] for component in ros_components))')
+PACKAGE_OUTPUT_DIR = $(ROOT_DIR)/build/debian-packages/packages
+BUILD_DEPENDS_OUTPUT_DIR = $(ROOT_DIR)/build/debian-build-deps
+MISSING_BUILD_DEPENDENCIES_FILE = $(BUILD_DEPENDS_OUTPUT_DIR)/missing-dependencies.txt
+BENCHMARK_BUILD_DIR ?= $(ROOT_DIR)/build/benchmarks
+BENCHMARK_OUTPUT_DIR ?= $(ROOT_DIR)/testout/benchmarks
+UV ?= uv
 
 license-check:
 	@# Help: Perform a REUSE license check using docker container https://hub.docker.com/r/fsfe/reuse
@@ -31,144 +41,214 @@ license-check:
 
 package:
 	@# Help: Build Debian packages
-	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
-		-w /src \
-		-e DEBIAN_FRONTEND=noninteractive \
-		amd64/ros:${ROS_DISTRO}-ros-base \
-		bash -c " \
-			apt-get -qq update && apt install -qq -y equivs devscripts && \
-			for path in ${PACKAGES}; do \
-				echo \"Building package: \$$path\"; \
-				cd \$$path && \
-				rm -rf debian && cp -r \"$(ROS_DISTRO)/debian\" ./debian && \
-				mk-build-deps -i --host-arch amd64 --build-arch amd64 \
-				-t 'apt-get -y -q -o Debug::pkgProblemResolver=yes --no-install-recommends --allow-downgrades' debian/control && \
-				DEB_BUILD_OPTIONS='nocheck' dpkg-buildpackage && \
-				cd /src; \
-			done && \
-			ls | grep ros-${ROS_DISTRO} | grep -v deb | xargs rm -rf"
+	command -v ninja >/dev/null || { echo "Error: Ninja is required. Install ninja-build." >&2; exit 1; }
+	rm -rf $(ROOT_DIR)/build/debian-packages
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	cmake -G Ninja -S $(ROOT_DIR) -B $(ROOT_DIR)/build/debian-packages \
+		-DROS_DISTRO=$(ROS_DISTRO) \
+		-DWANDERING_PACKAGE_OUTPUT_DIR=$(PACKAGE_OUTPUT_DIR) \
+		-DWANDERING_PACKAGE_COMPONENTS="$(PACKAGE_COMPONENTS)" \
+		-DWANDERING_PACKAGE_VERSION_SUFFIX=$(PACKAGE_VERSION_SUFFIX) && \
+	cmake --build $(ROOT_DIR)/build/debian-packages --target package
+
+debian-build-deps:
+	@# Help: Generate Debian Build-Depends control files without configuring components
+	rm -rf $(BUILD_DEPENDS_OUTPUT_DIR) $(ROOT_DIR)/build/debian-build-deps-config
+	cmake -S $(ROOT_DIR) -B $(ROOT_DIR)/build/debian-build-deps-config \
+		-DROS_DISTRO=$(ROS_DISTRO) \
+		-DWANDERING_PACKAGE_COMPONENTS="$(PACKAGE_COMPONENTS)" \
+		-DWANDERING_BUILD_DEPENDS_OUTPUT_DIR=$(BUILD_DEPENDS_OUTPUT_DIR) && \
+	cmake --build $(ROOT_DIR)/build/debian-build-deps-config --target debian-build-deps
+
+install-debian-build-deps: debian-build-deps
+	@# Help: Install generated Debian Build-Depends with APT
+	@command -v mk-build-deps >/dev/null && command -v equivs-build >/dev/null && command -v dpkg-checkbuilddeps >/dev/null || { echo "Error: mk-build-deps, equivs-build, and dpkg-checkbuilddeps are required. Install devscripts, equivs, and dpkg-dev." >&2; exit 1; }
+	@apt-get update; \
+	install_status=0; \
+	for control_file in $(BUILD_DEPENDS_OUTPUT_DIR)/*/debian/control; do \
+		mk-build-deps --install --remove \
+			--tool 'apt-get --no-install-recommends --no-remove --yes' \
+			"$$control_file" || install_status=1; \
+	done; \
+	: > $(MISSING_BUILD_DEPENDENCIES_FILE); \
+	for control_file in $(BUILD_DEPENDS_OUTPUT_DIR)/*/debian/control; do \
+		if missing_dependencies="$$(dpkg-checkbuilddeps "$$control_file" 2>&1)"; then \
+			continue; \
+		fi; \
+		printf '%s\n%s\n\n' "$$control_file" "$$missing_dependencies" >> $(MISSING_BUILD_DEPENDENCIES_FILE); \
+	done; \
+	exit "$$install_status"
+
+build:
+	@# Help: Build selected ROS packages with Colcon for local development
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --executor sequential --event-handlers console_direct+
+
+benchmark-build:
+	@# Help: Build standalone Google Benchmark workloads
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select adbscan_sensor_fusion --symlink-install --executor sequential --event-handlers console_direct+ && \
+	set +u && source $(ROOT_DIR)/install/setup.bash && set -u && \
+	cmake -S $(ROOT_DIR)/benchmarks -B $(BENCHMARK_BUILD_DIR) -DCMAKE_BUILD_TYPE=Release && \
+	cmake --build $(BENCHMARK_BUILD_DIR)
+
+benchmark-check: benchmark-build
+	@# Help: Verify benchmark binaries with one dry-run iteration
+	$(BENCHMARK_BUILD_DIR)/pointcloud_filter/benchmark_pointcloud_filter \
+		--benchmark_min_time=0.001s --benchmark_repetitions=1
+
+benchmark-run: benchmark-build
+	@# Help: Run benchmarks and write repeatable JSON results
+	mkdir -p $(BENCHMARK_OUTPUT_DIR)
+	$(BENCHMARK_BUILD_DIR)/pointcloud_filter/benchmark_pointcloud_filter \
+		--benchmark_repetitions=5 \
+		--benchmark_report_aggregates_only=true \
+		--benchmark_out=$(BENCHMARK_OUTPUT_DIR)/pointcloud_filter.json \
+		--benchmark_out_format=json
 
 test:
 	@# Help: Build & test with Colcon
-	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
-		-w /src \
-		-e DEBIAN_FRONTEND=noninteractive \
-		amd64/ros:${ROS_DISTRO}-ros-base \
-		bash -c " \
-			apt-get -qq update && apt-get -qq -y upgrade && apt install -qq -y equivs devscripts ros-${ROS_DISTRO}-nav2-msgs ros-${ROS_DISTRO}-nav2-util ros-${ROS_DISTRO}-nav2-costmap-2d && \
-			source /opt/ros/${ROS_DISTRO}/setup.bash && \
-			rm -rf build install log && \
-			colcon build --executor sequential --event-handlers console_direct+ && \
-			source install/setup.bash && \
-			colcon test --return-code-on-test-failure --executor sequential --event-handlers console_direct+"
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --cmake-clean-cache \
+		--cmake-args -DBUILD_TESTING=ON --executor sequential --event-handlers console_direct+ && \
+	set +u && source $(ROOT_DIR)/install/setup.bash && set -u && \
+	colcon test --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --return-code-on-test-failure --executor sequential --event-handlers console_direct+
+
+coverage:
+	@# Help: Generate non-gating C++ line and branch coverage reports
+	@command -v "$(UV)" >/dev/null || { echo "Error: uv is required. Install it from https://docs.astral.sh/uv/." >&2; exit 1; }
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --cmake-clean-cache \
+		--cmake-args -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage -DCMAKE_EXE_LINKER_FLAGS=--coverage -DCMAKE_SHARED_LINKER_FLAGS=--coverage \
+		--executor sequential --event-handlers console_direct+ && \
+	set +u && source $(ROOT_DIR)/install/setup.bash && set -u && \
+	colcon test --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --return-code-on-test-failure --executor sequential --event-handlers console_direct+
+	mkdir -p $(ROOT_DIR)/testout/coverage
+	$(UV) tool run --from gcovr gcovr --root $(ROOT_DIR) --filter $(ROOT_DIR)/src --exclude '.*/(test|tests)/.*' --exclude '.*/build/.*' \
+		--print-summary --txt-metric branch --html-details $(ROOT_DIR)/testout/coverage/index.html \
+		--xml-pretty --output $(ROOT_DIR)/testout/coverage/coverage.xml
 
 test-e2e:
-	@# Help: Run E2E functional tests
-	@if ! ls ros-$(ROS_DISTRO)-wandering_*.deb 2>/dev/null | grep -v 'ros-$(ROS_DISTRO)-fast-mapping-build-deps_.*_amd64.deb' | grep -q .; then \
-		echo "Error: ros-$(ROS_DISTRO)-wandering_*.deb not found. Run 'make package' first"; \
+	@# Help: Run synthetic headless Nav2 E2E tests from the active ROS prefix
+	@set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	prefix="$$(ros2 pkg prefix wandering_bringup 2>/dev/null)" || { \
+		echo "Error: wandering_bringup is unavailable. Install its package or build and source install/setup.bash first." >&2; \
 		exit 1; \
-	fi
-	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
-		-w /src \
-		-e DEBIAN_FRONTEND=noninteractive \
-		amd64/ros:${ROS_DISTRO}-ros-base \
-		bash -c "curl https://eci.intel.com/repos/gpg-keys/GPG-PUB-KEY-INTEL-ECI.gpg -o /usr/share/keyrings/eci-archive-keyring.gpg > /dev/null && \
-		curl -fsSL https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null && \
-		echo \"deb [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://eci.intel.com/repos/${UBUNTU_CODENAME} isar main\" | tee /etc/apt/sources.list.d/eci.list > /dev/null && \
-		echo \"deb-src [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://eci.intel.com/repos/${UBUNTU_CODENAME} isar main\" | tee -a /etc/apt/sources.list.d/eci.list > /dev/null && \
-		echo \"deb [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://amrdocs.intel.com/repos/${UBUNTU_CODENAME} amr main\" | tee /etc/apt/sources.list.d/amr.list > /dev/null && \
-		echo \"deb-src [signed-by=/usr/share/keyrings/eci-archive-keyring.gpg] https://amrdocs.intel.com/repos/${UBUNTU_CODENAME} amr main\" | tee -a /etc/apt/sources.list.d/amr.list > /dev/null && \
-		echo \"deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main\" | tee /etc/apt/sources.list.d/oneAPI.list > /dev/null && \
-		apt-get -qq update && apt-get -q install -y wget python3 python3-pip xvfb graphicsmagick fluxbox wmctrl ffmpeg xdotool x11-utils && \
-		$(if $(filter humble,$(ROS_DISTRO)),python3 -m pip install --upgrade pip &&) \
-		pip3 install $(if $(filter humble,$(ROS_DISTRO)),'pytest<8',pytest) Pillow $(if $(filter humble,$(ROS_DISTRO)),-U,--break-system-packages) && \
-		find . -name '*.deb' -not -name '*-build-deps_*' -not -name '*-dbgsym_*' -exec apt-get -q install -y {} \; && \
-		source /opt/ros/$(ROS_DISTRO)/setup.bash && \
-		export ROS_DOMAIN_ID=1 && \
-		pytest tests/ -s -v"
+	}; \
+	for launch_file in test_wandering_adbscan_scanonly_sim.launch.py test_turtlebot3_headless.launch.py; do \
+		test -f "$$prefix/share/wandering_bringup/launch/$$launch_file" || { \
+			echo "Error: missing $$launch_file in $$prefix/share/wandering_bringup/launch. Install or source a current wandering_bringup prefix." >&2; \
+			exit 1; \
+		}; \
+	done
+	mkdir -p testout
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && export ROS_DOMAIN_ID=42 && /usr/bin/python3 -m launch_testing.launch_test tests/test_adbscan_nav2_e2e_launch.py --junit-xml=testout/adbscan_nav2_e2e.xml
 
-lint:
-	@# Help: Run all sub-linters using super-linter (using linters defined for this repo only)
-	VALIDATE_GITHUB_ACTIONS=true \
-	VALIDATE_YAML=true \
-	VALIDATE_JSON=true \
-	VALIDATE_PYTHON_PYLINT=true \
-	VALIDATE_PYTHON_FLAKE8=true \
-	VALIDATE_BASH=true \
-	VALIDATE_MARKDOWN=true \
-	VALIDATE_CLANG_FORMAT=true \
-		make lint-all
+test-bringup-e2e:
+	@# Help: Run the headless Gazebo ADBScan Nav2 bringup smoke test
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-up-to wandering_bringup --symlink-install \
+		--cmake-args -DBUILD_TESTING=ON -DWANDERING_ENABLE_E2E_TESTS=ON \
+		--executor sequential --event-handlers console_direct+ && \
+	set +u && source $(ROOT_DIR)/install/setup.bash && set -u && \
+	ctest --test-dir $(ROOT_DIR)/build/wandering_bringup --output-on-failure -L e2e
 
-lint-all:
-	@# Help: Run super-linter over entire repository (auto-detects code to lint)
-	docker run --rm --platform linux/amd64 \
-		-e SHELL=/bin/bash \
-		-e RUN_LOCAL=true \
-		--env-file ".github/linters/super-linter.env" \
-		$(if $(VALIDATE_GITHUB_ACTIONS),-e VALIDATE_GITHUB_ACTIONS=$(VALIDATE_GITHUB_ACTIONS)) \
-		$(if $(VALIDATE_YAML),-e VALIDATE_YAML=$(VALIDATE_YAML)) \
-		$(if $(VALIDATE_JSON),-e VALIDATE_JSON=$(VALIDATE_JSON)) \
-		$(if $(VALIDATE_PYTHON_PYLINT),-e VALIDATE_PYTHON_PYLINT=$(VALIDATE_PYTHON_PYLINT)) \
-		$(if $(VALIDATE_PYTHON_FLAKE8),-e VALIDATE_PYTHON_FLAKE8=$(VALIDATE_PYTHON_FLAKE8)) \
-		$(if $(VALIDATE_BASH),-e VALIDATE_BASH=$(VALIDATE_BASH)) \
-		$(if $(VALIDATE_MARKDOWN),-e VALIDATE_MARKDOWN=$(VALIDATE_MARKDOWN)) \
-		$(if $(VALIDATE_CLANG_FORMAT),-e VALIDATE_CLANG_FORMAT=$(VALIDATE_CLANG_FORMAT)) \
-		-v $(ROOT_DIR):/tmp/lint \
-			ghcr.io/super-linter/super-linter:slim-v8.1.0
+test-results:
+	@# Help: Summarize Colcon test results
+	@mkdir -p "$(dir $(TEST_SUMMARY))"
+	python3 .github/scripts/summarize_test_results.py \
+		--results-glob 'build/*/test_results/**/*.xml' \
+		--ros-distro $(ROS_DISTRO) \
+		--summary-file "$(TEST_SUMMARY)"
 
-lint-clang:
-	@# Help: Run clang linter using super-linter
-	VALIDATE_CLANG_FORMAT=true make lint-all
+check: lint license-check
+	@# Help: Run locally reproducible pre-push checks
 
-lint-python:
-	@# Help: Run Python linter using super-linter
-	VALIDATE_PYTHON_PYLINT=true VALIDATE_PYTHON_FLAKE8=true make lint-all
+check-ci:
+	@# Help: Run package and Colcon validation for Humble and Jazzy
+	$(MAKE) ROS_DISTRO=humble package test
+	$(MAKE) ROS_DISTRO=jazzy package test
+
+tools-check:
+	@# Help: Verify locally installed developer tools
+	@missing=0; \
+	for tool in actionlint yamllint ruff shellcheck markdownlint-cli2 clang-format ninja colcon docker python3; do \
+		if ! command -v "$$tool" >/dev/null; then \
+			echo "Missing required tool: $$tool" >&2; \
+			missing=1; \
+		fi; \
+	done; \
+	exit "$$missing"
+
+format:
+	@# Help: Apply local source formatting
+	git ls-files -z -- '*.c' '*.cc' '*.cpp' '*.cxx' '*.h' '*.hh' '*.hpp' '*.hxx' | xargs -0 -r -n1 sh -c 'test ! -e "$$1" || clang-format -i "$$1"' sh
+	git ls-files -z -- '*.py' | xargs -0 -r -n1 sh -c 'test ! -e "$$1" || ruff check --fix "$$1"' sh
+	git ls-files -z -- '*.py' | xargs -0 -r -n1 sh -c 'test ! -e "$$1" || ruff format "$$1"' sh
+	git ls-files -z -- '*.md' | xargs -0 -r markdownlint-cli2 --config .github/linters/.markdown-lint.yml --fix
+
+clean:
+	@# Help: Remove local build, install, log, test, and package artifacts
+	rm -rf $(ROOT_DIR)/build $(ROOT_DIR)/install $(ROOT_DIR)/log $(ROOT_DIR)/testout
+
+lint: lint-actionlint lint-yaml lint-json lint-ruff lint-bash lint-markdown lint-clang-format
+	@# Help: Run all local linters on tracked files
+
+lint-all lint-all-codebase: lint
+	@# Help: Run all local linters on tracked files
+
+lint-actionlint lint-githubactions:
+	@# Help: Run GitHub Actions workflow linting
+	actionlint -config-file .github/linters/actionlint.yml -ignore 'SC2016' $$(git ls-files -- '.github/workflows/*.yml' '.github/workflows/*.yaml')
 
 lint-yaml:
-	@# Help: Run YAML linter using super-linter
-	VALIDATE_YAML=true make lint-all
-
-lint-githubactions:
-	@# Help: Run Github Actions linter using super-linter
-	VALIDATE_GITHUB_ACTIONS=true make lint-all
-
-lint-bash:
-	@# Help: Run Bash linter using super-linter
-	VALIDATE_BASH=true make lint-all
-
-lint-markdown:
-	@# Help: Run Markdown linter using super-linter
-	VALIDATE_MARKDOWN=true make lint-all
+	@# Help: Run YAML linting
+	git ls-files -z -- '*.yaml' '*.yml' | xargs -0 -r -n1 sh -c 'test ! -e "$$1" || yamllint -c .github/linters/.yaml-lint.yml "$$1"' sh
 
 lint-json:
-	@# Help: Run JSON linter using super-linter
-	VALIDATE_JSON=true make lint-all
+	@# Help: Run JSON linting
+	git ls-files -z -- '*.json' | xargs -0 -r -n1 python3 -m json.tool >/dev/null
+
+lint-ruff lint-python:
+	@# Help: Run Python linting
+	git ls-files -z -- '*.py' | xargs -0 -r -n1 sh -c 'test ! -e "$$1" || ruff check "$$1"' sh
+
+lint-bash:
+	@# Help: Run Bash linting
+	git ls-files -z -- '*.sh' | xargs -0 -r shellcheck --severity=error
+
+lint-markdown:
+	@# Help: Run Markdown linting
+	git ls-files -z -- '*.md' | xargs -0 -r markdownlint-cli2 --config .github/linters/.markdown-lint.yml
+
+lint-clang-format lint-clang:
+	@# Help: Run C/C++ formatting linting
+	git ls-files -z -- '*.c' '*.cc' '*.cpp' '*.cxx' '*.h' '*.hh' '*.hpp' '*.hxx' | xargs -0 -r -n1 sh -c 'test ! -e "$$1" || clang-format --dry-run --Werror "$$1"' sh
 
 source-package:
 	@# Help: Create source package tarball
 	git archive --format=zip -o wandering-$(VERSION).zip HEAD \
 		.gitattributes Makefile README.md REUSE.toml \
 		.github/linters docs images LICENSES rviz \
-		wandering wandering_aaeon_tutorial wandering_gazebo_tutorial \
-		wandering_irobot_tutorial wandering_jackal_tutorial wandering_tutorials
+				src
 
 help:
 	@printf "%-20s %s\n" "Target" "Description"
 	@printf "%-20s %s\n" "------" "-----------"
-	@grep -E '^[a-zA-Z0-9_%-]+:|^[[:space:]]+@# Help:' Makefile | \
+	@grep -E '^[a-zA-Z0-9_%-]+([[:space:]][a-zA-Z0-9_%-]+)*:|^[[:space:]]+@# Help:' Makefile | \
 	awk '\
-		/^[a-zA-Z0-9_%-]+:/ { \
-			target = $$1; \
-			sub(":", "", target); \
+		/^[a-zA-Z0-9_%-]+([[:space:]][a-zA-Z0-9_%-]+)*:/ { \
+			targets = $$0; \
+			sub(":.*", "", targets); \
 		} \
 		/^[[:space:]]+@# Help:/ { \
-			if (target != "") { \
+			if (targets != "") { \
 				help_line = $$0; \
 				sub("^[[:space:]]+@# Help: ", "", help_line); \
-				printf "%-20s %s\n", target, help_line; \
-				target = ""; \
+				n = split(targets, names, " "); \
+				for (position = 1; position <= n; position++) { \
+					printf "%-20s %s\n", names[position], help_line; \
+				} \
+				targets = ""; \
 			} \
 		}' | sort -k1,1

@@ -6,12 +6,14 @@ SHELL := bash -eu -o pipefail
 
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-# Version info for packaging
 COMMIT := $(shell git rev-parse --short HEAD)
 DATE := $(shell git log -1 --format=%cd --date=format:"%Y%m%d")
 VERSION := $(COMMIT)-$(DATE)
 
 ROS_DISTRO ?= humble
+PACKAGE_VERSION_SUFFIX ?=
+PROJECT_DEFINITION ?= $(ROOT_DIR)/robotics-project.json
+TEST_SUMMARY ?= $(ROOT_DIR)/testout/test-summary.md
 
 # Map ROS_DISTRO to Ubuntu codename
 ifeq ($(ROS_DISTRO),humble)
@@ -22,153 +24,129 @@ else
 	$(error Unsupported ROS_DISTRO: $(ROS_DISTRO). Supported: humble, jazzy)
 endif
 
-PACKAGES := package/turtlesim_tutorial package/realsense2_tutorial PicknPlace/robot_config PicknPlace/gazebo_plugins PicknPlace/picknplace PicknPlace RVC/rvc RVC
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	MAKE_JOBS ?= $(shell sysctl -n hw.ncpu)
+else
+	MAKE_JOBS ?= $(shell nproc)
+endif
 
 .DEFAULT_GOAL := help
-.PHONY: license-check package test lint lint-all lint-clang lint-python lint-yaml lint-githubactions lint-bash lint-markdown lint-json source-package clean help
+.PHONY: build clean container-debian-build-deps container-package container-test debian-build-deps help install-debian-build-deps license-check lint lint-all lint-bash lint-clang lint-githubactions lint-json lint-markdown lint-python lint-yaml package source-package test test-e2e test-results
+
+PACKAGE_COMPONENTS := $(shell PROJECT_DEFINITION="$(PROJECT_DEFINITION)" ROOT_DIR="$(ROOT_DIR)" python3 -c 'import json, os, pathlib, re; project = json.loads(pathlib.Path(os.environ["PROJECT_DEFINITION"]).read_text(encoding="utf-8")); components = project.get("ci", {}).get("package_components", []); root = pathlib.Path(os.environ["ROOT_DIR"]) / "src"; valid = project.get("format_version") == 1 and isinstance(components, list) and components and all(isinstance(component, dict) and isinstance(component.get("path"), str) and re.fullmatch(r"[a-z0-9][a-z0-9_-]*", component["path"]) and (root / component["path"]).is_dir() and ("ros_package" not in component or isinstance(component["ros_package"], str) and re.fullmatch(r"[a-z0-9][a-z0-9_]*", component["ros_package"])) for component in components); (_ for _ in ()).throw(SystemExit("Invalid package components in project definition")) if not valid else None; print(",".join(component["path"] for component in components))')
+ROS_PACKAGES := $(shell PROJECT_DEFINITION="$(PROJECT_DEFINITION)" python3 -c 'import json, os, pathlib, re; project = json.loads(pathlib.Path(os.environ["PROJECT_DEFINITION"]).read_text(encoding="utf-8")); components = project.get("ci", {}).get("package_components", []); ros_components = [component for component in components if "ros_package" in component]; valid = project.get("format_version") == 1 and isinstance(components, list) and ros_components and all(isinstance(component, dict) and isinstance(component.get("ros_package"), str) and re.fullmatch(r"[a-z0-9][a-z0-9_]*", component["ros_package"]) for component in ros_components); (_ for _ in ()).throw(SystemExit("Invalid ROS packages in project definition")) if not valid else None; print(" ".join(component["ros_package"] for component in ros_components))')
+PACKAGE_OUTPUT_DIR = $(ROOT_DIR)/build/debian-packages/packages
+BUILD_DEPENDS_OUTPUT_DIR = $(ROOT_DIR)/build/debian-build-deps
+MISSING_BUILD_DEPENDENCIES_FILE = $(BUILD_DEPENDS_OUTPUT_DIR)/missing-dependencies.txt
+CONTAINER_IMAGE ?= amd64/ros:$(ROS_DISTRO)-ros-base
+PACKAGE_CMAKE_GENERATOR := $(shell if command -v ninja >/dev/null 2>&1; then echo Ninja; else echo "Unix Makefiles"; fi)
 
 license-check:
 	@# Help: Perform a REUSE license check using docker container https://hub.docker.com/r/fsfe/reuse
 	docker run --rm --volume ${ROOT_DIR}:/data fsfe/reuse:5.0.2 lint
 
 package:
-	@# Help: Build Debian packages
-	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
-		-w /src \
-		-e DEBIAN_FRONTEND=noninteractive \
-		-e ROS_DISTRO=$(ROS_DISTRO) \
-		amd64/ros:${ROS_DISTRO}-ros-base \
-		bash -c " \
-			set -e && \
-			apt-get -qq update && apt install -qq -y equivs devscripts lsb-release curl gnupg && \
-			git config --global --add safe.directory '*' && \
-			\
-			echo 'Installing Gazebo for $(ROS_DISTRO)...' && \
-			curl --connect-timeout 30 --max-time 60 --retry 3 \
-				--output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg \
-				https://packages.osrfoundation.org/gazebo.gpg && \
-			echo \"deb [arch=\$$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-stable \$$(lsb_release -cs) main\" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
-			apt-get update && \
-			if [ '$(ROS_DISTRO)' = 'humble' ]; then \
-				apt-get install -y ignition-fortress gz-sim7-cli libgz-sim7 libgz-sim7-dev ros-humble-ros-gz; \
-			elif [ '$(ROS_DISTRO)' = 'jazzy' ]; then \
-				apt-get install -y gz-harmonic gz-sim8-cli libgz-sim8 libgz-sim8-dev ros-jazzy-ros-gz ros-jazzy-gz-sim-vendor; \
-			fi && \
-			\
-			echo 'Building Debian packages...' && \
-			current_dir=\"\$$(pwd)\" && \
-			packages=\"$(PACKAGES)\" && \
-			for pkg in \$${packages}; do \
-				SRC_DIR=\"\$${current_dir}/\$${pkg}/$(ROS_DISTRO)/debian\"; \
-				echo \"Setting up debian control files for \$$pkg (\$$SRC_DIR)\"; \
-				if [ ! -d \"\$$SRC_DIR\" ]; then \
-					echo \"❌ ERROR: \$$SRC_DIR does not exist.\"; \
-					exit 1; \
-				fi; \
-				rm -rf \"\$${current_dir}/\$${pkg}/debian\"; \
-				cp -r \"\$$SRC_DIR\" \"\$${current_dir}/\$${pkg}/debian\"; \
-			done && \
-			\
-			apt-get install -f -y && dpkg --configure -a && \
-			\
-			for pkg in \$${packages}; do \
-				echo \"Installing dependencies for: \$$pkg\"; \
-				mk-build-deps -i --host-arch amd64 --build-arch amd64 -t 'apt-get -y -q -o Debug::pkgProblemResolver=yes --no-install-recommends --allow-downgrades' \$${current_dir}/\$$pkg/debian/control; \
-			done && \
-			\
-			for pkg in \$${packages}; do \
-				cd \$${current_dir}/\$$pkg && \
-				echo \"Building package: \$$pkg\" && \
-				DEB_BUILD_OPTIONS='nocheck' dpkg-buildpackage -us -uc -b -tc -d && \
-				cd \$${current_dir}; \
-			done && \
-			\
-			mkdir -p output && \
-			find .. -type f -name '*.deb' -not -name '*-build-deps_*' -exec mv {} output/ \\; || echo 'No .deb files found'"
+	@# Help: Build Debian packages natively using CPack
+	rm -rf $(ROOT_DIR)/build/debian-packages
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	cmake -G "$(PACKAGE_CMAKE_GENERATOR)" -S $(ROOT_DIR) -B $(ROOT_DIR)/build/debian-packages \
+		-DROS_DISTRO=$(ROS_DISTRO) \
+		-DSIMULATIONS_PACKAGE_OUTPUT_DIR=$(PACKAGE_OUTPUT_DIR) \
+		-DSIMULATIONS_PACKAGE_COMPONENTS="$(PACKAGE_COMPONENTS)" \
+		-DSIMULATIONS_CMAKE_GENERATOR="$(PACKAGE_CMAKE_GENERATOR)" \
+		-DSIMULATIONS_PACKAGE_VERSION_SUFFIX=$(PACKAGE_VERSION_SUFFIX) && \
+	cmake --build $(ROOT_DIR)/build/debian-packages --target package
+
+debian-build-deps:
+	@# Help: Generate Debian Build-Depends control files without configuring components
+	rm -rf $(BUILD_DEPENDS_OUTPUT_DIR) $(ROOT_DIR)/build/debian-build-deps-config
+	cmake -S $(ROOT_DIR) -B $(ROOT_DIR)/build/debian-build-deps-config \
+		-DROS_DISTRO=$(ROS_DISTRO) \
+		-DSIMULATIONS_PACKAGE_COMPONENTS="$(PACKAGE_COMPONENTS)" \
+		-DSIMULATIONS_BUILD_DEPENDS_OUTPUT_DIR=$(BUILD_DEPENDS_OUTPUT_DIR) && \
+	cmake --build $(ROOT_DIR)/build/debian-build-deps-config --target debian-build-deps
+
+install-debian-build-deps: debian-build-deps
+	@# Help: Install generated Debian Build-Depends with APT
+	@command -v mk-build-deps >/dev/null && command -v equivs-build >/dev/null && command -v dpkg-checkbuilddeps >/dev/null || { echo "Error: mk-build-deps, equivs-build, and dpkg-checkbuilddeps are required. Install devscripts, equivs, and dpkg-dev." >&2; exit 1; }
+	@apt-get update; \
+	install_status=0; \
+	for control_file in $(BUILD_DEPENDS_OUTPUT_DIR)/*/debian/control; do \
+		mk-build-deps --install --remove \
+			--tool 'apt-get --no-install-recommends --no-remove --yes' \
+			"$$control_file" || install_status=1; \
+	done; \
+	: > $(MISSING_BUILD_DEPENDENCIES_FILE); \
+	for control_file in $(BUILD_DEPENDS_OUTPUT_DIR)/*/debian/control; do \
+		if missing_dependencies="$$(dpkg-checkbuilddeps "$$control_file" 2>&1)"; then \
+			continue; \
+		fi; \
+		printf '%s\n%s\n\n' "$$control_file" "$$missing_dependencies" >> $(MISSING_BUILD_DEPENDENCIES_FILE); \
+	done; \
+	exit "$$install_status"
+
+build:
+	@# Help: Build selected ROS packages with Colcon for local development
+	@for pkg in $(ROS_PACKAGES); do rm -rf $(ROOT_DIR)/build/$$pkg; done
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --cmake-clean-cache --executor sequential --event-handlers console_direct+
 
 test:
-	@# Help: Test with existing packages or build & test with Colcon
+	@# Help: Build & test with Colcon
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --cmake-clean-cache \
+		--cmake-args -DBUILD_TESTING=ON --executor sequential --event-handlers console_direct+ && \
+	set +u && source $(ROOT_DIR)/install/setup.bash && set -u && \
+	colcon test --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --return-code-on-test-failure --executor sequential --event-handlers console_direct+
+
+test-results:
+	@# Help: Summarize Colcon test results
+	@mkdir -p "$(dir $(TEST_SUMMARY))"
+	python3 .github/scripts/summarize_test_results.py \
+		--results-glob 'build/*/test_results/**/*.xml' \
+		--ros-distro $(ROS_DISTRO) \
+		--summary-file "$(TEST_SUMMARY)"
+
+test-e2e:
+	@# Help: Run end-to-end validation using the same native test flow
+	$(MAKE) test ROS_DISTRO=$(ROS_DISTRO)
+
+container-debian-build-deps:
+	@# Help: Generate Debian Build-Depends in container
 	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
-		-w /src \
-		-e DEBIAN_FRONTEND=noninteractive \
+		-v $(ROOT_DIR):/workspace \
+		-w /workspace \
 		-e ROS_DISTRO=$(ROS_DISTRO) \
-		amd64/ros:${ROS_DISTRO}-ros-base \
-		bash -c " \
-			set -e && \
-			apt-get -qq update && apt install -qq -y equivs devscripts dh-python lsb-release curl gnupg && \
-			git config --global --add safe.directory '*' && \
-			\
-			echo 'Installing Gazebo for $(ROS_DISTRO)...' && \
-			curl --connect-timeout 30 --max-time 60 --retry 3 \
-				--output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg \
-				https://packages.osrfoundation.org/gazebo.gpg && \
-			echo \"deb [arch=\$$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-stable \$$(lsb_release -cs) main\" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
-			apt-get update && \
-			if [ '$(ROS_DISTRO)' = 'humble' ]; then \
-				apt-get install -y ignition-fortress gz-sim7-cli libgz-sim7 libgz-sim7-dev ros-humble-ros-gz; \
-			elif [ '$(ROS_DISTRO)' = 'jazzy' ]; then \
-				apt-get install -y gz-harmonic gz-sim8-cli libgz-sim8 libgz-sim8-dev ros-jazzy-ros-gz ros-jazzy-gz-sim-vendor; \
-			fi && \
-			\
-			echo 'Checking for existing packages...' && \
-			if [ -d \"./output\" ] && [ \"\$$(ls -A ./output/*.deb 2>/dev/null)\" ]; then \
-				echo 'Using existing packages from ./output/'; \
-				mkdir -p packages; \
-				cp ./output/*.deb ./packages/ 2>/dev/null || true; \
-			else \
-				echo 'No existing packages found, building new ones...' && \
-				current_dir=\"\$$(pwd)\" && \
-				packages=\"$(PACKAGES)\" && \
-				for pkg in \$${packages}; do \
-					SRC_DIR=\"\$${current_dir}/\$${pkg}/$(ROS_DISTRO)/debian\"; \
-					if [ ! -d \"\$$SRC_DIR\" ]; then \
-						echo \"❌ ERROR: \$$SRC_DIR does not exist.\"; \
-						exit 1; \
-					fi; \
-					rm -rf \"\$${current_dir}/\$${pkg}/debian\"; \
-					cp -r \"\$$SRC_DIR\" \"\$${current_dir}/\$${pkg}/debian\"; \
-				done && \
-				\
-				apt-get install -f -y && dpkg --configure -a && \
-				\
-				for pkg in \$${packages}; do \
-					mk-build-deps -i --host-arch amd64 --build-arch amd64 -t 'apt-get -y -q -o Debug::pkgProblemResolver=yes --no-install-recommends --allow-downgrades' \$${current_dir}/\$$pkg/debian/control; \
-				done && \
-				\
-				for pkg in \$${packages}; do \
-					cd \$${current_dir}/\$$pkg && \
-					echo \"Building: \$$pkg\" && \
-					DEB_BUILD_OPTIONS='nocheck' dpkg-buildpackage -us -uc -b -tc -d && \
-					cd \$${current_dir}; \
-				done && \
-				\
-				mkdir -p packages && \
-				find .. -type f -name '*.deb' -not -name '*-build-deps_*' -exec mv {} packages/ \\; || echo 'No .deb files found'; \
-			fi && \
-			\
-			echo 'Installing packages...' && \
-			if [ \"\$$(ls -A ./packages/*.deb 2>/dev/null)\" ]; then \
-				dpkg -i ./packages/*.deb || true; \
-				apt-get update; \
-				apt-get install -f -y; \
-				echo '✅ Packages installed successfully'; \
-			else \
-				echo '❌ No .deb packages found'; \
-				exit 1; \
-			fi && \
-			\
-			echo 'Running Colcon tests...' && \
-			. /opt/ros/$(ROS_DISTRO)/setup.sh && \
-			mkdir -p test_ws/src && \
-			cd test_ws && \
-			cp -r ../package ./src/ && \
-			cp -r ../PicknPlace ./src/ && \
-			cp -r ../RVC ./src/ && \
-			colcon build --executor sequential --event-handlers console_direct+ && \
-			colcon test --return-code-on-test-failure --executor sequential --event-handlers console_direct+ && \
-			colcon test-result --verbose"
+		$(CONTAINER_IMAGE) \
+		bash -c "source /opt/ros/$(ROS_DISTRO)/setup.bash && make debian-build-deps ROS_DISTRO=$(ROS_DISTRO)"
+
+container-package:
+	@# Help: Build Debian package inside ROS container on host
+	docker run --rm -t --platform linux/amd64 \
+		-v $(ROOT_DIR):/workspace \
+		-w /workspace \
+		-e ROS_DISTRO=$(ROS_DISTRO) \
+		-e PACKAGE_VERSION_SUFFIX=$(PACKAGE_VERSION_SUFFIX) \
+		-e DEBIAN_FRONTEND=noninteractive \
+		$(CONTAINER_IMAGE) \
+		bash -c "apt-get update -qq && apt-get install -y --no-install-recommends cmake ninja-build build-essential devscripts equivs dpkg-dev python3-colcon-common-extensions && \
+			source /opt/ros/$(ROS_DISTRO)/setup.bash && \
+			make install-debian-build-deps ROS_DISTRO=$(ROS_DISTRO) && \
+			make package ROS_DISTRO=$(ROS_DISTRO) PACKAGE_VERSION_SUFFIX=$(PACKAGE_VERSION_SUFFIX)"
+
+container-test:
+	@# Help: Build & test with Colcon inside ROS container on host
+	docker run --rm -t --platform linux/amd64 \
+		-v $(ROOT_DIR):/workspace \
+		-w /workspace \
+		-e ROS_DISTRO=$(ROS_DISTRO) \
+		-e DEBIAN_FRONTEND=noninteractive \
+		$(CONTAINER_IMAGE) \
+		bash -c "apt-get update -qq && apt-get install -y --no-install-recommends cmake ninja-build build-essential devscripts equivs dpkg-dev python3-colcon-common-extensions && \
+			source /opt/ros/$(ROS_DISTRO)/setup.bash && \
+			make install-debian-build-deps ROS_DISTRO=$(ROS_DISTRO) && \
+			make test ROS_DISTRO=$(ROS_DISTRO)"
 lint:
 	@# Help: Run all sub-linters using super-linter (using linters defined for this repo only)
 	VALIDATE_GITHUB_ACTIONS=true \
@@ -230,19 +208,12 @@ source-package:
 	@# Help: Create source package tarball
 	git archive --format=zip -o simulations-$(VERSION).zip HEAD \
 		.gitattributes .gitignore Makefile README.md REUSE.toml \
-		.github/linters docs LICENSES package PicknPlace scripts
+		.github/linters .github/scripts docs LICENSES cmake src robotics-project.json scripts
 
 clean:
-	@# Help: Clean up generated Debian packages and artifacts
-	rm -rf output packages test_ws
-	find . -type f \( -name "*.deb" -o -name "*.build" -o -name "*.changes" -o -name "*.dsc" -o -name "*.tar.gz" -o -name "*.buildinfo" \) -delete
-	@packages="$(PACKAGES)"; \
-	for pkg in $$packages; do \
-		if [ -d "$$pkg/debian" ]; then \
-			echo "Removing $$pkg/debian"; \
-			rm -rf "$$pkg/debian"; \
-		fi; \
-	done
+	@# Help: Remove local build, install, log, test, and package artifacts
+	rm -rf $(ROOT_DIR)/build $(ROOT_DIR)/install $(ROOT_DIR)/log $(ROOT_DIR)/testout *.deb *.buildinfo *.changes 2>/dev/null || \
+	docker run --rm -v $(ROOT_DIR):/workspace amd64/ros:$(ROS_DISTRO)-ros-base rm -rf /workspace/build /workspace/install /workspace/log /workspace/testout
 
 help:
 	@printf "%-20s %s\n" "Target" "Description"

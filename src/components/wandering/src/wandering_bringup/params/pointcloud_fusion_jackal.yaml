@@ -1,0 +1,20 @@
+# Copyright (C) 2026 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+#
+# Fusion-node parameters for the Clearpath Jackal (Intel RealSense on camera_0).
+# The RealSense driver must be launched with pointcloud.enable:=true so that the
+# depth point cloud topic below is published.
+---
+adbscan_pointcloud_fusion:
+  ros__parameters:
+    target_frame: base_link
+    scan_topic: scan
+    cloud_topic: /sensors/camera_0/points
+    output_topic: adbscan/points
+    scan_range_cutoff: -1.0
+    use_voxel_filter: true
+    voxel_leaf_size: 0.03
+    sync_queue_size: 20
+    transform_timeout: 0.15
+    fuse_scan: true
+    fuse_cloud: true

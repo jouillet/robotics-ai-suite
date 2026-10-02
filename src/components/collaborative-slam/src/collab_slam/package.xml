@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+Copyright (C) 2026 Intel Corporation
+SPDX-License-Identifier: Apache-2.0
+-->
+<package format="3">
+  <name>collab_slam</name>
+  <version>2.3.2</version>
+  <description>Top-level metapackage for Intel Collaborative SLAM</description>
+  <maintainer email="eci-maintainer@intel.com">ECI Maintainer</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>univloc_msgs</exec_depend>
+  <exec_depend>univloc_slam</exec_depend>
+  <exec_depend>univloc_tracker</exec_depend>
+  <exec_depend>univloc_server</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

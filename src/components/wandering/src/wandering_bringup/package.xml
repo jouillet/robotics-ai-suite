@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+Copyright (C) 2026 Intel Corporation
+SPDX-License-Identifier: Apache-2.0
+-->
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>wandering_bringup</name>
+  <version>0.2.0</version>
+  <description>
+    Bringup (launch files, parameters and RViz config) for the ADBSCAN + Nav2
+    reference pipeline: fused 2D LiDAR + RealSense obstacle detection feeding a
+    custom Nav2 costmap layer. Supports a Gazebo simulation target and the
+    Clearpath Jackal robot.
+  </description>
+  <maintainer email="eci-maintainer@intel.com">ECI Maintainer</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>adbscan_sensor_fusion</exec_depend>
+  <exec_depend>nav2_adbscan_layer</exec_depend>
+  <exec_depend>adbscan_ros2</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>nav2_rviz_plugins</exec_depend>
+  <exec_depend>nav2_dynamic_msgs</exec_depend>
+  <exec_depend>rqt_image_view</exec_depend>
+  <exec_depend>depth_image_proc</exec_depend>
+  <exec_depend>depthimage_to_laserscan</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>rmw_cyclonedds_cpp</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>gz_tools_vendor</exec_depend>
+  <exec_depend>rtabmap_ros</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>turtlebot3_gazebo</exec_depend>
+  <exec_depend>wandering_app</exec_depend>
+
+  <test_depend>ament_cmake_pytest</test_depend>
+  <test_depend>launch_testing_ament_cmake</test_depend>
+  <test_depend>launch</test_depend>
+  <test_depend>launch_ros</test_depend>
+  <test_depend>rclpy</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

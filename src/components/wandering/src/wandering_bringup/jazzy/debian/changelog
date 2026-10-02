@@ -1,0 +1,5 @@
+ros-jazzy-wandering-bringup (0.2.0-1) UNRELEASED; urgency=low
+
+  * Consolidate Gazebo and Jackal bringup under Wandering.
+
+ -- ECI Maintainer <eci-maintainer@intel.com>  Thu, 13 Aug 2026 00:00:00 +0000

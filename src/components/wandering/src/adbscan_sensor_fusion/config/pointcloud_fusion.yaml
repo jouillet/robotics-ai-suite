@@ -1,0 +1,46 @@
+# Copyright (C) 2026 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+---
+adbscan_pointcloud_fusion:
+  ros__parameters:
+    # Common robot frame both sensors are transformed into.
+    target_frame: base_link
+    # 2D LiDAR scan input (from a real LiDAR, or depthimage_to_laserscan).
+    scan_topic: scan
+    # Depth-camera organized/unorganized point cloud input.
+    cloud_topic: /camera/depth/color/points
+    # Fused output consumed by the ADBSCAN node (Lidar_type: 3D).
+    output_topic: adbscan/points
+    # Discard scan returns beyond this range (m). -1 keeps the scan's range_max.
+    scan_range_cutoff: -1.0
+    # Keep points within this XY area in target_frame. Infinite defaults leave
+    # all points unchanged; set bounds to discard distant 3D-LiDAR structure.
+    min_x: -.inf
+    max_x: .inf
+    min_y: -.inf
+    max_y: .inf
+    # Keep points within this height range in target_frame. Infinite defaults
+    # leave all points unchanged; set min_z to remove floor returns from 3D LiDAR.
+    min_z: -.inf
+    max_z: .inf
+    # Radial crop in target_frame. This preserves the same distance in every
+    # direction, unlike an axis-aligned XY crop.
+    min_range: 0.0
+    max_range: .inf
+    # Fit and remove a near-horizontal ground plane before ADBSCAN. Disabled by
+    # default so the existing RealSense pipeline is unchanged.
+    remove_ground: false
+    ground_distance_threshold: 0.08
+    ground_max_tilt_degrees: 12.0
+    # Voxel downsample keeps ADBSCAN runtime bounded; set 0 to disable.
+    use_voxel_filter: true
+    voxel_leaf_size: 0.03
+    # ApproximateTime synchronizer queue depth.
+    sync_queue_size: 10
+    # Maximum timestamp skew (s) permitted when pairing scan and cloud inputs.
+    sync_max_interval: 0.1
+    # TF lookup timeout (s) when transforming the camera cloud.
+    transform_timeout: 0.1
+    # Toggle each source independently (both true = full fusion).
+    fuse_scan: true
+    fuse_cloud: true

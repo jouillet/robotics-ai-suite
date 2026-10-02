@@ -1,0 +1,36 @@
+# Copyright (C) 2026 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+#
+# ADBSCAN input parameters for a Clearpath Jackal with a Velodyne Puck.
+# Override cloud_topic through wandering_jackal.launch.py with the PointCloud2
+# topic exposed by the Clearpath robot service. The Velodyne frame must have a
+# valid TF transform to base_link on the robot's namespaced TF topics.
+---
+adbscan_pointcloud_fusion:
+  ros__parameters:
+    target_frame: base_link
+    cloud_topic: /velodyne_points
+    output_topic: adbscan/points
+    scan_range_cutoff: -1.0
+    # Crop Puck returns to a circular local area around the robot. This gives
+    # every direction the same range budget before ADBSCAN clustering.
+    min_range: 0.40
+    max_range: 3.00
+    # lidar3d_0_laser is 0.582 m above base_link. Floor points transform near
+    # z = 0. Keep enough of the lower band for plane fitting, then remove it.
+    min_z: -0.35
+    max_z: 1.50
+    remove_ground: true
+    ground_distance_threshold: 0.08
+    ground_max_tilt_degrees: 12.0
+    # A Puck is substantially denser than the RealSense cloud. Start with a
+    # 5 cm voxel grid and tune from recorded scenes if needed.
+    use_voxel_filter: true
+    voxel_leaf_size: 0.05
+    sync_queue_size: 30
+    transform_timeout: 0.15
+    # Keep the RealSense-derived scan for SLAM, Nav2, and collision monitoring,
+    # but do not append it here: its planar returns can bridge separate Puck
+    # objects and turn the near-field ROI into one oversized ADBSCAN cluster.
+    fuse_scan: false
+    fuse_cloud: true

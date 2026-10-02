@@ -1,0 +1,35 @@
+{
+  "format_version": 1,
+  "ci": {
+    "manifest_namespace": "wandering",
+    "changelog_components": [
+      "adbscan_sensor_fusion",
+      "nav2_adbscan_layer",
+      "wandering_app",
+      "wandering_bringup",
+      "wandering_metapackage"
+    ],
+    "package_components": [
+      {
+        "path": "adbscan_sensor_fusion",
+        "ros_package": "adbscan_sensor_fusion"
+      },
+      {
+        "path": "nav2_adbscan_layer",
+        "ros_package": "nav2_adbscan_layer"
+      },
+      {
+        "path": "wandering_app",
+        "ros_package": "wandering_app"
+      },
+      {
+        "path": "wandering_bringup",
+        "ros_package": "wandering_bringup"
+      },
+      {
+        "path": "wandering_metapackage",
+        "ros_package": "wandering"
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+Copyright (C) 2026 Intel Corporation
+SPDX-License-Identifier: Apache-2.0
+-->
+<package format="3">
+  <name>cslam_tutorial_all</name>
+  <version>2.3.2</version>
+  <description>Intel Collaborative SLAM all tutorials metapackage</description>
+  <maintainer email="eci-maintainer@intel.com">ECI Maintainer</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>cslam_tutorial_2d_lidar</exec_depend>
+  <exec_depend>cslam_tutorial_fastmapping</exec_depend>
+  <exec_depend>cslam_tutorial_multi_camera</exec_depend>
+  <exec_depend>cslam_tutorial_region_remap</exec_depend>
+  <exec_depend>cslam_tutorial_two_robot</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

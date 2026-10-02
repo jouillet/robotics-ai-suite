@@ -4,109 +4,178 @@
 
 SHELL := bash -eu -o pipefail
 
-ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-
 COMMIT := $(shell git rev-parse --short HEAD)
 DATE := $(shell git log -1 --format=%cd --date=format:"%Y%m%d")
 VERSION := $(COMMIT)-$(DATE)
 
+ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+
+# Absolute path to the git repository root (needed so super-linter sees .git even when invoked from this component)
+REPO_ROOT:=$(shell git rev-parse --show-toplevel 2>/dev/null || echo $(ROOT_DIR))
+
 ROS_DISTRO ?= humble
+
+# Map ROS_DISTRO to Ubuntu codename
 ifeq ($(ROS_DISTRO),humble)
 	UBUNTU_CODENAME := jammy
 else
 	UBUNTU_CODENAME := noble
 endif
 
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	MAKE_JOBS ?= $(shell sysctl -n hw.ncpu)
+else
+	MAKE_JOBS ?= $(shell nproc)
+endif
+
 .DEFAULT_GOAL := help
-.PHONY: build license-check help lint lint-all lint-clang lint-python lint-yaml lint-githubactions lint-bash lint-markdown lint-json test source-package clean
+.PHONY: build clean help license-check lint lint-all lint-clang lint-python lint-yaml lint-githubactions lint-bash lint-markdown lint-json package test test-e2e test-results source-package debian-build-deps install-debian-build-deps container-package container-test container-debian-build-deps
 
-build:
-	@# Help: Build debian package
-	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
-		-e DEBIAN_FRONTEND=noninteractive \
-		-e ROS_DISTRO=$(ROS_DISTRO) \
-		--pull always \
-		-w /src \
-		amd64/ros:${ROS_DISTRO}-ros-base \
-		bash -c "apt -qq update && apt -q install -y equivs devscripts && cd pointcloud_groundfloor_segmentation && \
-			echo \"Setting up debian control files for ${ROS_DISTRO}\" && \
-			if [ ! -d ${ROS_DISTRO}/debian ]; then \
-				echo \"❌ ERROR: ${ROS_DISTRO}/debian does not exist.\" && \
-				exit 1;\
-			fi  && \
-			rm -rf debian && \
-			cp -r ${ROS_DISTRO}/debian/ ./debian && \
-        		mk-build-deps -i --host-arch amd64 --build-arch amd64 \
-				-t \"apt-get -y -q -o Debug::pkgProblemResolver=yes --no-install-recommends --allow-downgrades\" debian/control && \
-			dpkg-buildpackage -us -uc"
-
-test:
-	@# Help: Run tests
-	docker run --rm -t --platform linux/amd64 \
-		-v $(ROOT_DIR):/src \
-		-e DEBIAN_FRONTEND=noninteractive \
-		-e ROS_DISTRO=$(ROS_DISTRO) \
-		-w /src \
-		amd64/ros:${ROS_DISTRO}-ros-base \
-		bash -c "apt -qq update && apt install -y equivs devscripts psmisc && \
-		cd pointcloud_groundfloor_segmentation && \
-		mk-build-deps -i --host-arch amd64 --build-arch amd64 \
-			-t \"apt-get -y -q -o Debug::pkgProblemResolver=yes --no-install-recommends --allow-downgrades\" ${ROS_DISTRO}/debian/control && \
-		source /opt/ros/${ROS_DISTRO}/setup.bash && \
-		colcon build --cmake-args -DBUILD_TEST=ON -DCMAKE_BUILD_TYPE=Release && \
-		source install/setup.bash && \
-		cd build/pointcloud_groundfloor_segmentation/test && \
-		./pointcloud-groundfloor-segmentation-tests >> test_log_seg_${ROS_DISTRO}.log && \
-		cd ../../../ && \
-		cd build/pointcloud_groundfloor_segmentation/test && \
-		chmod +x test_*.sh && \
-		./test_realsense.sh  >> test_log_realsense_${ROS_DISTRO}.log && \
-		./test_lidar.sh  >> test_log_lidar_${ROS_DISTRO}.log"
-
-source-package:
-	@# Help: Create source package tarball
-	git archive --format=zip -o groundfloor-$(VERSION).zip HEAD \
-		.gitattributes .gitignore .clang-format Makefile README.md REUSE.toml \
-		.github/linters .vscode docker docs LICENSES \
-		pointcloud_groundfloor_segmentation/cmake \
-		pointcloud_groundfloor_segmentation/include \
-		pointcloud_groundfloor_segmentation/launch \
-		pointcloud_groundfloor_segmentation/params \
-		pointcloud_groundfloor_segmentation/rviz \
-		pointcloud_groundfloor_segmentation/src \
-		pointcloud_groundfloor_segmentation/CMakeLists.txt \
-		pointcloud_groundfloor_segmentation/package.xml
+PROJECT_DEFINITION ?= $(ROOT_DIR)/robotics-project.json
+PACKAGE_VERSION_SUFFIX ?=
+TEST_SUMMARY ?= $(ROOT_DIR)/testout/test-summary.md
+PACKAGE_COMPONENTS := $(shell PROJECT_DEFINITION="$(PROJECT_DEFINITION)" ROOT_DIR="$(ROOT_DIR)" python3 -c 'import json, os, pathlib, re; project = json.loads(pathlib.Path(os.environ["PROJECT_DEFINITION"]).read_text(encoding="utf-8")); components = project.get("ci", {}).get("package_components", []); root = pathlib.Path(os.environ["ROOT_DIR"]) / "src"; valid = project.get("format_version") == 1 and isinstance(components, list) and components and all(isinstance(component, dict) and isinstance(component.get("path"), str) and re.fullmatch(r"[a-z0-9][a-z0-9_-]*", component["path"]) and (root / component["path"]).is_dir() and ("ros_package" not in component or isinstance(component["ros_package"], str) and re.fullmatch(r"[a-z0-9][a-z0-9_]*", component["ros_package"])) for component in components); (_ for _ in ()).throw(SystemExit("Invalid package components in project definition")) if not valid else None; print(",".join(component["path"] for component in components))')
+ROS_PACKAGES := $(shell PROJECT_DEFINITION="$(PROJECT_DEFINITION)" python3 -c 'import json, os, pathlib, re; project = json.loads(pathlib.Path(os.environ["PROJECT_DEFINITION"]).read_text(encoding="utf-8")); components = project.get("ci", {}).get("package_components", []); ros_components = [component for component in components if "ros_package" in component]; valid = project.get("format_version") == 1 and isinstance(components, list) and ros_components and all(isinstance(component, dict) and isinstance(component.get("ros_package"), str) and re.fullmatch(r"[a-z0-9][a-z0-9_]*", component["ros_package"]) for component in ros_components); (_ for _ in ()).throw(SystemExit("Invalid ROS packages in project definition")) if not valid else None; print(" ".join(component["ros_package"] for component in ros_components))')
+PACKAGE_OUTPUT_DIR = $(ROOT_DIR)/build/debian-packages/packages
+BUILD_DEPENDS_OUTPUT_DIR = $(ROOT_DIR)/build/debian-build-deps
+MISSING_BUILD_DEPENDENCIES_FILE = $(BUILD_DEPENDS_OUTPUT_DIR)/missing-dependencies.txt
+CONTAINER_IMAGE ?= amd64/ros:$(ROS_DISTRO)-ros-base
 
 license-check:
 	@# Help: Perform a REUSE license check using docker container https://hub.docker.com/r/fsfe/reuse
 	docker run --rm --volume ${ROOT_DIR}:/data fsfe/reuse:5.0.2 lint
 
-help:
-	@printf "%-20s %s\n" "Target" "Description"
-	@printf "%-20s %s\n" "------" "-----------"
-	@grep -E '^[a-zA-Z0-9_%-]+:|^[[:space:]]+@# Help:' Makefile | \
-	awk '\
-		/^[a-zA-Z0-9_%-]+:/ { \
-			target = $$1; \
-			sub(":", "", target); \
-		} \
-		/^[[:space:]]+@# Help:/ { \
-			if (target != "") { \
-				help_line = $$0; \
-				sub("^[[:space:]]+@# Help: ", "", help_line); \
-				printf "%-20s %s\n", target, help_line; \
-				target = ""; \
-			} \
-		}' | sort -k1,1
+build:
+	@# Help: Build selected ROS packages with Colcon for local development (native)
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --executor sequential --event-handlers console_direct+
+
+package:
+	@# Help: Build Debian packages natively using CPACK
+	command -v ninja >/dev/null || { echo "Error: Ninja is required. Install ninja-build." >&2; exit 1; }
+	rm -rf $(ROOT_DIR)/build/debian-packages
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	cmake -G Ninja -S $(ROOT_DIR) -B $(ROOT_DIR)/build/debian-packages \
+		-DROS_DISTRO=$(ROS_DISTRO) \
+		-DPOINTCLOUD_PACKAGE_OUTPUT_DIR=$(PACKAGE_OUTPUT_DIR) \
+		-DPOINTCLOUD_PACKAGE_COMPONENTS="$(PACKAGE_COMPONENTS)" \
+		-DPOINTCLOUD_PACKAGE_VERSION_SUFFIX=$(PACKAGE_VERSION_SUFFIX) && \
+	cmake --build $(ROOT_DIR)/build/debian-packages --target package
+
+debian-build-deps:
+	@# Help: Generate Debian Build-Depends control files without configuring components
+	rm -rf $(BUILD_DEPENDS_OUTPUT_DIR) $(ROOT_DIR)/build/debian-build-deps-config
+	cmake -S $(ROOT_DIR) -B $(ROOT_DIR)/build/debian-build-deps-config \
+		-DROS_DISTRO=$(ROS_DISTRO) \
+		-DPOINTCLOUD_PACKAGE_COMPONENTS="$(PACKAGE_COMPONENTS)" \
+		-DPOINTCLOUD_BUILD_DEPENDS_OUTPUT_DIR=$(BUILD_DEPENDS_OUTPUT_DIR) && \
+	cmake --build $(ROOT_DIR)/build/debian-build-deps-config --target debian-build-deps
+
+install-debian-build-deps: debian-build-deps
+	@# Help: Install generated Debian Build-Depends with APT
+	@command -v mk-build-deps >/dev/null && command -v equivs-build >/dev/null && command -v dpkg-checkbuilddeps >/dev/null || { echo "Error: mk-build-deps, equivs-build, and dpkg-checkbuilddeps are required. Install devscripts, equivs, and dpkg-dev." >&2; exit 1; }
+	@apt-get update; \
+	install_status=0; \
+	for control_file in $(BUILD_DEPENDS_OUTPUT_DIR)/*/debian/control; do \
+		mk-build-deps --install --remove \
+			--tool 'apt-get --no-install-recommends --no-remove --yes' \
+			"$$control_file" || install_status=1; \
+	done; \
+	: > $(MISSING_BUILD_DEPENDENCIES_FILE); \
+	for control_file in $(BUILD_DEPENDS_OUTPUT_DIR)/*/debian/control; do \
+		if missing_dependencies="$$(dpkg-checkbuilddeps "$$control_file" 2>&1)"; then \
+			continue; \
+		fi; \
+		printf '%s\n%s\n\n' "$$control_file" "$$missing_dependencies" >> $(MISSING_BUILD_DEPENDENCIES_FILE); \
+	done; \
+	exit "$$install_status"
+
+test:
+	@# Help: Build & test with Colcon (native)
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --cmake-clean-cache \
+		--cmake-args -DBUILD_TEST=ON --executor sequential --event-handlers console_direct+ && \
+	set +u && source $(ROOT_DIR)/install/setup.bash && set -u && \
+	for package in $(ROS_PACKAGES); do \
+		results_dir="$(ROOT_DIR)/build/$$package/test_results/$$package"; \
+		mkdir -p "$$results_dir"; \
+		test_dir="$(ROOT_DIR)/build/$$package/test"; \
+		executable="$$test_dir/$$(echo $$package | tr '_' '-')-tests"; \
+		( cd "$$test_dir" && "$$executable" --gtest_output="xml:$$results_dir/$$package-tests.xml"; ) \
+	done
+
+test-results:
+	@# Help: Summarize test results
+	@mkdir -p "$(dir $(TEST_SUMMARY))"
+	python3 .github/scripts/summarize_test_results.py \
+		--results-glob 'build/*/test_results/**/*.xml' \
+		--ros-distro $(ROS_DISTRO) \
+		--summary-file "$(TEST_SUMMARY)"
+
+test-e2e:
+	@# Help: Run E2E functional tests (realsense + lidar playback)
+	@command -v pstree >/dev/null || { \
+		if command -v apt-get >/dev/null && [ "$$(id -u)" -eq 0 ]; then \
+			echo "Installing E2E test dependencies (psmisc)..."; \
+			apt-get update -qq && apt-get install -y --no-install-recommends psmisc; \
+		fi; \
+	}
+	set +u && source /opt/ros/$(ROS_DISTRO)/setup.bash && set -u && \
+	if ! ros2 pkg prefix pointcloud_groundfloor_segmentation >/dev/null 2>&1; then \
+		echo "pointcloud_groundfloor_segmentation not found on ROS path; building with Colcon..."; \
+		colcon build --base-paths $(ROOT_DIR)/src --packages-select $(ROS_PACKAGES) --symlink-install --executor sequential --event-handlers console_direct+ ; \
+	fi && \
+	if [ -f $(ROOT_DIR)/install/setup.bash ]; then \
+		set +u && source $(ROOT_DIR)/install/setup.bash && set -u; \
+	fi && \
+	cd $(ROOT_DIR)/src/pointcloud_groundfloor_segmentation/test && \
+	chmod +x test_realsense.sh test_lidar.sh && \
+	./test_realsense.sh && \
+	./test_lidar.sh
+
+container-debian-build-deps:
+	@# Help: Generate Debian Build-Depends in container
+	docker run --rm -t --platform linux/amd64 \
+		-v $(ROOT_DIR):/workspace \
+		-w /workspace \
+		-e ROS_DISTRO=$(ROS_DISTRO) \
+		$(CONTAINER_IMAGE) \
+		bash -c "source /opt/ros/$(ROS_DISTRO)/setup.bash && make debian-build-deps ROS_DISTRO=$(ROS_DISTRO)"
+
+container-package:
+	@# Help: Build Debian package inside ROS container on host
+	docker run --rm -t --platform linux/amd64 \
+		-v $(ROOT_DIR):/workspace \
+		-w /workspace \
+		-e ROS_DISTRO=$(ROS_DISTRO) \
+		-e PACKAGE_VERSION_SUFFIX=$(PACKAGE_VERSION_SUFFIX) \
+		-e DEBIAN_FRONTEND=noninteractive \
+		$(CONTAINER_IMAGE) \
+		bash -c "apt-get update -qq && apt-get install -y --no-install-recommends cmake ninja-build build-essential devscripts equivs dpkg-dev python3-colcon-common-extensions && \
+			source /opt/ros/$(ROS_DISTRO)/setup.bash && \
+			make install-debian-build-deps ROS_DISTRO=$(ROS_DISTRO) && \
+			make package ROS_DISTRO=$(ROS_DISTRO) PACKAGE_VERSION_SUFFIX=$(PACKAGE_VERSION_SUFFIX)"
+
+container-test:
+	@# Help: Build & test with Colcon inside ROS container on host
+	docker run --rm -t --platform linux/amd64 \
+		-v $(ROOT_DIR):/workspace \
+		-w /workspace \
+		-e ROS_DISTRO=$(ROS_DISTRO) \
+		-e DEBIAN_FRONTEND=noninteractive \
+		$(CONTAINER_IMAGE) \
+		bash -c "apt-get update -qq && apt-get install -y --no-install-recommends cmake ninja-build build-essential devscripts equivs dpkg-dev libgtest-dev python3-colcon-common-extensions && \
+			source /opt/ros/$(ROS_DISTRO)/setup.bash && \
+			make install-debian-build-deps ROS_DISTRO=$(ROS_DISTRO) && \
+			make test ROS_DISTRO=$(ROS_DISTRO)"
 
 lint:
 	@# Help: Run all sub-linters using super-linter (using linters defined for this repo only)
 	VALIDATE_GITHUB_ACTIONS=true \
 	VALIDATE_YAML=true \
 	VALIDATE_JSON=true \
-	VALIDATE_PYTHON_PYLINT=true \
-	VALIDATE_PYTHON_FLAKE8=true \
+	VALIDATE_PYTHON_RUFF=true \
 	VALIDATE_BASH=true \
 	VALIDATE_MARKDOWN=true \
 	VALIDATE_CLANG_FORMAT=true \
@@ -121,8 +190,7 @@ lint-all:
 		$(if $(VALIDATE_GITHUB_ACTIONS),-e VALIDATE_GITHUB_ACTIONS=$(VALIDATE_GITHUB_ACTIONS)) \
 		$(if $(VALIDATE_YAML),-e VALIDATE_YAML=$(VALIDATE_YAML)) \
 		$(if $(VALIDATE_JSON),-e VALIDATE_JSON=$(VALIDATE_JSON)) \
-		$(if $(VALIDATE_PYTHON_PYLINT),-e VALIDATE_PYTHON_PYLINT=$(VALIDATE_PYTHON_PYLINT)) \
-		$(if $(VALIDATE_PYTHON_FLAKE8),-e VALIDATE_PYTHON_FLAKE8=$(VALIDATE_PYTHON_FLAKE8)) \
+		$(if $(VALIDATE_PYTHON_RUFF),-e VALIDATE_PYTHON_RUFF=$(VALIDATE_PYTHON_RUFF)) \
 		$(if $(VALIDATE_BASH),-e VALIDATE_BASH=$(VALIDATE_BASH)) \
 		$(if $(VALIDATE_MARKDOWN),-e VALIDATE_MARKDOWN=$(VALIDATE_MARKDOWN)) \
 		$(if $(VALIDATE_CLANG_FORMAT),-e VALIDATE_CLANG_FORMAT=$(VALIDATE_CLANG_FORMAT)) \
@@ -135,7 +203,7 @@ lint-clang:
 
 lint-python:
 	@# Help: Run Python linter using super-linter
-	VALIDATE_PYTHON_PYLINT=true VALIDATE_PYTHON_FLAKE8=true make lint-all
+	VALIDATE_PYTHON_RUFF=true make lint-all
 
 lint-yaml:
 	@# Help: Run YAML linter using super-linter
@@ -158,6 +226,30 @@ lint-json:
 	VALIDATE_JSON=true make lint-all
 
 clean:
-	@# Help: Clean build artifacts
-	rm -rf build* install* log* debian/ ros-* *.deb
-	cd pointcloud_groundfloor_segmentation && rm -rf build* debian/ ros-* *.deb
+	@# Help: Remove local build, install, log, test, and package artifacts
+	rm -rf $(ROOT_DIR)/build $(ROOT_DIR)/install $(ROOT_DIR)/log $(ROOT_DIR)/testout *.deb *.buildinfo *.changes 2>/dev/null || \
+	docker run --rm -v $(ROOT_DIR):/workspace amd64/ros:$(ROS_DISTRO)-ros-base rm -rf /workspace/build /workspace/install /workspace/log /workspace/testout
+
+source-package:
+	@# Help: Create source package tarball
+	git archive --format=zip -o pointcloud-groundfloor-segmentation-$(VERSION).zip HEAD \
+		.gitattributes .gitignore .clang-format CMakeLists.txt Makefile README.md REUSE.toml robotics-project.json \
+		.github/linters .github/scripts cmake docker docs LICENSES src
+
+help:
+	@printf "%-20s %s\n" "Target" "Description"
+	@printf "%-20s %s\n" "------" "-----------"
+	@grep -E '^[a-zA-Z0-9_%-]+:|^[[:space:]]+@# Help:' Makefile | \
+	awk '\
+		/^[a-zA-Z0-9_%-]+:/ { \
+			target = $$1; \
+			sub(":", "", target); \
+		} \
+		/^[[:space:]]+@# Help:/ { \
+			if (target != "") { \
+				help_line = $$0; \
+				sub("^[[:space:]]+@# Help: ", "", help_line); \
+				printf "%-20s %s\n", target, help_line; \
+				target = ""; \
+			} \
+		}' | sort -k1,1

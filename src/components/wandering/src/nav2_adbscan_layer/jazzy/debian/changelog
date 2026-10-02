@@ -1,0 +1,6 @@
+ros-jazzy-nav2-adbscan-layer (0.1.0-1) UNRELEASED; urgency=low
+
+  * Initial package release.
+  * Add ADBScan Nav2 costmap plugin and obstacle markers.
+
+ -- ECI Maintainer <eci-maintainer@intel.com>  Thu, 13 Aug 2026 00:00:00 +0000

@@ -38,7 +38,7 @@ The simulation is composed of the following elements:
 ### Robot Hardware
 
 | Element | Description |
-|---------|-------------|
+| --------- | ------------- |
 | **ARM1 (UR5e)** | Universal Robots® UR5e six-DOF manipulator mounted on a fixed pedestal between the two conveyor belts. Defined via URDF/Xacro inside the `rvc` package. |
 | **Belt 1 — Cube Input** | Conveyor belt on ARM1's +X side. Freshly spawned cubes travel along +Y until they enter the arm's reachable workspace. |
 | **Belt 2 — Cube Output** | Conveyor belt on ARM1's −X side. Placed cubes travel away from the arm; cubes that exit the belt footprint are despawned and recycled. |
@@ -46,7 +46,7 @@ The simulation is composed of the following elements:
 ### Software Stack
 
 | Component | Role |
-|-----------|------|
+| ----------- | ------ |
 | **Gazebo** | Physics and rendering engine. The `rvc.world` SDF file defines the warehouse environment, lighting, and static geometry. |
 | **ROS 2** | Middleware layer providing topics, services, and actions that connect all software components. Supports both **Humble** (Ubuntu 22.04) and **Jazzy** (Ubuntu 24.04). |
 | **MoveIt 2** | Motion planning framework used to compute collision-free trajectories for ARM1. Plans are executed via `FollowJointTrajectory` actions. Includes the Python API. |
@@ -82,15 +82,15 @@ ros2_controllers  ──joint trajectories──►  Gazebo ARM1 joints
 Before installing or building the RVC demo, ensure the following steps
 have been completed on the target system:
 
-- [Prepare the target system](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started.html)
-- [Set up the Intel® Robotics AI Suite APT repositories](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#3-set-up-robotics-ai-suite-oneapi-and-graphics-apt-repositories)
-- [Install OpenVINO™ packages](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#4-install-openvino-packages)
-- [Install Intel® Robotics AI Suite Debian packages](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/platform_foundation/getting_started/step_by_step.html#6-install-robotics-ai-suite-deb-packages)
+- [Prepare the target system](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/)
+- [Set up the Intel® Robotics AI Suite APT repositories](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#3-set-up-robotics-ai-suite-oneapi-and-graphics-apt-repositories)
+- [Install OpenVINO™ packages](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#4-install-openvino-packages)
+- [Install Intel® Robotics AI Suite Debian packages](https://developer.robotics.intel.com/development-stack/platform_foundation/getting_started/step_by_step/#6-install-robotics-ai-suite-deb-packages)
 
 ### Supported Platforms
 
 | ROS 2 Distro | Ubuntu Release | Gazebo Version |
-|--------------|---------------|----------------|
+| -------------- | --------------- | ---------------- |
 | Humble | 22.04 (Jammy) | Fortress (7.x) |
 | Jazzy | 24.04 (Noble) | Harmonic (8.x) |
 
@@ -202,7 +202,7 @@ ros2 launch rvc rvc.launch.py
 The `rvc.launch.py` file exposes the following arguments:
 
 | Argument | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `launch_stack` | `true` | Enable or disable the robot stack (MoveIt 2, controllers, arm controller node). Set to `false` to bring up only Gazebo for world inspection. |
 | `use_sim_time` | `true` | Use Gazebo simulation time for all ROS 2 nodes. Will remain `true` when running in simulation. |
 

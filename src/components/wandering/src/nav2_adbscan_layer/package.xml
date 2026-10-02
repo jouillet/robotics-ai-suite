@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+Copyright (C) 2026 Intel Corporation
+SPDX-License-Identifier: Apache-2.0
+-->
+<package format="3">
+  <name>nav2_adbscan_layer</name>
+  <version>0.1.0</version>
+  <description>
+    Nav2 costmap_2d plugin layer that consumes ADBSCAN detections
+    (nav2_dynamic_msgs/ObstacleArray) and marks them into the costmap so the
+    Nav2 planners and controllers avoid small-projection obstacles detected by
+    the fused 2D LiDAR + RealSense pipeline.
+  </description>
+  <maintainer email="eci-maintainer@intel.com">ECI Maintainer</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
+  <depend>nav2_costmap_2d</depend>
+  <depend>pluginlib</depend>
+  <depend>nav2_dynamic_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+
+  <test_depend>ament_cmake_gtest</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+    <nav2_costmap_2d plugin="${prefix}/nav2_adbscan_layer.xml" />
+  </export>
+</package>

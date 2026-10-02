@@ -1,0 +1,13 @@
+ros-jazzy-follow-me-interfaces (2.3-2) UNRELEASED; urgency=low
+
+  * Relocate the ROS 2 interfaces into the unified src workspace.
+  * Add Debian package metadata for the unified build.
+
+ -- ECI Maintainer <eci.maintainer@intel.com>  Wed, 30 Sep 2026 00:00:00 +0000
+
+ros-jazzy-follow-me-interfaces (2.3-1) UNRELEASED; urgency=low
+
+  * Initial release
+
+ -- ECI Maintainer <eci.maintainer@intel.com>  Wed, 18 Sep 2025 00:00:00 +0000
+ 

@@ -1,0 +1,31 @@
+# Copyright (C) 2026 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+#
+# Fusion-node parameters for the Gazebo simulation target (TurtleBot3 Waffle).
+#
+# NOTE (confirmed on ROS 2 Jazzy / Gazebo Sim 8): the stock turtlebot3_waffle
+# model ships ONLY a 2D lidar + a plain RGB camera - it has NO depth camera, so
+# no depth PointCloud2 (and no depth image) is published. This default preset
+# therefore runs scan-only. To exercise depth-aware small-object detection:
+#   1. Add an RGBD/depth camera sensor to the simulated robot and bridge its
+#      points to `cloud_topic`, then set `fuse_cloud: true`; or
+#   2. Provide a depth *image* + camera_info and run a depth_image_proc
+#      point_cloud_xyz node to synthesize `cloud_topic` and set
+#      `fuse_cloud: true`.
+---
+adbscan_pointcloud_fusion:
+  ros__parameters:
+    target_frame: base_link
+    scan_topic: scan
+    # Depth point cloud topic. The default below matches the legacy
+    # Gazebo-Classic waffle; update it to the topic your depth-camera-equipped
+    # sim actually publishes (see NOTE above for the stock-Jazzy situation).
+    cloud_topic: /intel_realsense_r200_depth/depth/color/points
+    output_topic: adbscan/points
+    scan_range_cutoff: -1.0
+    use_voxel_filter: true
+    voxel_leaf_size: 0.03
+    sync_queue_size: 20
+    transform_timeout: 0.1
+    fuse_scan: true
+    fuse_cloud: false

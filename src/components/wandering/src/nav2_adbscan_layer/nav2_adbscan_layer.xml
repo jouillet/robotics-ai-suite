@@ -1,0 +1,14 @@
+<!--
+Copyright (C) 2026 Intel Corporation
+SPDX-License-Identifier: Apache-2.0
+-->
+<library path="nav2_adbscan_layer">
+  <class type="nav2_adbscan_layer::ADBScanLayer" base_class_type="nav2_costmap_2d::Layer">
+    <description>
+      Costmap layer that marks ADBSCAN-detected obstacles
+      (nav2_dynamic_msgs/ObstacleArray) into the costmap. Each obstacle is
+      transformed into the costmap global frame, persisted for a configurable
+      time-to-live, and stamped as a lethal footprint so the planner avoids it.
+    </description>
+  </class>
+</library>
