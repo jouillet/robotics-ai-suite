@@ -1,10 +1,13 @@
+```{eval-rst}
+.. meta::
+   :description: Train and evaluate Action Chunking with Transformers (ACT) imitation learning models using OpenVINO™-optimized source code for tasks in simulation and real robot environments.
+```
+
 # Imitation Learning - ACT
 
-Imitation learning is a machine learning approach where a model is trained to mimic expert behavior by observing and replicating demonstrations, enabling it to perform tasks similarly to the expert. ACT is an action chunking policy with Transformers, an architecture designed for sequence modeling. It is trained as a conditional VAE (CVAE) to capture the variability in human data. It significantly outperforms previous imitation learning algorithms on a range of simulated and real-world fine manipulation tasks.
+This section shows how to set up, train, and evaluate an Action Chunking with Transformers (ACT) imitation learning pipeline, including OpenVINO™-optimized source code for learning robot behaviors from demonstrations in both simulation and real robot environments.
 
-We have built an imitation learning pipeline for ACT that can be used to train and evaluate the ACT model on different tasks in both simulation and real robot environments. In this sample pipeline, we provide source code optimized by OpenVINO™ to accelerate the process.
-
-This tutorial explains how to set up the ACT pipeline.
+Imitation learning is a machine learning approach where a model is trained to mimic expert behavior by observing and replicating demonstrations, enabling the model to perform tasks similarly to the expert. ACT is an action chunking policy based on Transformers, an architecture designed for sequence modeling. ACT is trained using a Conditional Variational Autoencoder (CVAE) to capture variability in human demonstration data. ACT significantly outperforms previous imitation learning algorithms on a range of simulated and real-world fine manipulation tasks.
 
 ## Source Code
 
