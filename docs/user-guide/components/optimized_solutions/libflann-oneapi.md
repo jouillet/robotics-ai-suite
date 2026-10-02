@@ -16,6 +16,7 @@ It provides hardware acceleration across Intel® Core™ Ultra integrated GPUs, 
 
 `libflann_oneapi` is engineered as a standalone acceleration add-on that coexists cleanly with standard upstream CPU FLANN distributions and downstream robotics ecosystems such as the Point Cloud Library (PCL) and ROS 2.
 
+::::{container} flann-diagram
 ```mermaid
 flowchart TD
     subgraph AppLayer [Consuming Robotics AI Suite Application]
@@ -54,6 +55,7 @@ flowchart TD
     Accelerators --> RuntimeLayer
     RuntimeLayer --> HWLayer
 ```
+  ::::
 
 ### Core Design Principles
 

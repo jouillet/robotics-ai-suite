@@ -84,6 +84,14 @@ html[data-theme=dark] pre.mermaid > svg {
   filter: none;
 }
 
+.flann-diagram pre.mermaid {
+  overflow-x: auto;
+}
+
+.flann-diagram pre.mermaid > svg {
+  min-width: 1100px;
+}
+
 /* Fix the top admonition banner (dev version + old version) animating at each reload      */
 .pst-async-banner-revealer {
     transition: none !important;

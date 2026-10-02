@@ -59,6 +59,15 @@ extensions = [
     "myst_parser",
 ]
 
+mermaid_version = "11.2.0"
+mermaid_include_elk = "0.1.4"
+mermaid_init_js = (
+    f'import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@{mermaid_version}/dist/mermaid.esm.min.mjs";'
+    f'import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@{mermaid_include_elk}/dist/mermaid-layout-elk.esm.min.mjs";'
+    "mermaid.registerLayoutLoaders(elkLayouts);"
+    "mermaid.initialize({startOnLoad:false, flowchart:{htmlLabels:false}});"
+)
+
 templates_path = ["_templates"]
 
 # exclude these files from processing
