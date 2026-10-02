@@ -24,7 +24,7 @@ This tutorial covers:
 
 ## Source Code
 
-The source code for this sample can be found here: [VLA-Pi0.5-OpenVINO™](https://github.com/open-edge-platform/edge-ai-suites/tree/main/robotics-ai-suite/pipelines/vla-pi0.5-openvino)
+The source code for this sample can be found here: [VLA-Pi0.5-OpenVINO™](https://github.com/open-edge-platform/robotics-ai-suite/tree/main/src/pipelines/vla-pi0.5-openvino)
 
 ## Environment and Model Setup
 
@@ -94,14 +94,14 @@ The source code for this sample can be found here: [VLA-Pi0.5-OpenVINO™](https
 
 ## Model Conversion and OpenVINO™ Optimization
 
-1. Clone the edge-ai-suites repository and then run the `convert_pytorch_onnx.py` script.
+1. Clone the robotics-ai-suite repository and then run the `convert_pytorch_onnx.py` script.
 
    This will download [the HuggingFace Pi0.5 model](https://huggingface.co/lerobot/pi05_base) and will convert it to ONNX using the `torch.onnx.export` method.
 
    ```bash
    cd ..
-   git clone https://github.com/open-edge-platform/edge-ai-suites.git -b main
-   cd edge-ai-suites/robotics-ai-suite/pipelines/vla-pi0.5-openvino
+   git clone https://github.com/open-edge-platform/robotics-ai-suite.git -b main
+   cd robotics-ai-suite/src/pipelines/vla-pi0.5-openvino
    python convert_pytorch_onnx.py
    ```
 

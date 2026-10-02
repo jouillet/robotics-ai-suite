@@ -21,7 +21,7 @@ const LLMS_SIDEBARS_CONFIG = {
 const config = {
   title: "Robotics AI Suite",
   tagline: "One x86 box that senses, thinks, and moves in real time.",
-  favicon: "img/favicon.ico",
+  favicon: "development-stack/_static/logo.svg",
 
   url: process.env.SITE_URL || "http://localhost:3000",
   baseUrl: process.env.BASE_URL || "/",

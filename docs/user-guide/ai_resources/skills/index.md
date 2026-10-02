@@ -10,8 +10,8 @@ Find the right skills to accelerate your development project, from proof-of-conc
 For the robotics-ai-suite repository, open the repository root in VS Code so the coding agent can discover the local skill definitions in `.github/skills/`.
 
 ```bash
-git clone https://github.com/open-edge-platform/edge-ai-suites.git
-cd edge-ai-suites/robotics-ai-suite
+git clone https://github.com/open-edge-platform/robotics-ai-suite.git
+cd robotics-ai-suite
 code . # if using VS Code
 ```
 
@@ -23,4 +23,4 @@ These robotics-ai-suite skills are intended for the repository's robotics exampl
 
 | Skill | Description | Usage | Link |
 |-|-|-|-|
-| `wandering` | Review-first workflow for changes in components/wandering and tutorial packages. Use when editing Wandering launch files, docs, tests, Nav2 wiring, RTAB-Map, RealSense, or robot bring-up paths. | Deployment | [link](https://github.com/open-edge-platform/edge-ai-suites/blob/main/robotics-ai-suite/components/wandering/README.md#agent-workflow) |
+| `wandering` | Review-first workflow for changes in components/wandering and tutorial packages. Use when editing Wandering launch files, docs, tests, Nav2 wiring, RTAB-Map, RealSense, or robot bring-up paths. | Deployment | [link](https://github.com/open-edge-platform/robotics-ai-suite/blob/main/.github/skills/wandering-sample/SKILL.md) |

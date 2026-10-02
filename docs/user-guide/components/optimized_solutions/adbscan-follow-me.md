@@ -1,21 +1,100 @@
+<!--
+Copyright (C) 2026 Intel Corporation
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # ADBSCAN Follow-me
 
-ADBSCAN (Adaptive DBSCAN) is an Intel algorithm for adaptive object detection
-and localization from 2D LiDAR, 3D LiDAR, and RealSense depth-camera
-point clouds. It automatically determines clustering parameters from sensor
-range and point density, reducing manual tuning for perception workloads.
+ADBSCAN (Adaptive Density-Based Spatial Clustering of Applications with Noise) is an Intel® patented unsupervised clustering algorithm designed for robust spatial object detection and localization from 2D LiDAR, 3D LiDAR, and Intel® RealSense™ depth camera point clouds.
 
-The Follow-me application uses ADBSCAN to locate a target person and publish
-robot velocity commands. This guide combines the supported optimization workflow
-with one Gazebo simulation and one Clearpath Jackal deployment scenario.
+Unlike traditional DBSCAN—which relies on static neighborhood search radii ($\epsilon$) and fixed density thresholds ($MinPts$)—ADBSCAN dynamically scales these parameters based on range from the sensor and the field-of-view point distribution. This compensates for optical beam divergence and spatial point cloud sparsity at extended distances, yielding a 20–30% increase in effective object detection range.
 
-## Source Code
+The Follow-Me reference application builds on ADBSCAN to continuously track a target human or guide vehicle, evaluate multi-modal interaction cues (hand gestures and voice commands via Intel® OpwebenVINO™), and command mobile base velocities.
 
-[ADBScan source code](https://github.com/open-edge-platform/edge-ai-suites/tree/main/robotics-ai-suite/components/adbscan)
+## Architecture & Algorithm
 
-## Intel-Optimized ADBSCAN
+### ADBSCAN Algorithmic Foundation
 
-In this version of ADBSCAN, the algorithm has been optimized for Intel by
+In LiDAR and structured-light depth sensing, point density decreases non-linearly with distance $r$. Standard spatial clustering with a fixed radius $\epsilon$ causes over-segmentation at close range and cluster fragmentation or omission at distant ranges.
+
+ADBSCAN formulates adaptive clustering parameters:
+
+1. **Dynamic Radius $\epsilon(r)$**: Expands monotonically with range to encapsulate sparsely distributed returns from distant objects.
+2. **Dynamic Density $MinPts(r)$**: Scaled using calibration coefficients (`base`, `coeff_1`, `coeff_2`, `scale_factor`) to match expected return point distributions at given range slices.
+3. **Hardware Acceleration**: The neighbor search phase can optionally be offloaded to integrated or discrete GPUs via Intel® oneAPI™ SYCL kernels (`oneapi_kdtree` or `oneapi_octree`), delivering substantial latency reductions on dense point clouds.
+
+### System Architecture
+
+The following diagram illustrates the data flow from physical or simulated sensors through perception, interaction, and mobile base control:
+
+```mermaid
+graph TD
+    subgraph Sensors["Sensors & Modalities"]
+        Lidar["2D / 3D LiDAR<br/>(LaserScan / PointCloud2)"]
+        Depth["Intel RealSense Depth Camera<br/>(PointCloud2)"]
+        RGB["RGB Camera Stream"]
+        Mic["Microphone Audio"]
+    end
+
+    subgraph Perception["Perception Layer"]
+        ADBSCAN["adbscan_ros2 Node<br/>• Range-Adaptive Radius ε(r)<br/>• Density Scaling MinPts(r)<br/>• Optional oneAPI GPU Offload"]
+    end
+
+    subgraph Interaction["Interaction Layer (OpenVINO)"]
+        Gesture["gesture_recognition_pkg<br/>(MediaPipe / OpenVINO)"]
+        Speech["speech_recognition_pkg<br/>(OpenVINO Speech ASR)"]
+        TTS["text_to_speech_pkg<br/>(Synthesized Audio Prompts)"]
+    end
+
+    subgraph Interconnect["ROS 2 Topics & Interfaces"]
+        Obs["/obstacle_array<br/>(nav2_dynamic_msgs/ObstacleArray)"]
+        FMI["follow_me_interfaces<br/>(Gesture / Audio Signals)"]
+    end
+
+    subgraph Application["Application Layer"]
+        FollowMe["adbscan_ros2_follow_me Node<br/>• Target Cluster Tracking<br/>• Multi-Modal State Machine<br/>• Twist Velocity Generator"]
+    end
+
+    subgraph Execution["Actuation & Simulation Targets"]
+        CmdVel["/cmd_vel<br/>(geometry_msgs/Twist)"]
+        Gazebo["Gazebo Simulation<br/>(TurtleBot3 Waffle + Guide Robot)"]
+        Robot["Physical AMR<br/>(Differential Drive Base)"]
+    end
+
+    Lidar --> ADBSCAN
+    Depth --> ADBSCAN
+    RGB --> Gesture
+    Mic --> Speech
+
+    ADBSCAN --> Obs
+    Obs --> FollowMe
+
+    Gesture --> FMI
+    Speech --> FMI
+    FMI --> FollowMe
+
+    FollowMe -. Voice Feedback .-> TTS
+    FollowMe --> CmdVel
+    CmdVel --> Gazebo
+    CmdVel --> Robot
+```
+
+## Source Code & Workspace
+
+The component packages are consolidated under the `src/` directory:
+
+- `adbscan_ros2`: Core ADBSCAN clustering perception node publishing `/obstacle_array`.
+- `adbscan_ros2_follow_me`: Follow-me tracker, state machine, and velocity generator.
+- `follow_me_interfaces`: Custom ROS 2 message and service definitions.
+- `gesture_recognition_pkg`: Hand gesture recognition using OpenVINO / MediaPipe.
+- `speech_recognition_pkg`: Voice command recognition using OpenVINO ASR models.
+- `text_to_speech_pkg`: Audio prompt generation and feedback.
+- `followme_turtlebot3_gazebo`: Gazebo simulation environments (Harmonic / Fortress).
+
+## Intel®-Optimized ADBSCAN
+
+In this version of ADBSCAN, the algorithm has been optimized for Intel® SOC by
 replacing linear neighbor point search with an optimized oneAPI PCL library
 (offloaded to GPU), as well as refactoring the clustering algorithm. This
 tutorial describes how to run this Intel-optimized ADBSCAN algorithm and compare
@@ -92,7 +171,7 @@ include `/scan` (point cloud from 2D LIDAR) and `/camera/depth/color/points`
 
 ### Install and run optimized Deb package
 
-Install `ros-jazzy-adbscan-oneapi` Deb package from Intel Autonomous Mobile
+Install `ros-jazzy-adbscan-oneapi` Deb package from Intel® Autonomous Mobile
 Robot APT repository:
 
 ::::{tab-set}
@@ -149,7 +228,7 @@ which PCL library is being used.
 
 ### Install and run standard (unoptimized) Deb package
 
-Install `ros-jazzy-adbscan-ros2` Deb package from Intel Autonomous Mobile
+Install `ros-jazzy-adbscan-ros2` Deb package from Intel® Autonomous Mobile
 Robot APT repository
 
 ::::{tab-set}
@@ -294,7 +373,7 @@ A complete list of the reconfigurable parameters is given below:
   `oneapi_kdtree` and `oneapi_octree` allow the algorithm to use optimized
   oneAPI™ KdTree or octree library and offload the neighbor point search method
   to GPU. `pcl_kdtree` option uses the standard PCL KdTree library,
-  not optimized for Intel.
+  not optimized for Intel® SOC.
 
 - `benchmark_number_of_frames`
 
@@ -365,12 +444,8 @@ a performance-core (P-core).
 
 This demo of the Follow-me algorithm shows an Autonomous Mobile Robot application
 for following a target person where the movement of the robot can be controlled
-by the person's location and hand gestures. The entire pipeline diagram can be
-found in this guide.
-This demo contains only the ADBSCAN and Gesture recognition modules in the
-input-processing application stack. No text-to-speech synthesis module is
-present in the output-processing application stack. This tutorial describes how
-to launch the demo in `Gazebo` simulator.
+by the person's location, hand gestures, and voice commands.
+This tutorial describes how to launch the demo in `Gazebo` simulator (Gazebo Harmonic on ROS 2 Jazzy, Gazebo Fortress on ROS 2 Humble).
 
 ### Simulation Setup
 
@@ -381,7 +456,7 @@ before continuing.
 
 #### Install the Simulation Deb Package
 
-Install `ros-jazzy-followme-turtlebot3-gazebo` Deb package from Intel
+Install `ros-jazzy-followme-turtlebot3-gazebo` Deb package from Intel®
 Autonomous Mobile Robot APT repository. This is the wrapper package which will
 launch all of the dependencies in the backend.
 
@@ -419,8 +494,7 @@ source bin/activate
 
 This application uses
 [Mediapipe Hands Framework](https://mediapipe.readthedocs.io/en/latest/solutions/hands.html)
-for hand gesture recognition. Install the following modules as a prerequisite
-for the framework:
+for hand gesture recognition and Intel® OpenVINO™ for speech recognition. Install the following modules:
 
 ::::{tab-set}
 :::{tab-item} **Jazzy**
@@ -429,7 +503,10 @@ for the framework:
 ```bash
 pip3 install --upgrade pip
 pip3 install pyyaml
+# Gesture only:
 pip3 install -r /opt/ros/jazzy/share/followme_turtlebot3_gazebo/scripts/requirements_jazzy.txt
+# Optional audio / speech recognition:
+pip3 install -r /opt/ros/jazzy/share/followme_turtlebot3_gazebo/scripts/requirements_audio_jazzy.txt
 ```
 
 :::
@@ -439,7 +516,10 @@ pip3 install -r /opt/ros/jazzy/share/followme_turtlebot3_gazebo/scripts/requirem
 ```bash
 pip3 install --upgrade pip
 pip3 install pyyaml
+# Gesture only:
 pip3 install -r /opt/ros/humble/share/followme_turtlebot3_gazebo/scripts/requirements_humble.txt
+# Optional audio / speech recognition:
+pip3 install -r /opt/ros/humble/share/followme_turtlebot3_gazebo/scripts/requirements_audio_humble.txt
 ```
 
 :::
@@ -632,24 +712,40 @@ Find a brief description of the parameters in the following list:
   before installing the necessary Deb packages.
 
 - You can stop the demo anytime by pressing `ctrl-C`. If the `Gazebo` simulator
-  freezes or does not stop, please use the following command in a terminal:
+  freezes or does not stop, please use the following commands in a terminal:
+
+  ::::{tab-set}
+  :::{tab-item} **Jazzy (Gazebo Harmonic)**
+  :sync: jazzy
+
+  ```bash
+  sudo killall -9 gz ruby
+  ```
+
+  :::
+  :::{tab-item}  **Humble (Gazebo Fortress)**
+  :sync: humble
 
   ```bash
   sudo killall -9 gazebo gzserver gzclient
   ```
 
-## Deploy Follow-me on a Clearpath Jackal
+  :::
+  ::::
 
-This tutorial provides instructions for running the ADBSCAN-based Follow-me
-algorithm from Autonomous Mobile Robot using RealSense camera input when
-using a Clearpath Robotics Jackal robot.
-The RealSense camera publishes to `/camera/depth/color/points` topic.
-The `adbscan_sub_node` subscribes to the corresponding topic,
-detects the obstacle array, computes the robot's velocity and publishes to the
-`/cmd_vel` topic of type `geometry_msg/msg/Twist`.
-This `twist` message consists of the updated angular and linear velocity of the
-robot to follow the target, which can be subsequently subscribed
-by a robot-driver.
+## Deploy Follow-me on a Physical Mobile Robot (Clearpath Jackal / AAEON AMR)
+
+This section provides instructions for running the ADBSCAN-based Follow-me
+pipeline on physical Autonomous Mobile Robots using RealSense depth camera or
+LiDAR inputs.
+
+The sensor publishes point clouds to `/camera/depth/color/points` (RealSense)
+or laser scans to `/scan` (LiDAR). The `adbscan_sub_node` or `adbscan_sub_w_gesture_audio`
+subscribes to the corresponding topic, segments clusters using range-adaptive
+parameters, determines the target person's centroid, computes linear and angular
+velocity adjustments, and publishes differential-drive commands to `/cmd_vel` of
+type `geometry_msgs/msg/Twist`. This message is subsequently consumed by the
+chassis base controller.
 
 ### Deployment Setup
 
@@ -658,10 +754,10 @@ by a robot-driver.
 Complete the [Getting Started](../../platform_foundation/getting_started.md) guide
 before continuing.
 
-#### Install the Deployment Deb Package
+#### Install the Deployment Packages
 
-Install the `ros-jazzy-follow-me-tutorial` Deb package from the Autonomous
-Mobile Robot APT repository.
+Deployments can run from the prebuilt Debian packages installed from the
+Robotics AI Dev Kit APT repository:
 
 ::::{tab-set}
 :::{tab-item} **Jazzy**
@@ -669,7 +765,7 @@ Mobile Robot APT repository.
 
 ```bash
 sudo apt update
-sudo apt install ros-jazzy-follow-me-tutorial
+sudo apt install ros-jazzy-adbscan-ros2 ros-jazzy-adbscan-ros2-follow-me ros-jazzy-follow-me-interfaces
 ```
 
 :::
@@ -678,16 +774,22 @@ sudo apt install ros-jazzy-follow-me-tutorial
 
 ```bash
 sudo apt update
-sudo apt install ros-humble-follow-me-tutorial
+sudo apt install ros-humble-adbscan-ros2 ros-humble-adbscan-ros2-follow-me ros-humble-follow-me-interfaces
 ```
 
 :::
 ::::
 
+Alternatively, if building directly from source in a cloned workspace:
+
+```bash
+make build
+source install/setup.bash
+```
+
 ### Run Demo
 
-To launch the Follow-me application tutorial on the Jackal robot, use the
-following ROS 2 launch file.
+To launch the follow-me application on a robot platform using Intel RealSense depth sensing, run:
 
 ::::{tab-set}
 :::{tab-item} **Jazzy**
@@ -695,7 +797,10 @@ following ROS 2 launch file.
 
 ```bash
 source /opt/ros/jazzy/setup.bash
-ros2 launch tutorial_follow_me jackal_followme_launch.py
+# If running from a built workspace:
+# source install/setup.bash
+
+ros2 launch adbscan_ros2_follow_me play_demo_realsense_launch.py
 ```
 
 :::
@@ -704,21 +809,43 @@ ros2 launch tutorial_follow_me jackal_followme_launch.py
 
 ```bash
 source /opt/ros/humble/setup.bash
-ros2 launch tutorial_follow_me jackal_followme_launch.py
+# If running from a built workspace:
+# source install/setup.bash
+
+ros2 launch adbscan_ros2_follow_me play_demo_realsense_launch.py
 ```
 
 :::
 ::::
 
-After starting the script, the robot should begin searching for trackable
-objects in its initial detection radius (defaulting to around 0.5m), and then
-following acquired targets as they move from the initial target location.
+For 2D LiDAR based tracking:
 
-There are reconfigurable parameters in
-`/opt/ros/jazzy/share/tutorial_follow_me/params/followme_adbscan_RS_params.yaml`.
-You can modify the parameters depending on the respective robot, sensor
-configuration and environments (if required) before running the tutorial.
-Find a brief description of the parameters in the following list.
+::::{tab-set}
+:::{tab-item} **Jazzy**
+:sync: jazzy
+
+```bash
+source /opt/ros/jazzy/setup.bash
+ros2 launch adbscan_ros2_follow_me play_demo_lidar_launch.py
+```
+
+:::
+:::{tab-item}  **Humble**
+:sync: humble
+
+```bash
+source /opt/ros/humble/setup.bash
+ros2 launch adbscan_ros2_follow_me play_demo_lidar_launch.py
+```
+
+:::
+::::
+
+After starting the node, the robot begins searching for trackable clusters in its initial detection radius (`init_tgt_loc`, default 0.5m–0.8m) and tracks the centroid of the acquired target as it moves.
+
+Configuration parameters can be inspected and modified in:
+`/opt/ros/<distro>/share/adbscan_ros2_follow_me/config/adbscan_sub_RS.yaml` (or `src/adbscan_ros2_follow_me/config/adbscan_sub_RS.yaml` when developing locally).
+Find a brief description of the parameters in the following list:
 
 - ``Lidar_type``
 

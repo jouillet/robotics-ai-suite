@@ -16,3 +16,22 @@ For robots that navigate and operate independently in dynamic environments such 
 | [Simulations](simulations) | [Simulations](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/software_references/amr/simulation/index.html) | Tutorials on using the ROS 2 simulations with the Autonomous Mobile Robot. You can test robot sensing and navigation in these simulated environments. |
 | [Wandering](wandering) | [Wandering](https://docs.openedgeplatform.intel.com/dev/edge-ai-suites/robotics-ai-suite/software_references/amr/simulation/wandering_sim.html) | Wandering mobile robot application is a ROS 2 sample application. It can be used with different SLAM algorithms in combination with the ROS2 navigation stack, to move the robot around in an unknown environment. The goal is to create a navigational map of the environment. |
 
+## Building and Packaging
+
+### Current Status
+
+Each component currently manages its own build, test, and packaging targets through a dedicated `Makefile` within its directory (for example, `fast-mapping/` or `groundfloor/`). Most components build via Docker containers with ROS 2 and `colcon`, and generate Debian packages (`.deb`) using `dpkg-buildpackage`.
+
+To build, test, or package an individual component, navigate into its folder:
+
+```bash
+# Example: Fast Mapping
+cd src/components/fast-mapping
+make build
+make test
+make package
+```
+
+Refer to each component's README and `Makefile` for specific options and supported `ROS_DISTRO` settings.
+
+

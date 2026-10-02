@@ -1,22 +1,6 @@
 # Robotics AI Suite
 
-The **Robotics AI Suite** is a preview collection of robotics applications, libraries, samples, and benchmarking tools to help you build solutions faster. It includes models and pipelines optimized with the OpenVINO™ toolkit for accelerated performance on Intel® CPUs, integrated GPUs, and NPUs. Refer to the [detailed user guide and documentation](https://developer.robotics.intel.com/development-stack/ai-suite-robotics/).
-
-## Website
-
-The Sphinx user guide lives in `docs/user-guide/`, and the Docusaurus site lives in `docs/website/`. Build and serve the complete site locally with:
-
-```bash
-make build
-make serve
-```
-
-For a PR-style preview, use the same prefix when building and serving:
-
-```bash
-BASE_URL=/pr/2/ make build
-BASE_URL=/pr/2/ make serve
-```
+The **Robotics AI Suite** is a collection of robotics applications, libraries, samples, and benchmarking tools to help you build solutions faster. It includes models and pipelines optimized with the OpenVINO™ toolkit for accelerated performance on Intel® CPUs, integrated GPUs, and NPUs. Refer to the [detailed user guide and documentation](https://developer.robotics.intel.com/development-stack/ai-suite-robotics/).
 
 The **Robotics AI Suite** is organized into **collections** that group workflows and capabilities for different robot categories. Each collection provides:
 
@@ -130,6 +114,43 @@ The per-collection reference application architectures — which zoom into a rep
 | [Feature Tracking Model: LightGlue](https://developer.robotics.intel.com/development-stack/ai_resources/openvino/models/model_lightglue/) | A model designed for efficient and accurate feature matching in computer vision tasks |
 | [Bird’s Eye View Perception: Fast-BEV](https://developer.robotics.intel.com/development-stack/ai_resources/openvino/models/model_fastbev/) | Obtaining a Bird's Eye View (BEV) perception is to gain a comprehensive understanding of the spatial layout and relationships between objects in a scene |
 | [Monocular Depth Estimation: Depth Anything V2](https://developer.robotics.intel.com/development-stack/ai_resources/openvino/models/model_depthanythingv2/) | A powerful tool that leverages deep learning to infer 3D information from 2D images |
+
+## Website
+
+The documentation website combines two tools:
+- **Docusaurus (`docs/website/`)** serves as the root site (`/`), providing the landing pages, models catalog, navigation, and theme.
+- **Sphinx (`docs/user-guide/`)** builds the in-depth user guide and technical documentation, mounted and served under `/development-stack/`.
+
+Build and serve the complete site locally with:
+
+```bash
+make serve
+```
+
+`make serve` rebuilds the site with the current `BASE_URL` before serving it, so an earlier preview build cannot leave stale asset paths. Use `make build` (or `make website`) to build without serving. For a PR-style preview:
+
+```bash
+BASE_URL=/pr/2/ make serve
+```
+
+To serve both versions at once, set a different port for the preview: `BASE_URL=/pr/2/ PORT=3002 make serve`. Each server keeps its own build snapshot, so rebuilding one does not change assets served by the other.
+
+For editing Sphinx documentation directly with live reloading, you can also run `make -C docs serve`.
+
+## Build Targets
+
+The top-level `Makefile` coordinates site and component workflows:
+
+| Target | Description | Status |
+| --- | --- | --- |
+| `make help` | Print help for all available targets | Active |
+| `make website` / `make build` | Build the complete documentation website | Active |
+| `make serve` | Build and serve the complete documentation website locally | Active |
+| `make build-components` | Build all component packages across `src/` | Placeholder (pending CMake orchestration) |
+| `make test` | Run tests across component packages | Placeholder (pending CMake orchestration) |
+| `make package` | Package all components (e.g. CPack / Debian packages) | Placeholder (pending CMake orchestration) |
+
+*Note on component targets:* `build-components`, `test`, and `package` are placeholders pending unified CMake orchestration across all packages. See [src/components/README.md](src/components/README.md#building-and-packaging) for current per-component build instructions and future orchestration plans.
 
 ## Contribute
 

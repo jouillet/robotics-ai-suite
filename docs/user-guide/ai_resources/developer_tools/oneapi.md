@@ -31,7 +31,7 @@ It includes:
 
 [Intel® oneAPI Toolkit Overview](https://www.intel.com/content/www/us/en/develop/tools/oneapi/base-toolkit.html) page for more information.
 
-Install Intel® oneAPI Toolkit **2024.2.1**:
+Install Intel® oneAPI Toolkit **2026.1**:
 
 1. From the [oneAPI website](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html?packages=oneapi-toolkit&oneapi-toolkit-os=linux&oneapi-lin=offline), locate the downloaded install file.
 
@@ -39,10 +39,10 @@ Install Intel® oneAPI Toolkit **2024.2.1**:
 
    ```bash
    # launch the GUI installer as the root
-   sudo sh ./l_BaseKit_p_2024.2.1.100_offline.sh
+   sudo sh ./l_BaseKit_p_2026.1.*_offline.sh
 
    # Optionally, to launch the GUI installer as the current user
-   sh ./l_BaseKit_p_2024.2.1.100_offline.sh
+   sh ./l_BaseKit_p_2026.1.*_offline.sh
    ```
 
 3. Follow the instructions in the installer.

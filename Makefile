@@ -1,133 +1,38 @@
 # SPDX-FileCopyrightText: (C) 2025 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
-# default goal to show help
 .DEFAULT_GOAL := help
+.PHONY: help build website serve build-components test package
 
-# these targets don't create files, so are marked PHONY
-.PHONY: help build test lint clean clean-all
+PROJECT_NAME := robotics-ai-suite
 
-# Shell config variable
-SHELL	    := bash -eu -o pipefail
+build: website ## Build the documentation website
 
-### configuration variables ###
-# project configuration
-PROJECT_NAME  := robotics-ai-suite-docs
-VERSION       := $(shell cat docs/VERSION) # read from VERSION file
-
-# Path variables
-OUT_DIR       := out
-CI_DIR        := ci  # created inside this repo when running in CI, causes some lint to fail
-
-# If out dir doesn't exist, create it
-$(OUT_DIR):
-	mkdir -p $(OUT_DIR)
-
-### check targets ###
-# Python virtualenv, for python-based tools
-VENV_DIR     := venv_$(PROJECT_NAME)
-
-# virtualenv activate script has undefined variables, disable then re-enable in bash
-$(VENV_DIR): docs/user-guide/requirements.txt
-	python3 -m venv $@ ;\
-  set +u; . ./$@/bin/activate; set -u ;\
-  python -m pip install --upgrade pip ;\
-  python -m pip install -r docs/user-guide/requirements.txt
-
-check: ## Check for and/or install documentation prerequisites
-	$(MAKE) -C docs check
-
-index: ## rename index.rst
-	mv docs/user-guide/index.rst_ docs/user-guide/index.rst || :
-
-# Eventually we want:
-# lint: license yamllint pylint black doc8 sphinx-spelling sphinx-linkcheck markdownlint ## Lint all tooling and docs
-
-# But for now, turn off format, spelling, link checks
-lint: license yamllint pylint black doc8 sphinx-spelling markdownlint ## Lint all tooling
-
-license: $(VENV_DIR) ## license check with REUSE tool
-	set +u; . ./$</bin/activate; set -u ;\
-  reuse --version ;\
-  reuse --root . lint
-
-# FIXME: API YAML files should be linted, but are still badly formatted, exclude for now
-YAML_FILES := $(shell find . -type f \( -name '*.yaml' -o -name '*.yml' \) -print )
-yamllint: $(VENV_DIR) ## lint YAML files
-	set +u; . ./$</bin/activate; set -u ;\
-  yamllint --version ;\
-  yamllint -d '{extends: default, ignore: ["$(VENV_DIR)", "$(CI_DIR)", "$(OUT_DIR)", "docs/api/openapi", "generate/sources"]}' -s $(YAML_FILES)
-
-pylint: $(VENV_DIR) ## lint python files
-	set +u; . ./$</bin/activate; set -u ;\
-	pylint --version ;\
-	pylint --ignore "docconf,$(VENV_DIR),$(CI_DIR)" .
-
-black: $(VENV_DIR) ## format check python files
-	set +u; . ./$</bin/activate; set -u ;\
-	black --version ;\
-	black --check .
-
-doc8: $(VENV_DIR) ## lint rst files with doc8
-	set +u; . ./$</bin/activate; set -u ;\
-	doc8 --version ;\
-	doc8 --max-line-length 199 --ignore-path $(VENV_DIR) --ignore-path $(CI_DIR) --ignore-path docconf --ignore-path LICENSES --ignore-path $(OUT_DIR) .
-
-markdownlint: ## lint markdown files
-	markdownlint --version ;\
-	markdownlint README.md .github/*.md
-
-trivyfsscan: ## run Trivy scan locally
-	@echo "Running Trivy scan on the filesystem"
-	trivy --version ;\
-	trivy fs --scanners vuln,misconfig,secret -s HIGH,CRITICAL .
-
-sphinx-spelling: $(VENV_DIR)
-	set +u; . ./$</bin/activate; set -u ;\
-    sphinx-build -b spelling "$(SOURCEDIR)" "$(OUT_DIR)/spelling"
-
-build: ## Build the documentation website
+website: ## Build the documentation website
 	npm ci --prefix docs/website
 	npm run build --prefix docs/website
 
-serve: ## Serve the built documentation website locally
-	npm run serve --prefix docs/website
+serve: ## Build and serve the documentation website locally
+	@set -eu; \
+	snapshot=$$(mktemp -d); \
+	trap 'rm -rf "$$snapshot"' EXIT; \
+	exec 9>docs/website/.serve.lock; \
+	flock 9; \
+	npm ci --prefix docs/website; \
+	npm run build --prefix docs/website; \
+	cp -a docs/website/build/. "$$snapshot/"; \
+	flock -u 9; \
+	SITE_BUILD_DIR="$$snapshot" npm run serve --prefix docs/website
 
-### cleanup targets ###
-clean: ## delete website build artifacts
-	$(MAKE) -C docs clean
-	rm -rf docs/website/build docs/website/.docusaurus docs/website/.sphinx-static
+build-components: ## Build all component packages (not implemented)
+	@echo "Not implemented: component CMake build orchestration is pending." >&2; exit 1
 
-clean-all: clean ## delete all built artifacts and downloaded tools
-	$(MAKE) -C docs clean-all
-	rm -rf docs/website/node_modules
+test: ## Test all component packages (not implemented)
+	@echo "Not implemented: component test orchestration is pending." >&2; exit 1
 
-### documentation generation targets ###
-generate: docs/shared/shared_iam_groups.rst  ## generate role documentation from config
+package: ## Package all components (not implemented)
+	@echo "Not implemented: component package orchestration is pending." >&2; exit 1
 
-docs/shared/shared_iam_groups.rst: $(VENV_DIR) generate/role_docs.py generate/sources/platform-keycloak.yaml generate/sources/keycloak-tenant-controller.tpl generate/sources/iam_details.yaml generate/templates/shared_iam_groups.rst.j2
-	set +u;	. ./$</bin/activate; set -u ;\
-  generate/role_docs.py generate/sources/platform-keycloak.yaml generate/sources/keycloak-tenant-controller.tpl $@ docs/shared/group_role_xy.csv ;\
-  doc8 $@
-
-### Sphinx-specific targets ###
-SPHINXBUILD   := sphinx-build
-SOURCEDIR     := docs/user-guide/
-
-sphinx-serve: $(VENV_DIR) $(OUT_DIR)
-	set +u;	. ./$</bin/activate; set -u ;\
-	sphinx-autobuild "${SOURCEDIR}" "${OUT_DIR}"
-
-sphinx-%: $(VENV_DIR) $(OUT_DIR)
-	set +u;	. ./$</bin/activate; set -u ;\
-	$(SPHINXBUILD) -M $* "$(SOURCEDIR)" "$(OUT_DIR)" -W
-
-
-listrefs: $(VENV_DIR) $(OUT_DIR) ## list all sphinx references
-	set +u;	. ./$</bin/activate; set -u ;\
-	python -m sphinx.ext.intersphinx $(OUT_DIR)/html/objects.inv
-
-### help target ###
 help: ## Print help for each target
 	@echo $(PROJECT_NAME) make targets
 	@echo "Target               Makefile:Line    Description"
