@@ -1,6 +1,5 @@
-these files are not used in the docs build itself. They are here for mainenance reasons only.
-
-They are hosted at the root of the server and function as the common source of scripts
-shared between different versions of the page. For example:
+These files are copied into the website build at `/common-includes/` and hosted
+at the root of the server. They are shared by different versions of the docs,
+so updating them affects already-published pages. For example:
 
 https://developer.robotics.intel.com/common-includes/kapa-consent-fallback.v1.js

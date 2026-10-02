@@ -18,6 +18,12 @@
   var btn = document.getElementById('oep-consent-chat-fallback');
   var tip = document.getElementById('oep-consent-chat-fallback-tip');
   var msg = document.getElementById('oep-consent-chat-fallback-message');
+  if (window.__oepAiChatEnabled !== true) {
+    if (btn) { btn.remove(); }
+    if (tip) { tip.remove(); }
+    if (msg) { msg.remove(); }
+    return;
+  }
   if (!btn) { return; }
 
   /**

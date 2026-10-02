@@ -1,36 +1,3 @@
 <!-- Placeholder for the common footer loaded from the central source.  -->
 <div id="footer-custom-content" data-include="footer-unified"></div>
 <script src="https://developer.robotics.intel.com/common-includes/include-html.js"></script>
-
-
-
-
-
-
-<!-- Fallback chat button: shown in place of the Kapa.ai widget when functional cookie
-     consent has not been granted. Clicking it reopens the cookie consent preferences
-     modal so the user can enable the functional category and unlock the AI assistant. -->
-<button id="oep-consent-chat-fallback"
-        aria-label="Enable AI chat - cookie consent required"
-        aria-describedby="oep-consent-chat-fallback-tip">
-  <!-- Chat bubble icon (matches Kapa.ai button visual weight) -->
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-    <path d="M12 2C6.477 2 2 6.038 2 11c0 2.56 1.077 4.87 2.82 6.548L4 22l4.82-1.525A10.09 10.09 0 0 0 12 21c5.523 0 10-4.038 10-9S17.523 2 12 2Z"/>
-  </svg>
-</button>
-<div id="oep-consent-chat-fallback-tip" role="tooltip">Enable cookies to use AI chat</div>
-<div id="oep-consent-chat-fallback-message" role="status" aria-live="polite">
-  Chat is locked. Click the blue chat button, then enable Functional cookies to unlock it.
-</div>
-
-<!-- Load shared versioned fallback logic used by all doc versions. -->
-<script src="https://developer.robotics.intel.com/common-includes/kapa-consent-fallback.v1.js"></script>
-
-<!-- Runtime fallback: if shared include is unavailable, load local bundled copy. -->
-<script>
-if (!window.__oepKapaConsentFallbackLoaded) {
-  var localFallbackScript = document.createElement('script');
-  localFallbackScript.src = "{{ pathto('_static/js/kapa-consent-fallback.js', 1) }}";
-  document.head.appendChild(localFallbackScript);
-}
-</script>

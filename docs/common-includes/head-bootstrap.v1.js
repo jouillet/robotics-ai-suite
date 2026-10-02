@@ -200,25 +200,9 @@
 
   // WAP consumes and executes analytics callbacks after user consent.
 
-  // 3) Kapa.ai chat widget bundle now executes from functional consent queue.
-  function initKapa() {
-    if (document.querySelector('script[src="https://widget.kapa.ai/kapa-widget.bundle.js"]')) { return; }
-    var kapa = document.createElement('script');
-    kapa.async = true;
-    kapa.src = 'https://widget.kapa.ai/kapa-widget.bundle.js';
-    kapa.setAttribute('data-website-id', '2f50f7bd-1e1f-4181-a931-602a22b19e91');
-    kapa.setAttribute('data-project-name', 'Open Edge Platform Documentation');
-    kapa.setAttribute('data-project-color', '#0068b5');
-    kapa.setAttribute('data-project-logo', 'https://docs.openedgeplatform.intel.com/dev/_static/logo.svg');
-    document.head.appendChild(kapa);
-  }
-
-  window.wap_tms.categoriesQueue['functional'].push(function () {
-    initKapa();
-  });
-
-  // 4) Intel IGHF header/footer integration (delayed until dynamic footer includes complete).
+  // 3) Intel IGHF header/footer integration (delayed until dynamic footer includes complete).
   function initIghf() {
+    if (!document.getElementById('footer-custom-content')) { return; }
     if (window.__oepIghfLoaded) { return; }
     window.__oepIghfLoaded = true;
 

@@ -30,6 +30,13 @@ const config = {
   headTags: [
     {
       tagName: "script",
+      attributes: {
+        src: "https://developer.robotics.intel.com/common-includes/head-bootstrap.v1.js",
+        defer: true,
+      },
+    },
+    {
+      tagName: "script",
       attributes: {},
       innerHTML: `if (location.pathname.endsWith("/index.html")) {
   const canonicalUrl = new URL(location.href);
